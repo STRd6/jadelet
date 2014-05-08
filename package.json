@@ -12,9 +12,10 @@
     "hamlet-runtime": "~0.6",
     "o_0": "~0.2"
   },
+  "homepage": "hamlet.coffee",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dr-coffee-labs/hamlet-compiler.git"
+    "url": "https://github.com/dr-coffee-labs/hamlet.git"
   },
   "scripts": {
     "prepublish": "script/prepublish",
