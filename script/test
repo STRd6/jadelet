@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+
+node_modules/.bin/mocha --compilers coffee:coffee-script --reporter spec

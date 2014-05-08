@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./node_modules/.bin/browserify dist/main.js -o hamlet.js
