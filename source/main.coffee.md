@@ -8,4 +8,6 @@ The total package
     {compile} = require "hamlet-compiler"
     Hamlet.compile = compile
 
+    Hamlet.Observable = require "o_0"
+
     module.exports = Hamlet

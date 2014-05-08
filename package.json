@@ -1,5 +1,5 @@
 {
-  "name": "hamlet-runtime",
+  "name": "hamlet.coffee",
   "version": "0.6.0-pre.0",
   "devDependencies": {
     "browserify": "^3.46.0",
@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "hamlet-compiler": "~0.6",
-    "hamlet-runtime": "~0.6"
+    "hamlet-runtime": "~0.6",
+    "o_0": "~0.2"
   },
   "repository": {
     "type": "git",
