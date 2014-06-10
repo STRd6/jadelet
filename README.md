@@ -12,10 +12,10 @@ All of this in only 3.7kb, minified and gzipped!
 Getting Started
 ===============
 
-1. Install Hamlet compiler CLI 
+1. Install Hamlet compiler CLI
 2. Set up template compilation step
 3. Install Hamlet runtime
-4. Instantiate template with data and insert into the DOM. 
+4. Instantiate template with data and insert into the DOM.
 
 Compiler
 --------
