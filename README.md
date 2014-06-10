@@ -10,10 +10,12 @@ All of this in only 3.7kb, minified and gzipped!
 Getting Started
 ===============
 
-1. Compile your templates
-2. Require the Hamlet runtime before you instantiate templates.
+1. Install Hamlet compiler CLI 
+2. Set up template compilation step
+3. Install Hamlet runtime
+4. Instantiate template with data and insert into the DOM. 
 
-Hamlet templates use a compiler to make all the magical bindings work. As a result, you'll need to include a build step in your workflow.
+Hamlet templates use a compiler to allow bindings without the directives many other templating languages require.
 
 Compiler
 --------
@@ -22,7 +24,7 @@ Install Hamlet CLI tool to compile templates
 
     npm install -g hamlet-cli
 
-Here's an example bash script you can use to compile all haml files in your templates directory.
+Now that you have the compiler, you'll need to set up a build step to generate the compiled templates. Here's an example bash script you can use to compile all haml files in your templates directory.
 
     #! /bin/bash
 
