@@ -10,6 +10,11 @@ All of this in only 3.7kb, minified and gzipped!
 Getting Started
 ===============
 
+1. Compile your templates
+2. Require the Hamlet runtime before you instantiate templates.
+
+Hamlet templates use a compiler to make all the magical bindings work. As a result, you'll need to include a build step in your workflow.
+
 Compiler
 --------
 
@@ -17,7 +22,7 @@ Install Hamlet CLI tool to compile templates
 
     npm install -g hamlet-cli
 
-Here's an example of a bash script you can use to compile all haml files in your templates directory.
+Here's an example bash script you can use to compile all haml files in your templates directory.
 
     #! /bin/bash
 
@@ -26,9 +31,16 @@ Here's an example of a bash script you can use to compile all haml files in your
     for file in *.haml; do
       hamlet < $file > ${file/.haml}.js
     done
+    
+    # you can even smash all the templates together if you like
+    # cat *.js > ../javascripts/templates.js
+
+After this, just make sure to require the compiled JavaScript files.
 
 Runtime
 -------
+
+#### With Node.js
 
 Add hamlet-runtime to your package.json
 
@@ -40,6 +52,10 @@ To use the templates in a Node.js style project built with browserify you can re
 
     document.body.appendChild mainTemplate(data)
 
+#### In the browser
+
+TODO: add simple instructions for using the runtime.
+
 Gotchas
 -------
 
@@ -50,33 +66,41 @@ Templates that lack root elements or root elements in iterators can be problemat
 
 Problematic Example:
 
-    .row
-      - each @items, ->
-        .first
-        .second
+```haml
+.row
+  - each @items, ->
+    .first
+    .second
+```
 
 Safe solution:
 
-    .row
-      - each @items, ->
-        .item
-          .first
-          .second
+```haml
+.row
+  - each @items, ->
+    .item
+      .first
+      .second
+```
 
 Problematic example:
 
-    .one
-    .two
-    .three
-    .four
+```haml
+.one
+.two
+.three
+.four
+```
 
 Safe solution:
 
-    .root
-      .one
-      .two
-      .three
-      .four
+```haml
+.root
+  .one
+  .two
+  .three
+  .four
+```
 
 Some of the problematic examples may work in simple situations, but if they are used as subtemplates or as observable changes take effect errors may occur. In theory it will be possible to correct this in a later version, but for now it remains a concern.
 
