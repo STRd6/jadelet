@@ -15,27 +15,29 @@ Getting Started
 3. Install Hamlet runtime
 4. Instantiate template with data and insert into the DOM. 
 
-Hamlet templates use a compiler to allow bindings without the directives many other templating languages require.
-
 Compiler
 --------
 
-Install Hamlet CLI tool to compile templates
+Hamlet templates use a compiler to allow bindings without the directives many other templating languages require. Install Hamlet's CLI tool to compile templates
 
-    npm install -g hamlet-cli
+```bash
+npm install -g hamlet-cli
+```
 
 Now that you have the compiler, you'll need to set up a build step to generate the compiled templates. Here's an example bash script you can use to compile all haml files in your templates directory.
 
-    #! /bin/bash
+```bash
+#! /bin/bash
 
-    cd templates
+cd templates
 
-    for file in *.haml; do
-      hamlet < $file > ${file/.haml}.js
-    done
-    
-    # you can even smash all the templates together if you like
-    # cat *.js > ../javascripts/templates.js
+for file in *.haml; do
+  hamlet < $file > ${file/.haml}.js
+done
+
+# you can even smash all the templates together if you like
+# cat *.js > ../javascripts/templates.js
+```
 
 After this, just make sure to require the compiled JavaScript files.
 
@@ -46,13 +48,17 @@ Runtime
 
 Add hamlet-runtime to your package.json
 
-    npm install --save-dev hamlet-runtime
+```bash
+npm install --save-dev hamlet-runtime
+```
 
 To use the templates in a Node.js style project built with browserify you can require them normally.
 
-    mainTemplate = require "./templates/main"
+```coffee-script
+mainTemplate = require "./templates/main"
 
-    document.body.appendChild mainTemplate(data)
+document.body.appendChild mainTemplate(data)
+```
 
 #### In the browser
 
