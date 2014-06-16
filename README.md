@@ -12,12 +12,29 @@ All of this in only 3.7kb, minified and gzipped!
 Getting Started
 ===============
 
-1. Install Hamlet compiler CLI
-2. Set up template compilation step
-3. Install Hamlet runtime
-4. Instantiate template with data and insert into the DOM.
+1. Install Hamlet compiler and runtime
 
-Compiler
+    ```bash
+    npm install -g hamlet-cli
+    npm install hamlet-runtime
+    ```
+
+2. Compile all your templates
+
+    ```bash
+    for file in templates/*.haml; do
+      hamlet < $file > ${file/.haml}.js
+    done
+    ```
+
+3. Instantiate template with data and insert into the DOM.
+
+    ```coffee-script
+    main = require "./templates/main"
+    document.body.appendChild main(data)
+    ```
+
+[Compiler](https://github.com/dr-coffee-labs/hamlet-compiler)
 --------
 
 Hamlet templates use a compiler to allow bindings without the directives many other templating languages require. Install Hamlet's CLI tool to compile templates
