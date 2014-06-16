@@ -34,7 +34,7 @@ Getting Started
     document.body.appendChild main(data)
     ```
 
-[Compiler](https://github.com/dr-coffee-labs/hamlet-compiler)
+[CLI](https://github.com/dr-coffee-labs/hamlet-cli)
 --------
 
 Hamlet templates use a compiler to allow bindings without the directives many other templating languages require. Install Hamlet's CLI tool to compile templates
@@ -85,7 +85,7 @@ Using `browserify` or another build tool that gives you acess to require is pref
 
 1. Install the Hamlet compiler as above.
 
-2. Compile your templates into a single JS file that exposes them on a global object. 
+2. Compile your templates into a single JS file that exposes them on a global object.
 
     You can use this bash script as a starting point: https://gist.github.com/STRd6/10400709
 
