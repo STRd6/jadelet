@@ -68,13 +68,17 @@ Using `browserify` or another build tool that gives you acess to require is pref
 
 1. Install the Hamlet compiler as above.
 
-2. Compile your templates into a single JS file that exposes them on a global object. You can use this bash script as a starting point: https://gist.github.com/STRd6/10400709
-The script assumes that your templates are in `./templates` and named `*.haml`. It will generate a `templates.js` file in the root of your application, exporting each template as `JST[filename]`, so if you have a template named `navigation.haml` you'll be able to access it as `JST.navigation` and render it as `JST.navigation(data)`.
+2. Compile your templates into a single JS file that exposes them on a global object. 
 
-3. Download the Hamlet runtime script to include in your app: https://raw.githubusercontent.com/dr-coffee-labs/hamlet-runtime/component/hamlet-runtime.js
-Optionally: Use Bower `bower install hamlet-runtime`
+    You can use this bash script as a starting point: https://gist.github.com/STRd6/10400709
 
-4. Render them in your app: `document.body.appendChild JST["main"](data)`
+    The script assumes that your templates are in `./templates` and named `*.haml`. It will generate a `templates.js` file in the root of your application, exporting each template as `JST[filename]`, so if you have a template named `navigation.haml` you'll be able to access it as `JST.navigation` and render it as `JST.navigation(data)`.
+
+3. Download the Hamlet runtime script to include in your app.
+    - Direct link https://raw.githubusercontent.com/dr-coffee-labs/hamlet-runtime/component/hamlet-runtime.js
+    - Use bower `bower install hamlet-runtime`
+
+4. Render them in your app: `document.querySelector("your_selector").appendChild JST.main(data)`
 
 Gotchas
 -------
