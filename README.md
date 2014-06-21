@@ -23,13 +23,7 @@ npm install hamlet-cli
 Compile your templates and export them
 
 ```bash
-#! /bin/bash
-
-cd templates
-
-for file in *.haml; do
-  ../node_modules/.bin/hamlet < $file > ${file/.haml}.js
-done
+node_modules/.bin/hamlet -d templates
 ```
 
 Add hamlet-runtime to your package.json
