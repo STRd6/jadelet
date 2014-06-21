@@ -12,38 +12,15 @@ All of this in only 3.7kb, minified and gzipped!
 Getting Started
 ===============
 
-1. Install Hamlet compiler and runtime
+#### Using Node.js
 
-    ```bash
-    npm install -g hamlet-cli
-    npm install hamlet-runtime
-    ```
-
-2. Compile all your templates
-
-    ```bash
-    for file in templates/*.haml; do
-      hamlet < $file > ${file/.haml}.js
-    done
-    ```
-
-3. Instantiate template with data and insert into the DOM.
-
-    ```coffee-script
-    main = require "./templates/main"
-    document.body.appendChild main(data)
-    ```
-
-[CLI](https://github.com/dr-coffee-labs/hamlet-cli)
---------
-
-Hamlet templates use a compiler to allow bindings without the directives many other templating languages require. Install Hamlet's CLI tool to compile templates
-
+* Install the command line Hamlet compiler
+ 
 ```bash
 npm install -g hamlet-cli
 ```
 
-Now that you have the compiler, you'll need to set up a build step to generate the compiled templates. Here's an example bash script you can use to compile all haml files in your templates directory.
+* Compile your templates and export them
 
 ```bash
 #! /bin/bash
@@ -54,48 +31,66 @@ for file in *.haml; do
   hamlet < $file > ${file/.haml}.js
 done
 
-# you can even smash all the templates together if you like
-# cat *.js > ../javascripts/templates.js
+for file in *.js; do
+  echo "module.exports = " > tmpfile
+  cat $file >> tmpfile
+  mv tmpfile $file
+done
 ```
 
-After this, just make sure to require the compiled JavaScript files.
-
-Runtime
--------
-
-#### With Node.js
-
-Add hamlet-runtime to your package.json
+* Add hamlet-runtime to your package.json
 
 ```bash
 npm install --save-dev hamlet-runtime
 ```
 
-To use the templates in a Node.js style project built with browserify you can require them normally.
+To use the templates in a Node.js style project built with [browserify](https://github.com/substack/node-browserify) you can require them normally.
 
-```coffee-script
-mainTemplate = require "./templates/main"
+```javascript
+// main.js
+mainTemplate = require("./templates/main");
 
-document.body.appendChild mainTemplate(data)
+document.body.appendChild mainTemplate(data);
+```
+
+Now use browserify to build the file you'll serve on your page.
+
+```bash
+browserify main.js > build.js
 ```
 
 #### In the browser
 
-Using `browserify` or another build tool that gives you acess to require is preferred, though you can also use the templates manually.
+* Install the command line Hamlet compiler
+* Compile your templates and expose them to the global browser scope.
 
-1. Install the Hamlet compiler as above.
+```bash
+#! /bin/bash
+ 
+cd templates
+ 
+for file in *.haml; do
+  # Here we specify the name of the global variable where we'll be storing the Hamlet runtime with the -r option.
+  # Otherwise, it's assumed that a node style require workflow will be used.
+  hamlet < $file -r "Hamlet" > ${file/.haml}.js
+done
+ 
+for file in *.js; do
+  echo "(window.JST || (window.JST = {}))['${file/.js}'] = " > tmpfile
+  cat $file >> tmpfile
+  mv tmpfile $file
+done
+ 
+cat *.js > ../templates.js
+```
 
-2. Compile your templates into a single JS file that exposes them on a global object.
+    The script assumes that your templates are in `./templates` and named `*.haml`. It will generate a `templates.js` file, exporting each template as `JST[name]`, so if you have a template named `navigation.haml` you'll be able to access it as `JST.navigation` and render it with `JST.navigation(data)`.
 
-    You can use this bash script as a starting point: https://gist.github.com/STRd6/10400709
-
-    The script assumes that your templates are in `./templates` and named `*.haml`. It will generate a `templates.js` file in the root of your application, exporting each template as `JST[filename]`, so if you have a template named `navigation.haml` you'll be able to access it as `JST.navigation` and render it as `JST.navigation(data)`.
-
-3. Download the Hamlet runtime script to include in your app.
+* Download the Hamlet runtime script to include in your app.
     - Direct link https://raw.githubusercontent.com/dr-coffee-labs/hamlet-runtime/component/hamlet-runtime.js
     - Use bower `bower install hamlet-runtime`
 
-4. Render them in your app: `document.querySelector("your_selector").appendChild JST.main(data)`
+* Render them to the DOM: `document.body.appendChild(JST.main(data))`
 
 Gotchas
 -------
