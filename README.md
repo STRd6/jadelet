@@ -93,7 +93,11 @@ Download the Hamlet runtime script to include in your app.
   * Direct link https://raw.githubusercontent.com/dr-coffee-labs/hamlet-runtime/component/hamlet-runtime.js
   * Use bower `bower install hamlet-runtime`
 
-Render them to the DOM: `document.body.appendChild(JST.main(data))`
+Render them to the DOM: 
+
+```javascript
+document.body.appendChild(JST.main(data))
+```
 
 Gotchas
 -------
