@@ -58,28 +58,16 @@ npm install -g hamlet-cli
 Compile your templates and expose them to the global browser scope.
 
 ```bash
-#! /bin/bash
- 
-cd templates
- 
-for file in *.haml; do
-  # Here we specify the name of the global variable where we'll be storing the Hamlet runtime with the -r option.
-  # Otherwise, it's assumed that a node style require workflow will be used.
-  hamlet < $file -r "Hamlet" > ${file/.haml}.js
-done
- 
-for file in *.js; do
-  echo "(window.JST || (window.JST = {}))['${file/.js}'] = " > tmpfile
-  cat $file >> tmpfile
-  mv tmpfile $file
-done
- 
-cat *.js > ../templates.js
+hamlet --runtime "Hamlet" -d templates -e 'JST["$file"]'
+
+cat templates/*.js > templates.js
 ```
 
-Download the Hamlet runtime script to include in your app.
-  * Direct link https://raw.githubusercontent.com/dr-coffee-labs/hamlet-runtime/component/hamlet-runtime.js
-  * Use bower `bower install hamlet-runtime`
+Download the Hamlet runtime script with bower.
+
+```bash
+bower install hamlet-runtime
+```
 
 Render them to the DOM: 
 
