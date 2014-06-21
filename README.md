@@ -63,6 +63,10 @@ browserify main.js > build.js
 
 Install the command line Hamlet compiler
 
+```bash
+npm install -g hamlet-cli
+```
+
 Compile your templates and expose them to the global browser scope.
 
 ```bash
