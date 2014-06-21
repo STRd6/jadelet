@@ -14,13 +14,13 @@ Getting Started
 
 #### Using Node.js
 
-* Install the command line Hamlet compiler
+Install the command line Hamlet compiler
  
 ```bash
 npm install -g hamlet-cli
 ```
 
-* Compile your templates and export them
+Compile your templates and export them
 
 ```bash
 #! /bin/bash
@@ -38,7 +38,7 @@ for file in *.js; do
 done
 ```
 
-* Add hamlet-runtime to your package.json
+Add hamlet-runtime to your package.json
 
 ```bash
 npm install --save-dev hamlet-runtime
@@ -61,8 +61,9 @@ browserify main.js > build.js
 
 #### In the browser
 
-* Install the command line Hamlet compiler
-* Compile your templates and expose them to the global browser scope.
+Install the command line Hamlet compiler
+
+Compile your templates and expose them to the global browser scope.
 
 ```bash
 #! /bin/bash
@@ -84,11 +85,11 @@ done
 cat *.js > ../templates.js
 ```
 
-* Download the Hamlet runtime script to include in your app.
-    - Direct link https://raw.githubusercontent.com/dr-coffee-labs/hamlet-runtime/component/hamlet-runtime.js
-    - Use bower `bower install hamlet-runtime`
+Download the Hamlet runtime script to include in your app.
+  * Direct link https://raw.githubusercontent.com/dr-coffee-labs/hamlet-runtime/component/hamlet-runtime.js
+  * Use bower `bower install hamlet-runtime`
 
-* Render them to the DOM: `document.body.appendChild(JST.main(data))`
+Render them to the DOM: `document.body.appendChild(JST.main(data))`
 
 Gotchas
 -------
