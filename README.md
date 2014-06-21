@@ -50,7 +50,7 @@ To use the templates in a Node.js style project built with [browserify](https://
 // main.js
 mainTemplate = require("./templates/main");
 
-document.body.appendChild mainTemplate(data);
+document.body.appendChild(mainTemplate(data));
 ```
 
 Now use browserify to build the file you'll serve on your page.
