@@ -75,6 +75,11 @@ Render them to the DOM:
 document.body.appendChild(JST.main(data))
 ```
 
+Resources
+---------
+
+Check out the [wiki](https://github.com/dr-coffee-labs/hamlet/wiki/Development-Resources) for developer resources.
+
 Gotchas
 -------
 
