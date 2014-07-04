@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/dr-coffee-labs/hamlet.svg?branch=master)](https://travis-ci.org/dr-coffee-labs/hamlet)
+[![Build Status](https://travis-ci.org/inductor-labs/hamlet.svg?branch=master)](https://travis-ci.org/inductor-labs/hamlet)
 
 Hamlet
 ======
