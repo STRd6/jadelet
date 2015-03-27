@@ -9,6 +9,8 @@ It's framework agnostic and focuses on clean declarative templating, leaving you
 
 All of this in only 3.7kb, minified and gzipped!
 
+[Video Demo](http://blog.fogcreek.com/reactive-templating-demo-with-hamlet-tech-talk/)
+
 Getting Started
 ===============
 
