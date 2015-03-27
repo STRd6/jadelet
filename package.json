@@ -1,6 +1,6 @@
 {
   "name": "hamlet.coffee",
-  "version": "0.6.0-pre.1",
+  "version": "0.7.0",
   "description": "Truly amazing templating!",
   "devDependencies": {
     "browserify": "^3.46.0",
@@ -9,8 +9,8 @@
     "uglify-js": "~2.3.6"
   },
   "dependencies": {
-    "hamlet-compiler": "~0.6",
-    "hamlet-runtime": "~0.6"
+    "hamlet-compiler": "0.7.0",
+    "hamlet-runtime": "0.7.0"
   },
   "homepage": "hamlet.coffee",
   "repository": {
