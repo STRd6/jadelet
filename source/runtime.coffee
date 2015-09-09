@@ -1,1 +1,1 @@
-global.Hamlet = require "hamlet-runtime"
+module.exports = require "hamlet-runtime"
