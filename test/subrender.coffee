@@ -149,12 +149,14 @@ describe "subrender", ->
           %a Radical
           = @subtemplate()
           = @observable
+          = @nullable
       """
 
       it "shouldn't lose any nodes", ->
         model =
           observable: Observable "wat"
           subtemplate: subtemplate
+          nullable: null
 
         behave template(model), ->
           assert.equal Q("div").textContent, "Radical\nHello\nwat"

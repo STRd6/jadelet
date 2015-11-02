@@ -214,7 +214,9 @@ observeContent = (element, context, contentFn) ->
     element: makeElement
 
   append = (item) ->
-    if typeof item is "string"
+    if !item?
+      # Skip nulls
+    else if typeof item is "string"
       element.appendChild document.createTextNode item
     else if typeof item is "number"
       element.appendChild document.createTextNode item
