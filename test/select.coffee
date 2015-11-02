@@ -51,12 +51,9 @@ describe "SELECT", ->
       input.value = "3"
       input.oninput()
 
-      console.log "watt"
-
       assert.equal m.value(), 3
 
       assert.equal Q("select").value, 3
-      console.log "yolo!"
       m.value 1
       assert.equal Q("select").value, 1
 
@@ -189,4 +186,3 @@ describe "SELECT", ->
         assert.equal Q("select")._value, model.value
   describe "with an object for options", ->
     it "should have an option for each key"
-

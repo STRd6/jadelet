@@ -80,65 +80,6 @@ describe "subrender", ->
 
         assert.equal Q("li").textContent, "yo"
 
-  describe "without root node", ->
-    template = makeTemplate """
-      = @generateItem
-    """
-
-    it "should work with observables"
-    # TODO
-    ->
-      model =
-        name: Observable "wat"
-        generateItem: ->
-          item = document.createElement("li")
-
-          item.textContent = @name()
-
-          item
-
-      behave template(model), ->
-        assert.equal all("li").length, 1
-
-        assert.equal Q("li").textContent, "wat"
-
-        model.name "yo"
-
-        assert.equal Q("li").textContent, "yo"
-
-  describe "with multiple sibling elements without a root node", ->
-    template = makeTemplate """
-      = @generateItem
-      = @otherItem
-    """
-
-    it "should work with observables"
-    # TODO
-    ->
-      model =
-        name: Observable "wat"
-        otherItem: ->
-          item = document.createElement("li")
-
-          item.textContent = @name()
-
-          item
-        generateItem: ->
-          item = document.createElement("li")
-
-          item.textContent = @name()
-
-          item
-
-      behave template(model), ->
-        assert.equal all("li").length, 2
-
-        assert.equal all("li")[0].textContent, "wat"
-
-        model.name "yo"
-
-        assert.equal Q("li")[0].textContent, "yo"
-
   describe "rendering subtemplates", ->
     describe "mixing and matching", ->
       subtemplate = makeTemplate """
