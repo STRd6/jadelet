@@ -7,6 +7,7 @@ eventNames = """
   blur
   change
   click
+  contextmenu
   dblclick
   drag
   dragend
