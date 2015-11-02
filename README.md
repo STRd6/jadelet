@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/inductor-labs/hamlet.svg?branch=master)](https://travis-ci.org/inductor-labs/hamlet)
+[![Build Status](https://travis-ci.org/STRd6/hamlet.svg)](https://travis-ci.org/STRd6/hamlet)
 
 Hamlet
 ======
@@ -17,7 +17,7 @@ Getting Started
 #### Using Node.js
 
 Install the command line Hamlet compiler
- 
+
 ```bash
 npm install hamlet-cli
 ```
@@ -71,7 +71,7 @@ Download the Hamlet runtime script with bower.
 bower install hamlet-runtime
 ```
 
-Render them to the DOM: 
+Render them to the DOM:
 
 ```javascript
 document.body.appendChild(JST.main(data))
