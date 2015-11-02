@@ -5,12 +5,12 @@
   "devDependencies": {
     "browserify": "^3.46.0",
     "coffee-script": "~1.7.1",
-    "mocha": "~1.12.0",
-    "uglify-js": "~2.3.6"
+    "jsdom": "^7.0.2",
+    "mocha": "~1.12.0"
   },
   "dependencies": {
     "hamlet-compiler": "0.7.0",
-    "hamlet-runtime": "0.7.0"
+    "o_0": "0.3.3"
   },
   "homepage": "hamlet.coffee",
   "repository": {

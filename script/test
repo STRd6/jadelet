@@ -3,5 +3,7 @@ set -e
 
 node_modules/.bin/mocha \
   --compilers coffee:coffee-script \
-  -r 'coffee-script/register' \
-  --reporter spec
+  --reporter spec \
+  --require 'coffee-script/register' \
+  --require test/helper.coffee \
+  "$@"

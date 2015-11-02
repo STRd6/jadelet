@@ -3,7 +3,7 @@ Hamlet
 
 The total package
 
-    Hamlet = require "hamlet-runtime"
+    Hamlet = require "./runtime"
 
     {compile} = require "hamlet-compiler"
     Hamlet.compile = compile

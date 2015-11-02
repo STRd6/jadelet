@@ -3,9 +3,3 @@ set -e
 
 # normal files
 ./node_modules/.bin/coffee -co dist/ source/
-
-for file in dist/*.js
-do
-  ./node_modules/.bin/uglifyjs $file > tmp.js 2>/dev/null
-  mv tmp.js $file
-done
