@@ -85,31 +85,10 @@ Check out the [wiki](https://github.com/dr-coffee-labs/hamlet/wiki/Development-R
 Gotchas
 -------
 
-TLDR: If you are experiencing unexpected behavior in your templates make sure you have a root element,
-and any each iteration has a root element.
-
-Templates that lack root elements or root elements in iterators can be problematic.
+If you are experiencing unexpected behavior in your templates make sure
+your templates have exactly one root element.
 
 Problematic Example:
-
-```haml
-.row
-  - each @items, ->
-    .first
-    .second
-```
-
-Safe solution:
-
-```haml
-.row
-  - each @items, ->
-    .item
-      .first
-      .second
-```
-
-Problematic example:
 
 ```haml
 .one
@@ -118,7 +97,7 @@ Problematic example:
 .four
 ```
 
-Safe solution:
+Correct solution:
 
 ```haml
 .root
@@ -127,5 +106,3 @@ Safe solution:
   .three
   .four
 ```
-
-Some of the problematic examples may work in simple situations, but if they are used as subtemplates or as observable changes take effect errors may occur. In theory it will be possible to correct this in a later version, but for now it remains a concern.
