@@ -35,13 +35,6 @@ extend global,
     while child = node.firstChild
       node.removeChild child
 
-  click: (element) ->
-    event = document.createEvent("MouseEvents")
-    event.initMouseEvent "click"
-    element.dispatchEvent event
-
-    return event
-
   behave: (fragment, fn) ->
     document.body.appendChild fragment
     try

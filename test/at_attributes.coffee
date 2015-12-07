@@ -7,7 +7,7 @@ describe "@attributes", ->
         done()
 
     behave template(model), ->
-      click Q("button")
+      Q("button").click()
 
   it "should work with multiple attributes", ->
     template = makeTemplate '%button(before="low" @type middle="mid" @yolo after="hi") Test'

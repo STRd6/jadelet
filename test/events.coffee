@@ -12,5 +12,5 @@ describe "Events", ->
 
     behave template(model), ->
       assert.equal result, null
-      click Q("button")
+      Q("button").click()
       assert.equal result, "Foobert"
