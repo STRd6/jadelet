@@ -12,6 +12,7 @@ eventNames = """
   drag
   dragend
   dragenter
+  dragexit
   dragleave
   dragover
   dragstart
