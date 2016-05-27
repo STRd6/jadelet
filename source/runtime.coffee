@@ -214,29 +214,37 @@ observeContent = (element, context, contentFn) ->
     buffer: bufferTo(context, contents)
     element: makeElement
 
+  fragment = document.createDocumentFragment()
+
   append = (item) ->
     if !item?
       # Skip nulls
     else if typeof item is "string"
-      element.appendChild document.createTextNode item
+      fragment.appendChild document.createTextNode item
     else if typeof item is "number"
-      element.appendChild document.createTextNode item
+      fragment.appendChild document.createTextNode item
     else if typeof item is "boolean"
-      element.appendChild document.createTextNode item
+      fragment.appendChild document.createTextNode item
     else if typeof item.each is "function"
       item.each append
     else if typeof item.forEach is "function"
       item.forEach append
     else
-      element.appendChild item
+      fragment.appendChild item
+
+    return
 
   update = (contents) ->
     # TODO: Zipper merge optimization to more efficiently modify the DOM
     empty element
-
     contents.forEach append
+    element.appendChild fragment
+
+    return
 
   update contents
+
+  return
 
 bufferTo = (context, collection) ->
   (content) ->
@@ -259,16 +267,19 @@ makeElement = (name, context, attributes={}, fn) ->
     if attributes.id?
       id(element, context, attributes.id)
       delete attributes.id
+    return
 
   Observable ->
     if attributes.class?
       classes(element, context, attributes.class)
       delete attributes.class
+    return
 
   # TODO: Need to ensure that attribute changes don't cause a rerender of
   # entire section!
   Observable ->
     observeAttributes(element, context, attributes)
+    return
   , context
 
   # TODO: Maybe have a flag for element contents that are created from
@@ -276,6 +287,7 @@ makeElement = (name, context, attributes={}, fn) ->
   unless element.nodeName is "SELECT"
     Observable ->
       observeContent(element, context, fn)
+      return
     , context
 
   return element
@@ -303,6 +315,7 @@ module.exports = Runtime
 
 empty = (node) ->
   node.removeChild(child) while child = node.firstChild
+  return
 
 # A helper to find the index of a value in an array of options
 # when the array may contain actual objects or strings, numbers, etc.
