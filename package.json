@@ -1,5 +1,5 @@
 {
-  "name": "hamlet.coffee",
+  "name": "jadelet",
   "version": "0.7.6",
   "description": "Truly amazing templating!",
   "devDependencies": {
@@ -12,10 +12,10 @@
     "hamlet-compiler": "0.7.0",
     "o_0": "0.3.8"
   },
-  "homepage": "hamlet.coffee",
+  "homepage": "jadelet.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dr-coffee-labs/hamlet.git"
+    "url": "https://github.com/STRd6/hamlet.git"
   },
   "scripts": {
     "prepublish": "script/prepublish",
