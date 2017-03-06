@@ -1,6 +1,8 @@
 describe "@attributes", ->
   it "should bind to the property with the same name", (done) ->
-    template = makeTemplate "%button(@click) Test"
+    template = makeTemplate """
+      button(@click) Test
+    """
 
     model =
       click: ->
@@ -10,7 +12,9 @@ describe "@attributes", ->
       Q("button").click()
 
   it "should work with multiple attributes", ->
-    template = makeTemplate '%button(before="low" @type middle="mid" @yolo after="hi") Test'
+    template = makeTemplate """
+      button(before="low" @type middle="mid" @yolo after="hi") Test
+    """
 
     model =
       type: "submit"

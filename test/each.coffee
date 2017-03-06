@@ -1,9 +1,9 @@
 describe "each", ->
   describe "iterating", ->
     template = makeTemplate """
-      %ul
+      ul
         - @items.forEach (item) ->
-          %li= item.name
+          li= item.name
     """
 
     describe "with observable arrays", ->
@@ -86,7 +86,7 @@ describe "each", ->
 
   describe "inline", ->
     template = makeTemplate """
-      %ul
+      ul
         = @items.map(@itemView)
     """
 
@@ -98,7 +98,7 @@ describe "each", ->
           "stranger"
         ]
         itemView: makeTemplate """
-          %li= this
+          li= this
         """
 
       behave template(model), ->

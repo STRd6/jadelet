@@ -1,12 +1,12 @@
 describe "multiple bindings", ->
   template = makeTemplate """
-    %div
-      %input(type="text" value=@value)
-      %select(value=@value options=[1..@max])
-      %hr
-      %input(type="range" value=@value min="1" max=@max)
-      %hr
-      %progress(value=@value max=@max)
+    div
+      input(type="text" value=@value)
+      select(value=@value options=[1..@max])
+      hr
+      input(type="range" value=@value min="1" max=@max)
+      hr
+      progress(value=@value max=@max)
   """
   model =
     max: 10

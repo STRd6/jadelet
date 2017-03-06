@@ -60,7 +60,7 @@ describe "efficiency", ->
     template = makeTemplate """
       .awesome
         - @renderedOuter()
-        %ul
+        ul
           - renderedItem = @renderedItem
           - @renderedTemplate()
           - @items.each (item) ->

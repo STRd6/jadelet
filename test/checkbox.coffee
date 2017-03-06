@@ -1,5 +1,7 @@
 describe "Checkbox", ->
-  template = makeTemplate "%input(type='checkbox' checked=@checked)"
+  template = makeTemplate """
+    input(type='checkbox' checked=@checked)
+  """
 
   describe "simple boolean checked value", ->
     it "should be checked", ->

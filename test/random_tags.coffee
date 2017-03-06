@@ -1,9 +1,9 @@
 describe "Random tags", ->
   template = makeTemplate """
-    %div
-      %duder
-      %yolo(radical=true)
-      %sandwiches(type=@type)
+    div
+      duder
+      yolo(radical=true)
+      sandwiches(type=@type)
   """
   model =
     type: Observable "ham"

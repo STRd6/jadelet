@@ -1,7 +1,9 @@
 describe "Events", ->
 
   it "click should be bound to the object context", ->
-    template = makeTemplate "%button(click=@click)"
+    template = makeTemplate """
+      button(click=@click)
+    """
 
     result = null
 

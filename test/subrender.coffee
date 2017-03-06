@@ -1,7 +1,7 @@
 describe "subrender", ->
   describe "rendering simple text", ->
     template = makeTemplate """
-      %span.count= @count
+      span.count= @count
     """
 
     it "should render numbers as strings", ->
@@ -22,7 +22,7 @@ describe "subrender", ->
 
   describe "with root node", ->
     template = makeTemplate """
-      %div
+      div
         = @generateItem
     """
 
@@ -83,11 +83,11 @@ describe "subrender", ->
   describe "rendering subtemplates", ->
     describe "mixing and matching", ->
       subtemplate = makeTemplate """
-        %span Hello
+        span Hello
       """
       template = makeTemplate """
-        %div
-          %a Radical
+        div
+          a Radical
           = @subtemplate()
           = @observable
           = @nullable
@@ -108,7 +108,7 @@ describe "subrender", ->
       template = makeTemplate """
         - subtemplate = @subtemplate
 
-        %table
+        table
           = @rows.map subtemplate
       """
 
@@ -120,8 +120,8 @@ describe "subrender", ->
             "up"
           ]
           subtemplate: makeTemplate """
-            %tr
-              %td= this
+            tr
+              td= this
           """
 
         behave template(model), ->
@@ -135,8 +135,8 @@ describe "subrender", ->
             Observable "up"
           ]
           subtemplate: makeTemplate """
-            %tr
-              %td= this
+            tr
+              td= this
           """
 
         behave template(model), ->
@@ -157,7 +157,7 @@ describe "subrender", ->
 
     describe "without root node", ->
       template = makeTemplate """
-        %div
+        div
           = @sub1()
           = @sub2()
       """
@@ -165,7 +165,7 @@ describe "subrender", ->
       it "should render both subtemplates", ->
         model =
           sub1: makeTemplate ".yolo Hi"
-          sub2: makeTemplate "%h2 There"
+          sub2: makeTemplate "h2 There"
 
         behave template(model), ->
           assert.equal all("h2").length, 1

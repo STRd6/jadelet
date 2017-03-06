@@ -2,7 +2,7 @@ describe "dynamic functions", ->
   describe "if statements", ->
     it "should rerender when observable conditionals change", ->
       template = makeTemplate """
-        %div
+        div
           - if @cool() #NOTE: Function must be called to autobind
             .cool
           - else

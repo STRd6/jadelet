@@ -1,6 +1,6 @@
 describe "SELECT", ->
   template = makeTemplate """
-    %select(@value @options)
+    select(@value @options)
   """
   describe "with an array of basic types for options", ->
     it "should generate options", ->
@@ -36,11 +36,11 @@ describe "SELECT", ->
         Q("select").onchange()
 
   it "should get the correct value when another bound input changes", ->
-    t = makeTemplate("""
-      %div
-        %select(@value @options)
-        %input(@value)
-    """)
+    t = makeTemplate """
+      div
+        select(@value @options)
+        input(@value)
+    """
     m =
       options: [1, 2, 3]
       value: Observable 2

@@ -8,8 +8,8 @@ describe "real world cases", ->
             = subtemplate items: @items
           - else
             .item
-              %input.key(value=@key)
-              %input.value(value=@value)
+              input.key(value=@key)
+              input.value(value=@value)
   """
 
   it "should render fine", ->

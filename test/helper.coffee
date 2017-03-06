@@ -28,6 +28,7 @@ extend global,
       runtime: "Runtime"
       compiler: CoffeeScript
       exports: false
+      mode: "jade" # TODO: Jadelet will be the only mode
 
     Function("Runtime", "return " + compiled)(Runtime)
 

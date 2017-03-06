@@ -1,9 +1,9 @@
 describe "Computed", ->
   template = makeTemplate """
-    %div
-      %h2= @name
-      %input(value=@first)
-      %input(value=@last)
+    div
+      h2= @name
+      input(value=@first)
+      input(value=@last)
   """
 
   it "should compute automatically with the correct scope", ->
@@ -18,7 +18,7 @@ describe "Computed", ->
 
   it "should work on special bindings", ->
     template = makeTemplate """
-      %input(type='checkbox' checked=@checked)
+      input(type='checkbox' checked=@checked)
     """
     model =
       checked: ->
@@ -38,7 +38,7 @@ describe "Computed", ->
         - @items.each (item) ->
           .item
             .name= @name
-            %input(type='checkbox' checked=@checked)
+            input(type='checkbox' checked=@checked)
     """
 
     letter = Observable "A"

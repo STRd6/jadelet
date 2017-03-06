@@ -1,21 +1,21 @@
 describe "ids", ->
   it "should work with simple cases", ->
     template = makeTemplate """
-      %h1#rad
+      h1#rad
     """
     behave template({}), ->
       assert.equal all("#rad").length, 1
 
   it "should be ok if undefined", ->
     template = makeTemplate """
-      %h1(id=undefined)
+      h1(id=undefined)
     """
     behave template({}), ->
       assert true
 
   it "should use the last valid id when multiple exist", ->
     template = makeTemplate """
-      %h1#rad(id="cool")
+      h1#rad(id="cool")
     """
 
     behave template({}), ->
@@ -23,7 +23,7 @@ describe "ids", ->
 
   it "should update the id if it's observable", ->
     template = makeTemplate """
-      %h1(@id)
+      h1(@id)
     """
 
     model =
@@ -38,7 +38,7 @@ describe "ids", ->
 
   it "should update the last existing id if mixing literals and observables", ->
     template = makeTemplate """
-      %h1#wat(@id id=@other)
+      h1#wat(@id id=@other)
     """
 
     model =

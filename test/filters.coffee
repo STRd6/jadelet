@@ -3,7 +3,7 @@ describe "Filters", ->
     template = makeTemplate """
       :coffeescript
         a = "jawsome"
-      %div(type=a)
+      div(type=a)
     """
 
     behave template(), ->
@@ -13,7 +13,7 @@ describe "Filters", ->
     template = makeTemplate """
       :javascript
         var a = "jawsome";
-      %div(type=a)
+      div(type=a)
     """
 
     behave template(), ->
@@ -22,7 +22,7 @@ describe "Filters", ->
   describe ":verbatim", ->
     it "should keep text verbatim", ->
       template = makeTemplate """
-        %textarea
+        textarea
           :verbatim
             <I> am <verbatim> </text>
       """
@@ -32,7 +32,7 @@ describe "Filters", ->
 
     it "should work with indentation", ->
       template = makeTemplate """
-        %div
+        div
           :verbatim
             Hey
               It's
@@ -47,7 +47,7 @@ describe "Filters", ->
     it "should work with indentation without extra trailing whitespace", ->
       whitespace = "    "
       template = makeTemplate """
-        %div
+        div
           :verbatim
             Hey
               It's#{whitespace}
@@ -61,7 +61,7 @@ describe "Filters", ->
 
     it "should work with \"\"\"", ->
       template = makeTemplate """
-        %div
+        div
           :verbatim
             sample = \"\"\"
               Hey

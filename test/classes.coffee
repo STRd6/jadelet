@@ -15,7 +15,7 @@ describe "Classes", ->
 
   it "should handle observable arrays", ->
     template = makeTemplate """
-      %div(class=@classes)
+      div(class=@classes)
     """
 
     model =

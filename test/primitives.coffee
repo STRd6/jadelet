@@ -1,6 +1,6 @@
 describe "Primitives", ->
   template = makeTemplate """
-    %div
+    div
       = @string
       = @boolean
       = @number
