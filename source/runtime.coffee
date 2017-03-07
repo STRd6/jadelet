@@ -2,53 +2,6 @@
 
 Observable = require "o_0"
 
-eventNames = """
-  abort
-  blur
-  change
-  click
-  contextmenu
-  dblclick
-  drag
-  dragend
-  dragenter
-  dragexit
-  dragleave
-  dragover
-  dragstart
-  drop
-  error
-  focus
-  input
-  keydown
-  keypress
-  keyup
-  load
-  mousedown
-  mousemove
-  mouseout
-  mouseover
-  mouseup
-  reset
-  resize
-  scroll
-  select
-  submit
-  touchcancel
-  touchend
-  touchenter
-  touchleave
-  touchmove
-  touchstart
-  unload
-""".split("\n")
-
-isEvent = (name) ->
-  eventNames.indexOf(name) != -1
-
-isFragment = (node) ->
-  node?.nodeType is 11
-
 valueBind = (element, value, context) ->
   Observable -> # TODO: Not sure if this is absolutely necessary or the best place for this
     value = Observable value, context
@@ -144,10 +97,10 @@ observeAttribute = (element, context, name, value) ->
   else if binding = specialBindings[nodeName]?[name]
     binding(element, value, context)
   # Straight up onclicks, etc.
-  else if name.match(/^on/) and isEvent(name.substr(2))
+  else if name.match(/^on/) and name of element
     bindEvent(element, name, value, context)
   # Handle click=@method
-  else if isEvent(name)
+  else if "on#{name}" of element
     bindEvent(element, "on#{name}", value, context)
   else
     bindObservable element, value, context, (newValue) ->

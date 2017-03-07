@@ -11,11 +11,17 @@ Observable = Runtime.Observable
 
 {jsdom} = require("jsdom")
 
+document = jsdom()
+
+{Event} = window = document.defaultView
+
 extend global,
   assert: require "assert"
   extend: extend
   Observable: Observable
-  document: jsdom()
+  document: document
+  dispatchEvent: (element, eventName, options={}) ->
+    element.dispatchEvent new Event eventName, options
 
   Q: (args...) ->
     document.querySelector(args...)
