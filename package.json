@@ -20,7 +20,7 @@
   "homepage": "jadelet.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/STRd6/hamlet.git"
+    "url": "https://github.com/STRd6/jadelet.git"
   },
   "scripts": {
     "prepublish": "script/prepublish",
