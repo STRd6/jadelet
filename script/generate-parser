@@ -1,0 +1,9 @@
+#!/usr/bin/env coffee
+
+fs = require('fs')
+path = require('path')
+
+parserSource = require('../source/parser/parser').parser.generate()
+
+# Note: This overwrites the parser in dist/parser/parser.js, it is intended to do so
+fs.writeFile path.join(__dirname, "..", "dist", "parser", "parser.js"), parserSource, ->

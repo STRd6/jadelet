@@ -1,6 +1,6 @@
 assert = require "assert"
 
-Hamlet = require "../source/main"
+Hamlet = require "../dist/main"
 
 {Observable} = Hamlet
 

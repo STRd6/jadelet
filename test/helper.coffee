@@ -5,8 +5,8 @@ extend = (target, sources...) ->
 
 CoffeeScript = require "coffee-script"
 
-{compile} = require "hamlet-compiler"
-Runtime = require "../source/runtime"
+compile = require "../dist/compiler"
+Runtime = require "../dist/runtime"
 Observable = Runtime.Observable
 
 {jsdom} = require("jsdom")

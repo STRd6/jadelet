@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+script/prepublish
+
 node_modules/.bin/mocha \
   --compilers coffee:coffee-script \
   --reporter spec \

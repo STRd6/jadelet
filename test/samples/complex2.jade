@@ -1,0 +1,46 @@
+!!!
+html
+  head
+    title Ravel | #{@name}'s photo tagged #{@tag}
+
+    - @props.each (key, value) ->
+      meta(property=key content=value)
+
+    link(href="/images/favicon.ico" rel="icon" type="image/x-icon")
+
+    link(rel="stylesheet" href="/stylesheets/normalize.css")
+    link(rel="stylesheet" href="/stylesheets/bootstrap.min.css")
+    link(rel="stylesheet" href="/stylesheets/main.css")
+
+    script(src="//use.typekit.net/ghp4eka.js")
+    :javascript
+      try{Typekit.load();}catch(e){}
+
+  body
+    .facebook
+      header
+        h1.hide-text
+          Ravel
+      .content
+        .container
+          .individual
+            .user-container.clearfix
+              .left
+                .user-image
+                  img(src=@profile_picture_url)
+                .user-info
+                  span.name= @name
+                  span.info= @gender_and_age
+                  span.location.info= @location
+                  span.tag= @tag
+              .right
+                span.pins
+                  img(src="/images/pins@2x.png")
+                  = @pins
+                span.likes
+                  img(src="/images/likes@2x.png")
+                  = @likes
+            .photo-container
+              img(src=@photo_url)
+          .download-button
+            a.button.appstore(href="http://itunes.apple.com/us/app/ravel!/id610859881?ls=1&mt=8")

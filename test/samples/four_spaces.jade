@@ -1,0 +1,6 @@
+h2 Todos
+input(type="text" @value placeholder="What needs to be done?" onkeydown=@add)
+
+ul
+    -each @todos, ->
+        li= @description

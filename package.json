@@ -1,17 +1,21 @@
 {
   "name": "jadelet",
-  "version": "0.7.6",
+  "version": "0.7.7-pre.0",
   "description": "Truly amazing templating!",
   "devDependencies": {
     "browserify": "^14.1.0",
-    "coffee-script": "~1.7.1",
     "jsdom": "^9.11.0",
     "mocha": "^3.2.0",
     "uglify-js": "^2.8.7"
   },
   "dependencies": {
-    "hamlet-compiler": "0.7.0",
-    "o_0": "0.3.8"
+    "coffee-script": "~1.7.1",
+    "commander": "^2.9.0",
+    "jison": "^0.4.17",
+    "jison-lex": "^0.3.4",
+    "o_0": "0.3.8",
+    "stdin": "0.0.1",
+    "wrench": "^1.5.8"
   },
   "homepage": "jadelet.com",
   "repository": {
@@ -22,7 +26,11 @@
     "prepublish": "script/prepublish",
     "test": "script/test"
   },
+  "bin": {
+    "jadelet": "bin/jadelet"
+  },
   "files": [
+    "bin/",
     "dist/"
   ],
   "main": "dist/runtime.js"
