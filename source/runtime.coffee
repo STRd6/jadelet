@@ -148,26 +148,19 @@ bindEvent = (element, name, fn, context) ->
     fn?.apply(context, arguments)
 
 id = (element, context, sources) ->
-  value = Observable.concat sources.map((source) -> Observable(source, context))...
-
   update = (newId) ->
     element.id = newId
 
   lastId = ->
-    value.last()
+    [..., _id] = splat sources, context
+
+    return _id
 
   bindObservable(element, lastId, context, update)
 
 classes = (element, context, sources) ->
   classNames = ->
-    values = sources.map((source) -> Observable(source, context))
-    .reduce (a, b) ->
-      a.concat get b
-    , []
-
-    console.log values.length, values
-
-    values.join(" ")
+    splat(sources, context).join(" ")
 
   update = (classNames) ->
     element.className = classNames
@@ -293,8 +286,16 @@ valueIndexOf = (options, value) ->
       option.toString()
     .indexOf value.toString()
 
-get = (x) ->
+splat = (sources, context) ->
+  sources.map (source) ->
+    get source, context
+  .reduce (a, b) ->
+    a.concat get b
+  , []
+  .filter (x) -> x?
+
+get = (x, context) ->
   if typeof x is 'function'
-    x()
+    x.call(context)
   else
     x
