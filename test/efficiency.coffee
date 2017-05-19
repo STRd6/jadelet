@@ -63,7 +63,7 @@ describe "efficiency", ->
         ul
           - renderedItem = @renderedItem
           - @renderedTemplate()
-          - @items.each (item) ->
+          - @items.forEach (item) ->
             .item
             - renderedItem()
     """

@@ -2,6 +2,26 @@
 
 Observable = require "o_0"
 
+# To clean up listeners we need to keep a map of dom elements and what listeners are bound to them
+# when we dispose an element we must traverse its children and clean them up too
+# After we remove the listeners we must then remove the element from the map
+
+elementCleaners = new Map
+
+dispose = (element) ->
+  elementCleaners.get(element)?.forEach (cleaner) ->
+    cleaner()
+    elementCleaners.delete(element)
+    # Recurse into children
+    Array::forEach.call element.children, dispose
+
+attachCleaner = (element, cleaner) ->
+  cleaners = elementCleaners.get(element)
+  if cleaners
+    cleaners.push cleaner
+  else
+    elementCleaners.set element, [cleaner]
+
 valueBind = (element, value, context) ->
   Observable -> # TODO: Not sure if this is absolutely necessary or the best place for this
     value = Observable value, context
@@ -33,13 +53,6 @@ valueBind = (element, value, context) ->
         # inconsistencies.
         element.oninput = element.onchange = ->
           value(element.value)
-
-        # IE9 has poor oninput support so we also add a keydown event
-        # We could use keyup but the lag is noticeable
-        element.attachEvent? "onkeydown", ->
-          setTimeout ->
-            value(element.value)
-          , 0
 
         bindObservable element, value, context, (newValue) ->
           unless element.value is newValue
@@ -119,20 +132,20 @@ observeAttributes = (element, context, attributes) ->
 bindObservable = (element, value, context, update) ->
   observable = Observable(value, context)
 
-  observe = ->
-    observable.observe update
-    update observable()
+  observable.observe update
+  update observable()
 
   unobserve = ->
+    observable.releaseDependencies()
     observable.stopObserving update
 
-  observe()
+  attachCleaner(element, unobserve)
 
   return element
 
 bindEvent = (element, name, fn, context) ->
   element[name] = ->
-    fn.apply(context, arguments)
+    fn?.apply(context, arguments)
 
 id = (element, context, sources) ->
   value = Observable.concat sources.map((source) -> Observable(source, context))...
@@ -252,10 +265,16 @@ Runtime = (context) ->
 
 Runtime.VERSION = require("../package.json").version
 Runtime.Observable = Observable
+Runtime._elementCleaners = elementCleaners
+Runtime._dispose = dispose
 module.exports = Runtime
 
 empty = (node) ->
-  node.removeChild(child) while child = node.firstChild
+  while child = node.firstChild
+    node.removeChild(child)
+    dispose(child)
+
+  return
 
 # A helper to find the index of a value in an array of options
 # when the array may contain actual objects or strings, numbers, etc.

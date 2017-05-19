@@ -19,6 +19,7 @@ extend global,
   assert: require "assert"
   extend: extend
   Observable: Observable
+  Runtime: Runtime
   document: document
   dispatchEvent: (element, eventName, options={}) ->
     element.dispatchEvent new Event eventName, options
@@ -40,6 +41,7 @@ extend global,
 
   empty: (node) ->
     while child = node.firstChild
+      Runtime._dispose(child)
       node.removeChild child
 
   behave: (fragment, fn) ->
