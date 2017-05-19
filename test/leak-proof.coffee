@@ -34,3 +34,6 @@ describe "Jadelet", ->
       items.push Item()
       assert.equal items.listeners.length, 1
       assert.equal activeItem.listeners.length, 5
+      items.pop()
+      assert.equal items.listeners.length, 1
+      assert.equal activeItem.listeners.length, 4
