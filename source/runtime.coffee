@@ -159,13 +159,18 @@ id = (element, context, sources) ->
   bindObservable(element, lastId, context, update)
 
 classes = (element, context, sources) ->
-  value = Observable.concat sources.map((source) -> Observable(source, context))...
+  classNames = ->
+    values = sources.map((source) -> Observable(source, context))
+    .reduce (a, b) ->
+      a.concat get b
+    , []
+
+    console.log values.length, values
+
+    values.join(" ")
 
   update = (classNames) ->
     element.className = classNames
-
-  classNames = ->
-    value.join(" ")
 
   bindObservable(element, classNames, context, update)
 
@@ -181,20 +186,15 @@ observeContent = (element, context, contentFn) ->
     element: makeElement
 
   append = (item) ->
-    if !item?
-      # Skip nulls
-    else if typeof item is "string"
-      element.appendChild document.createTextNode item
-    else if typeof item is "number"
-      element.appendChild document.createTextNode item
-    else if typeof item is "boolean"
-      element.appendChild document.createTextNode item
-    else if typeof item.each is "function"
-      item.each append
+    if !item? # Skip nulls
     else if typeof item.forEach is "function"
       item.forEach append
-    else
+    else if item instanceof Node
       element.appendChild item
+    else if typeof item is "function"
+      append item()
+    else
+      element.appendChild document.createTextNode item
 
   update = (contents) ->
     # TODO: Zipper merge optimization to more efficiently modify the DOM
