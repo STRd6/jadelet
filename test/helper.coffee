@@ -1,7 +1,4 @@
-extend = (target, sources...) ->
-  for source in sources
-    for name of source
-      target[name] = source[name]
+extend = Object.assign
 
 CoffeeScript = require "coffee-script"
 
@@ -18,7 +15,9 @@ document = jsdom()
 extend global,
   assert: require "assert"
   extend: extend
+  Node: window.Node
   Observable: Observable
+  Runtime: Runtime
   document: document
   dispatchEvent: (element, eventName, options={}) ->
     element.dispatchEvent new Event eventName, options
