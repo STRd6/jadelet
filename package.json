@@ -1,20 +1,20 @@
 {
   "name": "jadelet",
-  "version": "0.7.7-pre.0",
+  "version": "0.8.0-pre.0",
   "description": "Truly amazing templating!",
   "devDependencies": {
-    "browserify": "^14.1.0",
+    "browserify": "^14.3.0",
     "istanbul": "^0.4.5",
     "jsdom": "^9.11.0",
-    "mocha": "^3.2.0",
-    "uglify-js": "^2.8.7"
+    "mocha": "^3.4.1",
+    "uglify-js": "^3.0.9"
   },
   "dependencies": {
     "coffee-script": "~1.7.1",
     "commander": "^2.9.0",
     "jison": "^0.4.17",
     "jison-lex": "^0.3.4",
-    "o_0": "0.3.8",
+    "o_0": "^0.4.0-pre.0",
     "stdin": "0.0.1",
     "wrench": "^1.5.8"
   },
