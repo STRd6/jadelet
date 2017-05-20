@@ -1,10 +1,10 @@
 assert = require "assert"
 
-Hamlet = require "../source/runtime"
+Jadelet = require "../source/runtime"
 
-describe "Hamlet Runtime", ->
+describe "Jadelet Runtime", ->
   it "should be a function that produces a document fragment from a compiled template", ->
-    assert typeof Hamlet is "function"
+    assert typeof Jadelet is "function"
 
   it "should provide Observable", ->
-    assert Hamlet.Observable
+    assert Jadelet.Observable

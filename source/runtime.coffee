@@ -8,12 +8,19 @@ Observable = require "o_0"
 
 elementCleaners = new Map
 
+# TODO: If we remove an element that has a child element that should be retain
+# we'll run all its cleaners here when we shouldn't. We need a way to mark an
+# element as retained and to skip disposing it if we want to reuse it with
+# separate logic.
 dispose = (element) ->
+  # Recurse into children
+  children = element.children
+  if children?
+    Array::forEach.call children, dispose
+
   elementCleaners.get(element)?.forEach (cleaner) ->
     cleaner()
     elementCleaners.delete(element)
-    # Recurse into children
-    Array::forEach.call element.children, dispose
 
 attachCleaner = (element, cleaner) ->
   cleaners = elementCleaners.get(element)
@@ -23,40 +30,37 @@ attachCleaner = (element, cleaner) ->
     elementCleaners.set element, [cleaner]
 
 valueBind = (element, value, context) ->
-  Observable -> # TODO: Not sure if this is absolutely necessary or the best place for this
-    value = Observable value, context
+  switch element.nodeName
+    when "SELECT"
+      element.oninput = element.onchange = ->
+        {value:optionValue, _value} = @children[@selectedIndex]
 
-    switch element.nodeName
-      when "SELECT"
-        element.oninput = element.onchange = ->
-          {value:optionValue, _value} = @children[@selectedIndex]
+        value?(_value or optionValue)
 
-          value(_value or optionValue)
+      update = (newValue) ->
+        # This is so we can hold a non-string object as a value of the select element
+        element._value = newValue
 
-        update = (newValue) ->
-          # This is so we can hold a non-string object as a value of the select element
-          element._value = newValue
-
-          if (options = element._options)
-            if newValue.value?
-              # TODO: Handle observable value attributes
-              element.value = newValue.value?() or newValue.value
-            else
-              element.selectedIndex = valueIndexOf options, newValue
+        if (options = element._options)
+          if newValue.value?
+            # TODO: Handle observable value attributes
+            element.value = newValue.value?() or newValue.value
           else
-            element.value = newValue
+            element.selectedIndex = valueIndexOf options, newValue
+        else
+          element.value = newValue
 
-        bindObservable element, value, context, update
-      else
-        # Because firing twice with the same value is idempotent just binding both
-        # oninput and onchange handles the widest range of inputs and browser
-        # inconsistencies.
-        element.oninput = element.onchange = ->
-          value(element.value)
+      bindObservable element, value, context, update
+    else
+      # Because firing twice with the same value is idempotent just binding both
+      # oninput and onchange handles the widest range of inputs and browser
+      # inconsistencies.
+      element.oninput = element.onchange = ->
+        value?(element.value)
 
-        bindObservable element, value, context, (newValue) ->
-          unless element.value is newValue
-            element.value = newValue
+      bindObservable element, value, context, (newValue) ->
+        unless element.value is newValue
+          element.value = newValue
 
   return
 
@@ -129,17 +133,19 @@ observeAttributes = (element, context, attributes) ->
     value = attributes[name]
     observeAttribute element, context, name, value
 
+# To bind an observable precisely to the site where it is
+# and to be able to clean up we need to create a fresh
+# Observable stack. Since the observable re-computes
+# when any of its dependencies change it will refresh the update
+# with the new value. To clean up we release the dependencies of
+# our computed observable. We store the observables to clean up
+# on a map keyed by the element.
 bindObservable = (element, value, context, update) ->
-  observable = Observable(value, context)
+  observable = Observable ->
+    update get value, context
 
-  observable.observe update
-  update observable()
-
-  unobserve = ->
+  attachCleaner element, ->
     observable.releaseDependencies()
-    observable.stopObserving update
-
-  attachCleaner(element, unobserve)
 
   return element
 
@@ -151,10 +157,12 @@ id = (element, context, sources) ->
   update = (newId) ->
     element.id = newId
 
-  lastId = ->
-    [..., _id] = splat sources, context
+    return
 
-    return _id
+  lastId = ->
+    [..., last] = splat sources, context
+
+    return last
 
   bindObservable(element, lastId, context, update)
 
@@ -165,18 +173,20 @@ classes = (element, context, sources) ->
   update = (classNames) ->
     element.className = classNames
 
-  bindObservable(element, classNames, context, update)
+    return
 
-createElement = (name) ->
-  document.createElement name
+  bindObservable(element, classNames, context, update)
 
 observeContent = (element, context, contentFn) ->
   # TODO: Don't even try to observe contents for empty functions
-  contents = []
+  content = ->
+    contents = []
 
-  contentFn.call context,
-    buffer: bufferTo(context, contents)
-    element: makeElement
+    contentFn.call context,
+      buffer: bufferTo(context, contents)
+      element: makeElement
+
+    return contents
 
   append = (item) ->
     if !item? # Skip nulls
@@ -185,7 +195,7 @@ observeContent = (element, context, contentFn) ->
     else if item instanceof Node
       element.appendChild item
     else if typeof item is "function"
-      append item()
+      append get item, context
     else
       element.appendChild document.createTextNode item
 
@@ -195,47 +205,31 @@ observeContent = (element, context, contentFn) ->
 
     contents.forEach append
 
-  update contents
+  bindObservable element, content, context, update
 
 bufferTo = (context, collection) ->
   (content) ->
-    if typeof content is 'function'
-      content = Observable(content, context)
+    collection.push get content, context
 
-    collection.push content
-
-    return content
+    return
 
 makeElement = (name, context, attributes={}, fn) ->
   element = createElement name
 
-  # This magic hack will encapsulate observable changes from bubling
-  # outside of this element
-  # Each of these Observable -> sections localizes re-renders
-  # This function auto-invokes and blocks any autobinding from leaving
-  # this element
-  Observable ->
-    if attributes.id?
-      id(element, context, attributes.id)
-      delete attributes.id
+  if attributes.id?
+    id(element, context, attributes.id)
+    delete attributes.id
 
-  Observable ->
-    if attributes.class?
-      classes(element, context, attributes.class)
-      delete attributes.class
+  if attributes.class?
+    classes(element, context, attributes.class)
+    delete attributes.class
 
-  # TODO: Need to ensure that attribute changes don't cause a rerender of
-  # entire section!
-  Observable ->
-    observeAttributes(element, context, attributes)
-  , context
+  observeAttributes(element, context, attributes)
 
   # TODO: Maybe have a flag for element contents that are created from
   # attributes rather than special casing this
   unless element.nodeName is "SELECT"
-    Observable ->
-      observeContent(element, context, fn)
-    , context
+    observeContent(element, context, fn)
 
   return element
 
@@ -261,6 +255,9 @@ Runtime.Observable = Observable
 Runtime._elementCleaners = elementCleaners
 Runtime._dispose = dispose
 module.exports = Runtime
+
+createElement = (name) ->
+  document.createElement name
 
 empty = (node) ->
   while child = node.firstChild
