@@ -31,32 +31,3 @@ describe "Computed", ->
       model.name "Duder"
 
       assert.equal Q("input").checked, true
-
-  it "should have the correct context in each", ->
-    template = makeTemplate """
-      .items
-        - @items.each (item) ->
-          .item
-            .name= @name
-            input(type='checkbox' checked=@checked)
-    """
-
-    letter = Observable "A"
-    checked = ->
-      @name().indexOf(letter()) is 0
-
-    model =
-      items: Observable [
-        {name: Observable("Andrew"), checked: checked}
-        {name: Observable("Benjamin"), checked: checked}
-      ]
-      letter: letter
-
-    behave template(model), ->
-      assert.equal all("input")[0].checked, true
-      assert.equal all("input")[1].checked, false
-
-      letter "B"
-
-      assert.equal all("input")[0].checked, false
-      assert.equal all("input")[1].checked, true

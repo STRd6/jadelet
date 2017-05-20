@@ -2,14 +2,14 @@ describe "real world cases", ->
   template = makeTemplate """
     .node
       - subtemplate = @subtemplate
-      - @items.each ->
+      - @items.forEach ({items, key, value}) ->
         .row
-          - if @items
-            = subtemplate items: @items
+          - if items
+            = subtemplate items: items
           - else
             .item
-              input.key(value=@key)
-              input.value(value=@value)
+              input.key(value=key)
+              input.value(value=value)
   """
 
   it "should render fine", ->

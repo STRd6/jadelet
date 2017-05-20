@@ -3,7 +3,7 @@ html
   head
     title Ravel | #{@name}'s photo tagged #{@tag}
 
-    - @props.each (key, value) ->
+    - @props.forEach (key, value) ->
       meta(property=key content=value)
 
     link(href="/images/favicon.ico" rel="icon" type="image/x-icon")
