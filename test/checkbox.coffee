@@ -3,29 +3,36 @@ describe "Checkbox", ->
     input(type='checkbox' checked=@checked)
   """
 
-  describe "simple boolean checked value", ->
-    it "should be checked", ->
-      model =
-        checked: true
+  it "should be checked", ->
+    model =
+      checked: true
 
-      behave template(model), ->
-        assert.equal Q("input").checked, true
+    input = template(model)
+    assert.equal input.checked, true
 
-    it "should not be checked", ->
-      model =
-        checked: false
+  it "should not be checked", ->
+    model =
+      checked: false
 
-      behave template(model), ->
-        assert.equal Q("input").checked, false
+    input = template(model)
+    assert.equal input.checked, false
 
-  describe "observable checked attribute", ->
-    it "should track changes in the observable", ->
-      model =
-        checked: Observable false
+  it "should track changes in the observable", ->
+    model =
+      checked: Observable false
 
-      behave template(model), ->
-        assert.equal Q("input").checked, false, "Should not be checked"
-        model.checked true
-        assert.equal Q("input").checked, true, "Should be checked"
-        model.checked false
-        assert.equal Q("input").checked, false, "Should not be checked again"
+    input = template(model)
+
+    assert.equal input.checked, false, "Should not be checked"
+    model.checked true
+    assert.equal input.checked, true, "Should be checked"
+    model.checked false
+    assert.equal input.checked, false, "Should not be checked again"
+
+    input.checked = true
+    input.onchange()
+    assert.equal model.checked(), true, "Value of observable should be checked when input changes"
+
+    input.checked = false
+    input.onchange()
+    assert.equal model.checked(), false, "Value of observable should be unchecked when input changes"
