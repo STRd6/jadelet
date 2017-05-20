@@ -21,6 +21,8 @@ dispose = (element) ->
   elementCleaners.get(element)?.forEach (cleaner) ->
     cleaner()
     elementCleaners.delete(element)
+    return
+  return
 
 attachCleaner = (element, cleaner) ->
   cleaners = elementCleaners.get(element)
@@ -28,6 +30,7 @@ attachCleaner = (element, cleaner) ->
     cleaners.push cleaner
   else
     elementCleaners.set element, [cleaner]
+  return
 
 valueBind = (element, value, context) ->
   switch element.nodeName
@@ -36,8 +39,9 @@ valueBind = (element, value, context) ->
         {value:optionValue, _value} = @children[@selectedIndex]
 
         value?(_value or optionValue)
+        return
 
-      update = (newValue) ->
+      bindObservable element, value, context, (newValue) ->
         # This is so we can hold a non-string object as a value of the select element
         element._value = newValue
 
@@ -49,18 +53,20 @@ valueBind = (element, value, context) ->
             element.selectedIndex = valueIndexOf options, newValue
         else
           element.value = newValue
+        return
 
-      bindObservable element, value, context, update
     else
       # Because firing twice with the same value is idempotent just binding both
       # oninput and onchange handles the widest range of inputs and browser
       # inconsistencies.
       element.oninput = element.onchange = ->
         value?(element.value)
+        return
 
       bindObservable element, value, context, (newValue) ->
         unless element.value is newValue
           element.value = newValue
+        return
 
   return
 
@@ -69,14 +75,14 @@ specialBindings =
     checked: (element, value, context) ->
       element.onchange = ->
         value? element.checked
+        return
 
       bindObservable element, value, context, (newValue) ->
         element.checked = newValue
+        return
   SELECT:
     options: (element, values, context) ->
-      values = Observable values, context
-
-      updateValues = (values) ->
+      bindObservable element, values, context, (values) ->
         empty(element)
         element._options = values
 
@@ -91,25 +97,24 @@ specialBindings =
 
           bindObservable option, optionValue, value, (newValue) ->
             option.value = newValue
+            return
 
           optionName = value?.name or value
           bindObservable option, optionName, value, (newValue) ->
-            # Ideally this should only be option.textContent
-            # but that fails in IE8
-            option.textContent = option.innerText = newValue
+            option.textContent = newValue
+            return
 
           element.appendChild option
           element.selectedIndex = index if value is element._value
 
           return option
-
-      bindObservable element, values, context, updateValues
+        return
 
 observeAttribute = (element, context, name, value) ->
   {nodeName} = element
 
   # TODO: Consolidate special bindings better than if/else
-  if (name is "value")
+  if name is "value"
     valueBind(element, value)
   else if binding = specialBindings[nodeName]?[name]
     binding(element, value, context)
@@ -125,13 +130,14 @@ observeAttribute = (element, context, name, value) ->
         element.setAttribute name, newValue
       else
         element.removeAttribute name
-
-  return element
+      return
+  return
 
 observeAttributes = (element, context, attributes) ->
   Object.keys(attributes).forEach (name) ->
-    value = attributes[name]
-    observeAttribute element, context, name, value
+    observeAttribute element, context, name, attributes[name]
+    return
+  return
 
 # To bind an observable precisely to the site where it is
 # and to be able to clean up we need to create a fresh
@@ -143,39 +149,35 @@ observeAttributes = (element, context, attributes) ->
 bindObservable = (element, value, context, update) ->
   observable = Observable ->
     update get value, context
-
-  attachCleaner element, ->
-    observable.releaseDependencies()
-
-  return element
-
-bindEvent = (element, name, fn, context) ->
-  element[name] = ->
-    fn?.apply(context, arguments)
-
-id = (element, context, sources) ->
-  update = (newId) ->
-    element.id = newId
-
     return
 
+  attachCleaner element, observable.releaseDependencies
+  return
+
+bindEvent = (element, name, fn, context) ->
+  element[name] = fn?.bind(context)
+  return
+
+id = (element, context, sources) ->
   lastId = ->
     [..., last] = splat sources, context
-
     return last
 
-  bindObservable(element, lastId, context, update)
+  bindObservable element, lastId, context, update = (newId) ->
+    element.id = newId
+    return
+
+  return
 
 classes = (element, context, sources) ->
   classNames = ->
     splat(sources, context).join(" ")
 
-  update = (classNames) ->
+  bindObservable element, classNames, context, (classNames) ->
     element.className = classNames
-
     return
 
-  bindObservable(element, classNames, context, update)
+  return
 
 observeContent = (element, context, contentFn) ->
   # TODO: Don't even try to observe contents for empty functions
@@ -198,14 +200,16 @@ observeContent = (element, context, contentFn) ->
       append get item, context
     else
       element.appendChild document.createTextNode item
+    return
 
-  update = (contents) ->
+  bindObservable element, content, context, (contents) ->
     # TODO: Zipper merge optimization to more efficiently modify the DOM
     empty element
 
     contents.forEach append
+    return
 
-  bindObservable element, content, context, update
+  return
 
 bufferTo = (context, collection) ->
   (content) ->
@@ -239,9 +243,10 @@ Runtime = (context) ->
     # element contents stuff
     buffer: (content) ->
       if self.root
-        throw "Cannot have multiple root elements"
+        throw new Error "Cannot have multiple root elements"
 
       self.root = content
+      return
 
     element: makeElement
 
