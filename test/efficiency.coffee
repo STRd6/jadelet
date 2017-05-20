@@ -18,6 +18,38 @@ describe "efficiency", ->
       assert.equal count, 1
       assert Q(".somethingElse")
 
+  it "should recompute siblings an appropriate amount of times", ->
+    template = makeTemplate """
+      div
+        = @item1
+        = @item2
+        = @item3
+        = @counter
+    """
+
+    count = 0
+    model =
+      item1: Observable "A"
+      item2: Observable 5
+      item3: Observable document.createElement "span"
+      counter: ->
+        count += 1
+
+    template model
+
+    assert.equal count, 1
+    model.item1 "B"
+    assert.equal count, 2
+    model.item2.decrement()
+    assert.equal count, 3
+    model.item3 document.createElement "div"
+    assert.equal count, 4
+
+    assert.equal model.item1.listeners.length, 1
+    assert.equal model.item2.listeners.length, 1
+    assert.equal model.item3.listeners.length, 1
+
+
   it "should not re-render sub elements when attributes change", ->
     template = makeTemplate """
       .duder(@name)

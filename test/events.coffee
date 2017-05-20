@@ -1,5 +1,4 @@
 describe "Events", ->
-
   it "should bind click to the object context", ->
     template = makeTemplate """
       button(click=@click)
@@ -12,10 +11,27 @@ describe "Events", ->
       click: ->
         result = @name()
 
-    behave template(model), ->
-      assert.equal result, null
-      Q("button").click()
-      assert.equal result, "Foobert"
+    button = template(model)
+    assert.equal result, null
+    button.click()
+    assert.equal result, "Foobert"
+
+  it "should bind on- events the same way", ->
+    template = makeTemplate """
+      button(onclick=@click)
+    """
+
+    result = null
+
+    model =
+      name: Observable "Foobert"
+      click: ->
+        result = @name()
+
+    button = template(model)
+    assert.equal result, null
+    button.click()
+    assert.equal result, "Foobert"
 
   it "should bind mouseenter and mouseleave events", ->
     template = makeTemplate """
@@ -30,10 +46,12 @@ describe "Events", ->
       mouseleave: ->
         result = 2
 
-    behave template(model), ->
-      button = Q("button")
-      assert.equal result, null
-      dispatchEvent button, "mouseenter"
-      assert.equal result, 1
-      dispatchEvent button, "mouseleave"
-      assert.equal result, 2
+    button = template(model)
+
+    assert.equal result, null
+    dispatchEvent button, "mouseenter"
+    assert.equal result, 1
+    dispatchEvent button, "mouseleave"
+    assert.equal result, 2
+
+  it "should work with touch events"

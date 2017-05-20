@@ -196,8 +196,6 @@ observeContent = (element, context, contentFn) ->
       item.forEach append
     else if item instanceof Node
       element.appendChild item
-    else if typeof item is "function"
-      append get item, context
     else
       element.appendChild document.createTextNode item
     return
@@ -217,7 +215,7 @@ bufferTo = (context, collection) ->
 
     return
 
-makeElement = (name, context, attributes={}, fn) ->
+makeElement = (name, context, attributes, fn) ->
   element = createElement name
 
   if attributes.id?
