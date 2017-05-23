@@ -4,6 +4,7 @@ set -e
 script/prepublish
 
 node_modules/.bin/mocha \
+  --expose-gc \
   --compilers coffee:coffee-script \
   --reporter spec \
   --require 'coffee-script/register' \

@@ -6,7 +6,7 @@ Observable = require "o_0"
 # when we dispose an element we must traverse its children and clean them up too
 # After we remove the listeners we must then remove the element from the map
 
-elementCleaners = new Map
+elementCleaners = new WeakMap
 
 # TODO: If we remove an element that has a child element that should be retain
 # we'll run all its cleaners here when we shouldn't. We need a way to mark an
@@ -31,6 +31,12 @@ attachCleaner = (element, cleaner) ->
   else
     elementCleaners.set element, [cleaner]
   return
+
+# Combined touch and animation events here even though it's sloppy it saves a few bytes
+# later we should put all the smarts about what is an event or not in the compiler
+eventNames = /^on(touch|animation|transition)(start|iteration|move|end|cancel)$/
+isEvent = (name, element) ->
+  name.match(eventNames) or name of element
 
 valueBind = (element, value, context) ->
   switch element.nodeName
@@ -119,10 +125,10 @@ observeAttribute = (element, context, name, value) ->
   else if binding = specialBindings[nodeName]?[name]
     binding(element, value, context)
   # Straight up onclicks, etc.
-  else if name.match(/^on/) and name of element
+  else if name.match(/^on/) and isEvent(name, element)
     bindEvent(element, name, value, context)
   # Handle click=@method
-  else if "on#{name}" of element
+  else if isEvent("on#{name}", element)
     bindEvent(element, "on#{name}", value, context)
   else
     bindObservable element, value, context, (newValue) ->
