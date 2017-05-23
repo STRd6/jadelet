@@ -16,3 +16,15 @@ describe "Touch Events", ->
 
     canvas = template(model)
     assert.equal called, 0
+
+    dispatchEvent canvas, "touchstart"
+    assert.equal called, 1
+
+    dispatchEvent canvas, "touchmove"
+    assert.equal called, 2
+
+    dispatchEvent canvas, "touchend"
+    assert.equal called, 3
+
+    dispatchEvent canvas, "touchcancel"
+    assert.equal called, 4

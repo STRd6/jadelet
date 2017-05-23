@@ -28,4 +28,7 @@ describe "Memory usage", ->
     finalMemoryUsage = process.memoryUsage().heapUsed
 
     console.log finalMemoryUsage, initialMemoryUsage
-    assert finalMemoryUsage - initialMemoryUsage < 1000
+    # There's a surprising amount of variability in this memory usage number, but this seems
+    # to trigger it every time when the call to _dispose is removed, so it may be decent at
+    # detecting leaks
+    assert finalMemoryUsage - initialMemoryUsage < 10000
