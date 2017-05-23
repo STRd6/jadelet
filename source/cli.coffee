@@ -10,14 +10,18 @@ cli = require("commander")
   .option("-d, --directory [directory]", "Compile all .jadelet files in the given directory")
   .option("--encoding [encoding]", "Encoding of files being read from --directory (default 'utf-8')")
   .option("-e, --exports [name]", "Export compiled template as (default 'module.exports'")
+  .option("--extension [extension]", "Extension to compile")
   .option("-r, --runtime [provider]", "Runtime provider")
   .parse(process.argv)
 
 encoding = cli.encoding or "utf-8"
 
-extension = /\.jadelet$/
+if cli.extension
+  extension = new RegExp "\\.#{cli.extension}$"
+else
+  extension = /\.jade(let)?$/
 
-if (dir = cli.dir)
+if (dir = cli.directory)
   # Ensure exactly one trailing slash
   dir = dir.replace /\/*$/, "/"
 

@@ -3,3 +3,4 @@ coverage/
 dist/
 gh-pages/
 node_modules/
+test/samples/*.js

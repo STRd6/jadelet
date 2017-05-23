@@ -12,12 +12,13 @@ compile = (source, opts={}) ->
 
 compileDirectory = (directory, mode) ->
   fs.readdirSync(directory).forEach (file) ->
-    data = fs.readFileSync "#{directory}/#{file}", "UTF-8"
+    if file.match /\.jade(let)?$/
+      data = fs.readFileSync "#{directory}/#{file}", "UTF-8"
 
-    it "compiles #{file}", ->
-      data = compile data
+      it "compiles #{file}", ->
+        data = compile data
 
-      assert data
+        assert data
 
 describe 'Compiler', ->
   describe 'samples', ->
