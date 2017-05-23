@@ -54,4 +54,62 @@ describe "Events", ->
     dispatchEvent button, "mouseleave"
     assert.equal result, 2
 
-  it "should work with touch events"
+  it "shoud handle all touch events", ->
+    template = makeTemplate """
+      canvas(@touchstart @touchmove @touchend @touchcancel)
+    """
+
+    called = 0
+    eventFn = ->
+      called += 1
+
+    model =
+      touchcancel: eventFn
+      touchstart: eventFn
+      touchmove: eventFn
+      touchend: eventFn
+
+    canvas = template(model)
+    assert.equal called, 0
+
+    dispatchEvent canvas, "touchstart"
+    assert.equal called, 1
+
+    dispatchEvent canvas, "touchmove"
+    assert.equal called, 2
+
+    dispatchEvent canvas, "touchend"
+    assert.equal called, 3
+
+    dispatchEvent canvas, "touchcancel"
+    assert.equal called, 4
+
+  it "shoud handle all animation events", ->
+    template = makeTemplate """
+      div(@animationstart @animationiteration @animationend @transitionend)
+    """
+
+    called = 0
+    eventFn = ->
+      called += 1
+
+    model =
+      animationstart: eventFn
+      animationend: eventFn
+      animationiteration: eventFn
+      transitionend: eventFn
+
+    canvas = template(model)
+    assert.equal called, 0
+
+    dispatchEvent canvas, "animationstart"
+    assert.equal called, 1
+
+    dispatchEvent canvas, "animationiteration"
+    assert.equal called, 2
+
+    dispatchEvent canvas, "animationend"
+    assert.equal called, 3
+
+    dispatchEvent canvas, "transitionend"
+    assert.equal called, 4

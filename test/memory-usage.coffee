@@ -1,34 +1,38 @@
 describe "Memory usage", ->
-  it "should remain stable even after many iterations", ->
 
-    global.gc()
-    initialMemoryUsage = process.memoryUsage().heapUsed
+  if global.gc
+    usageTest = ->
 
-    template = makeTemplate """
-      button(@click class=@selected) Test
-    """
+      global.gc()
+      initialMemoryUsage = process.memoryUsage().heapUsed
 
-    current = Observable null
+      template = makeTemplate """
+        button(@click class=@selected) Test
+      """
 
-    create = ->
-      model =
-        selected: ->
-          "selected" if current() is model
-        click: ->
+      current = Observable null
 
-      template model
+      create = ->
+        model =
+          selected: ->
+            "selected" if current() is model
+          click: ->
 
-    i = 0
-    while i < 1000
-      button = create()
-      Runtime._dispose(button)
-      i += 1
+        template model
 
-    global.gc()
-    finalMemoryUsage = process.memoryUsage().heapUsed
+      i = 0
+      while i < 1000
+        button = create()
+        Runtime._dispose(button)
+        i += 1
 
-    console.log finalMemoryUsage, initialMemoryUsage
-    # There's a surprising amount of variability in this memory usage number, but this seems
-    # to trigger it every time when the call to _dispose is removed, so it may be decent at
-    # detecting leaks
-    assert finalMemoryUsage - initialMemoryUsage < 10000
+      global.gc()
+      finalMemoryUsage = process.memoryUsage().heapUsed
+
+      # console.log finalMemoryUsage, initialMemoryUsage
+      # There's a surprising amount of variability in this memory usage number, but this seems
+      # to trigger it every time when the call to _dispose is removed, so it may be decent at
+      # detecting leaks
+      assert finalMemoryUsage - initialMemoryUsage < 10000
+
+  it "should remain stable even after many iterations", usageTest
