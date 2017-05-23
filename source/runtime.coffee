@@ -161,7 +161,8 @@ bindObservable = (element, value, context, update) ->
   return
 
 bindEvent = (element, name, fn, context) ->
-  element[name] = fn?.bind(context)
+  if typeof fn is "function"
+    element[name] = fn.bind(context)
   return
 
 id = (element, context, sources) ->

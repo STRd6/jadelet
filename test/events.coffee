@@ -33,6 +33,20 @@ describe "Events", ->
     button.click()
     assert.equal result, "Foobert"
 
+  it "should skip non-functions when binding events", ->
+    template = makeTemplate """
+      button(@mouseenter @mouseleave)
+    """
+
+    model =
+      mouseenter: "wut"
+      mouseleave: "lol"
+
+    button = template(model)
+
+    dispatchEvent button, "mouseenter"
+    dispatchEvent button, "mouseleave"
+
   it "should bind mouseenter and mouseleave events", ->
     template = makeTemplate """
       button(@mouseenter @mouseleave)
