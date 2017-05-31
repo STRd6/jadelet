@@ -120,6 +120,16 @@ jadelet --runtime "Jadelet" --directory templates --exports 'JST["$file"]'
 cat templates/*.js > templates.js
 ```
 
+Road to 1.0
+===========
+
+- [x] Still under 3kb
+- [x] Don't Leak Resources
+- [ ] Example Playground
+- [ ] Documentation
+- [ ] Style Attributes
+- [ ] Filters
+
 FAQ
 ===
 
@@ -136,7 +146,7 @@ Good:
   .two
 ```
 
-Bad:
+Oopsies:
 
 ```jade
 .one
