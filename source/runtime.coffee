@@ -7,6 +7,23 @@ Observable = require "o_0"
 # After we remove the listeners we must then remove the element from the map
 
 elementCleaners = new WeakMap
+elementRefCounts = new WeakMap
+
+retain = (element) ->
+  count = elementRefCounts.get(element) ? 0
+  elementRefCounts.set(element, count + 1)
+  return
+
+release = (element) ->
+  count = elementRefCounts.get(element) ? 0
+  count--
+
+  if count > 0
+    elementRefCounts.set(element, count)
+  else
+    elementRefCounts.delete element
+    dispose element
+  return
 
 # TODO: If we remove an element that has a child element that should be retain
 # we'll run all its cleaners here when we shouldn't. We need a way to mark an
@@ -202,6 +219,7 @@ observeContent = (element, context, contentFn) ->
     else if typeof item.forEach is "function"
       item.forEach append
     else if item instanceof Node
+      retain item
       element.appendChild item
     else
       element.appendChild document.createTextNode item
@@ -232,6 +250,8 @@ makeElement = (name, context, attributes, fn) ->
   if attributes.class?
     classes(element, context, attributes.class)
     delete attributes.class
+
+  # TODO: Bind style attributes
 
   observeAttributes(element, context, attributes)
 
@@ -264,6 +284,9 @@ Runtime.VERSION = require("../package.json").version
 Runtime.Observable = Observable
 Runtime._elementCleaners = elementCleaners
 Runtime._dispose = dispose
+Runtime.retain = retain
+Runtime.release = release
+
 module.exports = Runtime
 
 createElement = (name) ->
@@ -272,7 +295,7 @@ createElement = (name) ->
 empty = (node) ->
   while child = node.firstChild
     node.removeChild(child)
-    dispose(child)
+    release(child)
 
   return
 

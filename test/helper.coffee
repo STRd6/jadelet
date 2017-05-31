@@ -15,6 +15,7 @@ document = jsdom()
 extend global,
   assert: require "assert"
   extend: extend
+  Jadelet: Runtime
   Node: window.Node
   Observable: Observable
   Runtime: Runtime
