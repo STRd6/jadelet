@@ -280,7 +280,7 @@ Runtime = (context) ->
 
   return self
 
-Runtime.VERSION = require("../package.json").version
+Runtime.VERSION = "0.8.0-pre.4"
 Runtime.Observable = Observable
 Runtime._elementCleaners = elementCleaners
 Runtime._dispose = dispose

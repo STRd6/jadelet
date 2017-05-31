@@ -129,6 +129,8 @@ Road to 1.0
 - [ ] Documentation
 - [ ] Style Attributes
 - [ ] Filters
+- [ ] Browserify Transform
+- [ ] Require Registration
 
 FAQ
 ===

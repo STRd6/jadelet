@@ -2,7 +2,7 @@ parser = require "./parser/main"
 
 module.exports = (input, options={}) ->
   if typeof input is "string"
-    input = parser.parse(input, options.mode)
+    input = parser.parse(input)
 
   return compile(input, options)
 
