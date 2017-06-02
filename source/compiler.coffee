@@ -52,30 +52,35 @@ util =
       ids = []
 
     classes = (classes || []).map JSON.stringify
+    styles = []
 
     if attributes
       attributes = attributes.filter ({name, value}) ->
         if name is "class"
           classes.push value
-
-          false
+          return
         else if name is "id"
           ids.push value
-
-          false
+          return
+        else if name is "style"
+          styles.push value
+          return
         else
           true
 
     else
       attributes = []
 
-    idsAndClasses = []
+    specialAttributes = []
 
     if ids.length
-      idsAndClasses.push "id: [#{ids.join(', ')}]"
+      specialAttributes.push "id: [#{ids.join(', ')}]"
 
     if classes.length
-      idsAndClasses.push "class: [#{classes.join(', ')}]"
+      specialAttributes.push "class: [#{classes.join(', ')}]"
+
+    if styles.length
+      specialAttributes.push "style: [#{styles.join(', ')}]"
 
     attributeLines = attributes.map ({name, value}) ->
       name = JSON.stringify(name)
@@ -84,7 +89,7 @@ util =
         #{name}: #{value}
       """
 
-    return idsAndClasses.concat attributeLines
+    return specialAttributes.concat attributeLines
 
   render: (node) ->
     {tag, filter, text} = node

@@ -113,7 +113,7 @@ specialBindings =
         values.map (value, index) ->
           option = createElement("option")
           option._value = value
-          if typeof value is "object"
+          if isObject value
             optionValue = value?.value or index
           else
             optionValue = value.toString()
@@ -184,21 +184,37 @@ bindEvent = (element, name, fn, context) ->
 
 id = (element, context, sources) ->
   lastId = ->
-    [..., last] = splat sources, context
-    return last
+    splat sources, context
 
-  bindObservable element, lastId, context, update = (newId) ->
-    element.id = newId
+  bindObservable element, lastId, context, update = (ids) ->
+    [..., lastId] = ids
+    element.id = lastId
     return
 
   return
 
 classes = (element, context, sources) ->
   classNames = ->
-    splat(sources, context).join(" ")
+    splat(sources, context)
 
   bindObservable element, classNames, context, (classNames) ->
-    element.className = classNames
+    element.className = classNames.join(" ")
+    return
+
+  return
+
+styles = (element, context, sources) ->
+  styleObjects = ->
+    splat(sources, context)
+
+  bindObservable element, styleObjects, context, (styles) ->
+    # Remove any leftover styles
+    element.style = ""
+    styles.forEach (style) ->
+      if isObject style
+        Object.assign element.style, style
+      else
+        element.style = style
     return
 
   return
@@ -251,7 +267,9 @@ makeElement = (name, context, attributes, fn) ->
     classes(element, context, attributes.class)
     delete attributes.class
 
-  # TODO: Bind style attributes
+  if attributes.style?
+    styles(element, context, attributes.style)
+    delete attributes.style
 
   observeAttributes(element, context, attributes)
 
@@ -298,6 +316,9 @@ empty = (node) ->
 
   return
 
+isObject = (x) ->
+  typeof x is "object"
+
 # A helper to find the index of a value in an array of options
 # when the array may contain actual objects or strings, numbers, etc.
 
@@ -308,7 +329,7 @@ empty = (node) ->
 #   OR
 #   Always compare non-object inputs as strings.
 valueIndexOf = (options, value) ->
-  if typeof value is "object"
+  if isObject value
     options.indexOf(value)
   else
     options.map (option) ->
