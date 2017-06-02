@@ -143,10 +143,10 @@ observeAttribute = (element, context, name, value) ->
     binding(element, value, context)
   # Straight up onclicks, etc.
   else if name.match(/^on/) and isEvent(name, element)
-    bindEvent(element, name, value, context)
+    bindEvent(element, name.substr(2), value, context)
   # Handle click=@method
   else if isEvent("on#{name}", element)
-    bindEvent(element, "on#{name}", value, context)
+    bindEvent(element, name, value, context)
   else
     bindObservable element, value, context, (newValue) ->
       if newValue? and newValue != false
@@ -179,7 +179,7 @@ bindObservable = (element, value, context, update) ->
 
 bindEvent = (element, name, fn, context) ->
   if typeof fn is "function"
-    element[name] = fn.bind(context)
+    element.addEventListener name, fn.bind(context)
   return
 
 id = (element, context, sources) ->
@@ -280,7 +280,6 @@ Runtime = (context) ->
 
   return self
 
-Runtime.VERSION = "0.8.0-pre.4"
 Runtime.Observable = Observable
 Runtime._elementCleaners = elementCleaners
 Runtime._dispose = dispose
