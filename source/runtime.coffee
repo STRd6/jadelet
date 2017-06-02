@@ -157,6 +157,25 @@ observeAttribute = (element, context, name, value) ->
   return
 
 observeAttributes = (element, context, attributes) ->
+  bindSplat element, context, attributes, "id", (ids) ->
+    [..., lastId] = ids
+    element.id = lastId
+    return
+
+  bindSplat element, context, attributes, "class", (classes) ->
+    element.className = classes.join(" ")
+    return
+
+  bindSplat element, context, attributes, "style", (styles) ->
+    # Remove any leftover styles
+    element.style = ""
+    styles.forEach (style) ->
+      if isObject style
+        Object.assign element.style, style
+      else
+        element.style = style
+    return
+
   Object.keys(attributes).forEach (name) ->
     observeAttribute element, context, name, attributes[name]
     return
@@ -182,40 +201,12 @@ bindEvent = (element, name, fn, context) ->
     element.addEventListener name, fn.bind(context)
   return
 
-id = (element, context, sources) ->
-  lastId = ->
-    splat sources, context
+bindSplat = (element, context, attributes, key, fn) ->
+  sources = attributes[key]
 
-  bindObservable element, lastId, context, update = (ids) ->
-    [..., lastId] = ids
-    element.id = lastId
-    return
-
-  return
-
-classes = (element, context, sources) ->
-  classNames = ->
-    splat(sources, context)
-
-  bindObservable element, classNames, context, (classNames) ->
-    element.className = classNames.join(" ")
-    return
-
-  return
-
-styles = (element, context, sources) ->
-  styleObjects = ->
-    splat(sources, context)
-
-  bindObservable element, styleObjects, context, (styles) ->
-    # Remove any leftover styles
-    element.style = ""
-    styles.forEach (style) ->
-      if isObject style
-        Object.assign element.style, style
-      else
-        element.style = style
-    return
+  if sources?
+    delete attributes[key]
+    bindObservable element, (-> splat sources, context), context, fn
 
   return
 
@@ -225,8 +216,12 @@ observeContent = (element, context, contentFn) ->
     contents = []
 
     contentFn.call context,
-      buffer: bufferTo(context, contents)
+      buffer: (content) ->
+        contents.push get content, context
+        return
       element: makeElement
+      filter: (name, content) ->
+        Runtime.filters[name].call(context, content, this)
 
     return contents
 
@@ -250,26 +245,8 @@ observeContent = (element, context, contentFn) ->
 
   return
 
-bufferTo = (context, collection) ->
-  (content) ->
-    collection.push get content, context
-
-    return
-
 makeElement = (name, context, attributes, fn) ->
   element = createElement name
-
-  if attributes.id?
-    id(element, context, attributes.id)
-    delete attributes.id
-
-  if attributes.class?
-    classes(element, context, attributes.class)
-    delete attributes.class
-
-  if attributes.style?
-    styles(element, context, attributes.style)
-    delete attributes.style
 
   observeAttributes(element, context, attributes)
 
@@ -294,7 +271,7 @@ Runtime = (context) ->
     element: makeElement
 
     filter: (name, content) ->
-      ; # TODO self.filters[name](content)
+      Runtime.filters[name].call(context, content, this)
 
   return self
 
@@ -303,6 +280,7 @@ Runtime._elementCleaners = elementCleaners
 Runtime._dispose = dispose
 Runtime.retain = retain
 Runtime.release = release
+Runtime.filters = {}
 
 module.exports = Runtime
 

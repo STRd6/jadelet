@@ -1,37 +1,73 @@
 describe "Filters", ->
   it "should provide :coffeescript", ->
-    template = makeTemplate """
+    Template = makeTemplate """
       :coffeescript
         a = "jawsome"
       div(type=a)
     """
 
-    behave template(), ->
-      assert.equal Q("div").getAttribute("type"), "jawsome"
+    element = Template()
+    assert.equal element.getAttribute("type"), "jawsome"
 
   it "should provide :javascript", ->
-    template = makeTemplate """
+    Template = makeTemplate """
       :javascript
         var a = "jawsome";
       div(type=a)
     """
 
-    behave template(), ->
-      assert.equal Q("div").getAttribute("type"), "jawsome"
+    element = Template()
+    assert.equal element.getAttribute("type"), "jawsome"
+
+  it "should work with custom filters", ->
+    Jadelet.filters.html = (content, {buffer}) ->
+      div = document.createElement "div"
+      div.innerHTML = content
+      buffer div
+      return
+
+    Template = makeTemplate """
+      :html
+        <h1>2 rad</h1>
+        <p>yo</p>
+    """
+
+    element = Template()
+    assert.equal element.querySelector('h1').textContent, "2 rad"
+    assert.equal element.querySelector('p').textContent, "yo"
+
+  it "should work with custom filters when nested", ->
+    Jadelet.filters.html = (content, {buffer}) ->
+      div = document.createElement "div"
+      div.innerHTML = content
+      buffer div
+      return
+
+    Template = makeTemplate """
+      div
+        page
+          :html
+            <h1>2 rad</h1>
+            <p>yo</p>
+    """
+
+    element = Template()
+    assert.equal element.querySelector('h1').textContent, "2 rad"
+    assert.equal element.querySelector('p').textContent, "yo"
 
   describe ":verbatim", ->
     it "should keep text verbatim", ->
-      template = makeTemplate """
+      Template = makeTemplate """
         textarea
           :verbatim
             <I> am <verbatim> </text>
       """
 
-      behave template(), ->
-        assert.equal Q("textarea").value, "<I> am <verbatim> </text>"
+      element = Template()
+      assert.equal element.value, "<I> am <verbatim> </text>"
 
     it "should work with indentation", ->
-      template = makeTemplate """
+      Template = makeTemplate """
         div
           :verbatim
             Hey
@@ -40,13 +76,13 @@ describe "Filters", ->
 
       """
 
-      behave template(), ->
+      element = Template()
         # TODO: This probably shouldn't have a trailing \n
-        assert.equal Q("body").textContent, "Hey\n  It's\n    Indented\n"
+      assert.equal element.textContent, "Hey\n  It's\n    Indented\n"
 
     it "should work with indentation without extra trailing whitespace", ->
       whitespace = "    "
-      template = makeTemplate """
+      Template = makeTemplate """
         div
           :verbatim
             Hey
@@ -56,11 +92,11 @@ describe "Filters", ->
       """
       # TODO/NOTE: Must have blank line after filters otherwise they mess up indentation
 
-      behave template(), ->
-        assert.equal Q("body").textContent, "Hey\n  It's    \n    Indented\n"
+      element = Template()
+      assert.equal element.textContent, "Hey\n  It's    \n    Indented\n"
 
     it "should work with \"\"\"", ->
-      template = makeTemplate """
+      Template = makeTemplate """
         div
           :verbatim
             sample = \"\"\"
@@ -69,5 +105,5 @@ describe "Filters", ->
 
       """
 
-      behave template(), ->
-        assert.equal Q("body").textContent, "sample = \"\"\"\n  Hey\n\"\"\"\n"
+      element = Template()
+      assert.equal element.textContent, "sample = \"\"\"\n  Hey\n\"\"\"\n"
