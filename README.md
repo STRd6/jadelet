@@ -127,8 +127,8 @@ Road to 1.0
 - [x] Don't Leak Resources
 - [ ] Example Playground
 - [ ] Documentation
-- [ ] Style Attributes
-- [ ] Filters
+- [x] Style Attributes
+- [x] Filters
 - [ ] Browserify Transform
 - [ ] Require Registration
 
