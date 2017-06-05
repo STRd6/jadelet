@@ -131,6 +131,7 @@ Road to 1.0
 - [x] Filters
 - [ ] Browserify Transform
 - [ ] Require Registration
+- [ ] Changelog
 
 FAQ
 ===

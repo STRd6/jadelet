@@ -1,6 +1,6 @@
 {
   "name": "jadelet",
-  "version": "0.8.0-pre.5",
+  "version": "0.8.0-pre.6",
   "description": "Truly amazing templating!",
   "devDependencies": {
     "browserify": "^14.3.0",
