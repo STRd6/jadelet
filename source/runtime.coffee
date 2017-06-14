@@ -10,12 +10,12 @@ elementCleaners = new WeakMap
 elementRefCounts = new WeakMap
 
 retain = (element) ->
-  count = elementRefCounts.get(element) ? 0
+  count = elementRefCounts.get(element) || 0
   elementRefCounts.set(element, count + 1)
   return
 
 release = (element) ->
-  count = elementRefCounts.get(element) ? 0
+  count = elementRefCounts.get(element) || 0
   count--
 
   if count > 0
@@ -132,6 +132,7 @@ specialBindings =
 
           return option
         return
+      return
 
 observeAttribute = (element, context, name, value) ->
   {nodeName} = element
