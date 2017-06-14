@@ -3,45 +3,51 @@
 Jadelet
 =======
 
-Jadelet is a simple and powerful reactive templating system.
+*Lightweight, elegant HTML templates*
 
-It's framework agnostic and focuses on clean declarative templating, leaving you to build your application with your favorite tools. Jadelet leverages the power of native browser APIs to keep your data model and html elements in sync.
+Jadelet is the cleanest and simplest way to describe your templates. It is a breeze to learn. Jadelet attributes correspond directly with HTML attributes. If you know HTML then you already know Jadelet.
 
-All of this in only 2,772 bytes, minified and gzipped!
+Jadelet is the smallest of all clientside templating libraries, with a runtime weighing in at < 2.5kb. But don't let its size fool you: it contains tremendous power.
 
-[Video Demo](http://blog.fogcreek.com/reactive-templating-demo-with-hamlet-tech-talk/)
+Jadelet is free, MIT licensed, open source, and production ready.
 
-Cool Example
-------------
+- [Jadelet.com](https://jadelet.com)
+- [Source](https://github.com/STRd6/jadelet)
+- [Example Playground](https://jadelet.glitch.me)
+- [Video Demo](http://blog.fogcreek.com/reactive-templating-demo-with-hamlet-tech-talk/)
 
-A simple panel with four elements all bound to the same data source. Changes in one propagate to all. Behold!
+Examples
+--------
+
+#### Header
 
 ```jade
-.panel
-  input(type="text" value=@value)
-  select(value=@value options=[@min..@max])
-  input(type="range" value=@value min=@min max=@max)
-  progress(value=@value max=@max)
+h1= @title
 ```
 
-```javascript
-Observable = require("jadelet").Observable;
-PanelTemplate = require("./templates/panel");
-
-model = {
-  min: 1,
-  max: 10,
-  value: Observable(5)
-};
-
-element = PanelTemplate(model);
-document.body.appendChild(element);
+```coffee
+HeaderTemplate = require "./header"
+headerElement = HeaderTemplate
+  title: "Hello world"
 ```
+
+#### Button
+
+```jade
+button(click=@sayHey)
+```
+
+```coffee
+ButtonTemplate = require "./button"
+buttonElement = ButtonTemplate
+  click: ->
+    alert "heyy"
+```
+
+See more in the [Example Playground](https://jadelet.glitch.me)
 
 Getting Started
 ===============
-
-#### Using Node
 
 Install Jadelet:
 
@@ -69,11 +75,6 @@ Now use browserify to build the file you'll serve on your page.
 ```bash
 browserify main.js > build.js
 ```
-
-Resources
----------
-
-Check out the [wiki](https://github.com/STRd6/jadelet/wiki/Development-Resources) for developer resources.
 
 CLI
 ===
@@ -110,31 +111,59 @@ jadelet -r "Jadelet" < template.jadelet > output.js
 
 `--ast, -a` Output a JSON AST instead of the JavaScript template function. Useful for debugging or for using the Jadelet DSL as a frontend for other renderer backends like Mithril or React. Until 1.0 this isn't guaranteed to be a stable format.
 
-Examples
---------
-
-Compiling all templates in a directory and packaging them for the browser, old-school:
-
-```bash
-jadelet --runtime "Jadelet" --directory templates --exports 'JST["$file"]'
-cat templates/*.js > templates.js
-```
-
 Road to 1.0
 ===========
 
 - [x] Still under 3kb
 - [x] Don't Leak Resources
-- [ ] Example Playground
-- [ ] Documentation
 - [x] Style Attributes
 - [x] Filters
+- [x] Changelog
+- [x] Example Playground
+- [ ] Updated README.md
+- [ ] jadelet.com
+- [ ] Documentation
+- [ ] Getting Started Guide
 - [ ] Browserify Transform
 - [ ] Require Registration
-- [ ] Changelog
 
 FAQ
 ===
+
+#### Ewww... CoffeeScript
+
+That's not a question.
+
+#### Is Jadelet safe from XSS?
+
+Yes, because Jadelet uses native DOM APIs it writes output as text nodes.
+
+#### Then how do I use Jadelet to render my own HTML Elements?
+
+Jadelet checks the type of the objects you tell it to render. If you pass an HTMLElement it will insert in into the DOM.
+
+```jade
+.content
+  h1 My Canvas
+  = @canvas
+```
+
+```coffee
+Template
+  canvas: document.createElement('canvas')
+```
+
+#### Is it production ready?
+
+Yes, we're currently using Jadelet to power glitch.com. (Though we still have a 'Beta' sticker up... ¯\\\_(ツ)_/¯)
+
+#### Is it performant?
+
+Yes! And because it's just DOM stuff you can easily drop down to the native DOM APIs for the components of your app that need special optimization.
+
+#### How can I contribute?
+
+Open some issues, open some pull requests, let's talk it out :)
 
 Gotchas
 -------
