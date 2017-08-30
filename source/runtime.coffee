@@ -169,12 +169,12 @@ observeAttributes = (element, context, attributes) ->
 
   bindSplat element, context, attributes, "style", (styles) ->
     # Remove any leftover styles
-    element.style = ""
+    element.removeAttribute "style"
     styles.forEach (style) ->
       if isObject style
         Object.assign element.style, style
       else
-        element.style = style
+        element.setAttribute "style", style
     return
 
   Object.keys(attributes).forEach (name) ->

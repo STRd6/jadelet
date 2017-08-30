@@ -1,7 +1,7 @@
 {
   "name": "jadelet",
-  "version": "0.8.0-pre.6",
-  "description": "Truly amazing templating!",
+  "version": "0.8.0-pre.7",
+  "description": "Lightweight, elegant HTML templates",
   "devDependencies": {
     "browserify": "^14.3.0",
     "istanbul": "^0.4.5",

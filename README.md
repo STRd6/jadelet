@@ -79,7 +79,7 @@ browserify main.js > build.js
 CLI
 ===
 
-Command line interface for processing files with Jadelet over stdio.
+Command line interface for compiling templates.
 
 Usage
 -----
@@ -101,7 +101,7 @@ jadelet -d templates
 
 `--encoding [encoding]` Encoding of files being read from `--directory` (default 'utf-8')
 
-`-e, --exports [name]` Export compiled template as (default 'module.exports')
+`--exports, -e [name]` Export compiled template as (default 'module.exports')
 
 `--runtime, -r [runtime_name]` Specifies the name of the globally available Jadelet runtime (default is 'require("jadelet")').
 
@@ -120,6 +120,7 @@ Road to 1.0
 - [x] Filters
 - [x] Changelog
 - [x] Example Playground
+- [ ] | for text content
 - [ ] Updated README.md
 - [ ] jadelet.com
 - [ ] Documentation
