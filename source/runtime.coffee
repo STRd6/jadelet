@@ -2,7 +2,7 @@
 
 Observable = require "o_0"
 
-# To clean up listeners we need to keep a map of dom elements and what listeners are bound to them
+# To clean up listeners we keep a map of DOM elements and what listeners are bound to them
 # when we dispose an element we must traverse its children and clean them up too
 # After we remove the listeners we must then remove the element from the map
 
@@ -25,10 +25,9 @@ release = (element) ->
     dispose element
   return
 
-# TODO: If we remove an element that has a child element that should be retain
-# we'll run all its cleaners here when we shouldn't. We need a way to mark an
-# element as retained and to skip disposing it if we want to reuse it with
-# separate logic.
+# Disposing an element executes the cleanup for all it's children. If a child
+# element should be retained you must mark it explicitly to prevent its
+# observables from unbinding.
 dispose = (element) ->
   # Recurse into children
   children = element.children
@@ -221,8 +220,6 @@ observeContent = (element, context, contentFn) ->
         contents.push get content, context
         return
       element: makeElement
-      filter: (name, content) ->
-        Runtime.filters[name].call(context, content, this)
 
     return contents
 
@@ -271,9 +268,6 @@ Runtime = (context) ->
 
     element: makeElement
 
-    filter: (name, content) ->
-      Runtime.filters[name].call(context, content, this)
-
   return self
 
 Runtime.Observable = Observable
@@ -281,7 +275,6 @@ Runtime._elementCleaners = elementCleaners
 Runtime._dispose = dispose
 Runtime.retain = retain
 Runtime.release = release
-Runtime.filters = {}
 
 module.exports = Runtime
 
@@ -302,7 +295,7 @@ isObject = (x) ->
 # when the array may contain actual objects or strings, numbers, etc.
 
 # NOTE: This may be too complicated, the core issue is that anything coming from an input
-# will be a string, and anything coming from a regular observable can be any object type.
+# will be a string, and anything coming from an observable can be any object type.
 # Possible solutions:
 #   Typed observables that auto-convert strings to the correct type.
 #   OR

@@ -14,23 +14,6 @@ ROOT_NAME = "__root"
 util =
   indent: indentText
 
-  filters:
-    verbatim: (content, compiler) ->
-      compiler.buffer '"""' + content.replace(/(#|")/g, "\\$1") + '"""'
-
-    plain: (content, compiler) ->
-      compiler.buffer JSON.stringify(content)
-
-    coffeescript: (content, compiler) ->
-      [content]
-
-    javascript: (content, compiler) ->
-      [
-        "`"
-        compiler.indent(content)
-        "`"
-      ]
-
   element: (tag, attributes=[], contents=[]) ->
     lines = [
       "#{ROOT_NAME}.buffer #{ROOT_NAME}.element #{JSON.stringify(tag)}, this, {#{attributes.join('\n')}}, (#{ROOT_NAME}) ->"
@@ -92,24 +75,10 @@ util =
     return specialAttributes.concat attributeLines
 
   render: (node) ->
-    {tag, filter, text} = node
-
-    if tag
+    if node.tag
       @tag(node)
-    else if filter
-      @filter(node)
     else
       @contents(node)
-
-  filter: (node) ->
-    filterName = node.filter
-
-    if filter = @filters[filterName]
-      [].concat.apply([], @filters[filterName](node.content, this))
-    else
-      [
-        "#{ROOT_NAME}.filter(#{JSON.stringify(filterName)}, #{JSON.stringify(node.content)})"
-      ]
 
   contents: (node) ->
     {children, bufferedCode, unbufferedCode, text} = node

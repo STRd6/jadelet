@@ -21,17 +21,14 @@ Indent                      "  " | "\t"
 <value>\'(\\.|[^\\'])*\'          this.popState(); return 'ATTRIBUTE_VALUE';
 <value>[^ \t\)]*                  this.popState(); return 'ATTRIBUTE_VALUE';
 
-<filter>(\n|<<EOF>>)  yy.indent = 0; this.popState(); return 'NEWLINE';
-<filter>[^\n]*        return 'FILTER_LINE';
-
 \s*(\n|<<EOF>>)       yy.indent = 0; return 'NEWLINE';
-{Indent}              yy.indent += 1; if(yy.indent > yy.filterIndent){this.begin('filter'); }; return 'INDENT';
+{Indent}              yy.indent += 1; return 'INDENT';
 "("                   this.begin("parentheses_attributes"); return 'LEFT_PARENTHESIS';
 "//".*                yytext = yytext.substring(2); return 'COMMENT';
-\:{id}                yy.filterIndent = yy.indent; yytext = yytext.substring(1); return 'FILTER';
 \#{Name}              yytext = yytext.substring(1); return 'ID';
 \.{Name}              yytext = yytext.substring(1); return 'CLASS';
 {Name}                return 'TAG';
 "=".*                 yytext = yytext.substring(1).trim(); return 'BUFFERED_CODE';
 "-".*                 yytext = yytext.substring(1).trim(); return 'UNBUFFERED_CODE';
+"|".*                 yytext = yytext.substring(1).trim(); return 'TEXT';
 .*                    yytext = yytext.trim(); return 'TEXT';
