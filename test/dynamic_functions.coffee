@@ -12,11 +12,11 @@ describe "dynamic functions", ->
       model =
         cool: Observable true
 
-      behave template(model), ->
-        assert.equal all(".cool").length, 1
-        assert.equal all(".uncool").length, 0
+      element = template(model)
+      assert.equal element.querySelectorAll(".cool").length, 1
+      assert.equal element.querySelectorAll(".uncool").length, 0
 
-        model.cool false
+      model.cool false
 
-        assert.equal all(".cool").length, 0
-        assert.equal all(".uncool").length, 1
+      assert.equal element.querySelectorAll(".cool").length, 0
+      assert.equal element.querySelectorAll(".uncool").length, 1

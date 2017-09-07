@@ -10,8 +10,8 @@ describe "Classes", ->
       myClass: ->
         "hats"
 
-    behave template(model), ->
-      assert Q(".hats")
+    element = template(model)
+    assert element.classList.contains "hats"
 
   it "should handle observable arrays", ->
     template = makeTemplate """
@@ -21,8 +21,10 @@ describe "Classes", ->
     model =
       classes: Observable ["a", "b"]
 
-    behave template(model), ->
-      assert Q(".a.b")
+    element = template(model)
+
+    assert element.classList.contains "a"
+    assert element.classList.contains "b"
 
   it "should merge with literal classes", ->
     template = makeTemplate """
@@ -32,8 +34,11 @@ describe "Classes", ->
     model =
       classes: Observable ["a", "b"]
 
-    behave template(model), ->
-      assert Q(".duder.a.b")
+    element = template(model)
+
+    assert element.classList.contains "a"
+    assert element.classList.contains "b"
+    assert element.classList.contains "duder"
 
   it "should not write `undefined` to the class", ->
     template = makeTemplate """
@@ -43,5 +48,6 @@ describe "Classes", ->
     model =
       undefined: undefined
 
-    behave template(model), ->
-      assert !Q(".undefined")
+    element = template(model)
+
+    assert !element.classList.contains("undefined")

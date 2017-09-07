@@ -13,8 +13,9 @@ describe "Computed", ->
       first: Observable("Mr.")
       last: Observable("Doberman")
 
-    behave template(model), ->
-      assert.equal Q("h2").textContent, "Mr. Doberman"
+    element = template(model)
+
+    assert.equal element.querySelector("h2").textContent, "Mr. Doberman"
 
   it "should work on special bindings", ->
     template = makeTemplate """
@@ -25,9 +26,8 @@ describe "Computed", ->
         @name() is "Duder"
       name: Observable "Mang"
 
-    behave template(model), ->
-      assert.equal Q("input").checked, false
+    element = template(model)
 
-      model.name "Duder"
-
-      assert.equal Q("input").checked, true
+    assert.equal element.checked, false
+    model.name "Duder"
+    assert.equal element.checked, true

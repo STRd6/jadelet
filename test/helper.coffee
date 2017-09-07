@@ -26,8 +26,8 @@ extend global,
   Q: (args...) ->
     document.querySelector(args...)
 
-  all: (args...) ->
-    document.querySelectorAll(args...)
+  all: (selectors, base=document) ->
+    base.querySelectorAll(selectors)
 
   makeTemplate: (code) ->
     compiled = compile code,
@@ -37,15 +37,3 @@ extend global,
       mode: "jade" # TODO: Jadelet will be the only mode
 
     Function("Runtime", "return " + compiled)(Runtime)
-
-  empty: (node) ->
-    while child = node.firstChild
-      Runtime._dispose(child)
-      node.removeChild child
-
-  behave: (fragment, fn) ->
-    document.body.appendChild fragment
-    try
-      fn()
-    finally
-      empty document.body

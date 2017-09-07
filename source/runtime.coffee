@@ -159,7 +159,10 @@ observeAttribute = (element, context, name, value) ->
 observeAttributes = (element, context, attributes) ->
   bindSplat element, context, attributes, "id", (ids) ->
     [..., lastId] = ids
-    element.id = lastId
+    if ids.length
+      element.id = lastId
+    else
+      element.removeAttribute "id"
     return
 
   bindSplat element, context, attributes, "class", (classes) ->

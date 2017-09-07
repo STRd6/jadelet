@@ -13,9 +13,10 @@ describe "Iterating", ->
           {name: "Test"}
         ]
 
-      behave template(model), ->
-        assert.equal all("li").length, 2
-        assert.equal Q("li").textContent, "Hello"
+      element = template(model)
+
+      assert.equal all("li", element).length, 2
+      assert.equal all("li", element)[0].textContent, "Hello"
 
     it "should add items when items are added to the array", ->
       model =
@@ -24,10 +25,11 @@ describe "Iterating", ->
           {name: "Test"}
         ]
 
-      behave template(model), ->
-        assert.equal all("li").length, 2
-        model.items.push name: "yolo"
-        assert.equal all("li").length, 3
+      element = template(model)
+      assert.equal all("li", element).length, 2
+
+      model.items.push name: "yolo"
+      assert.equal all("li", element).length, 3
 
     it "should remove items when they are removed", ->
       model =
@@ -36,15 +38,15 @@ describe "Iterating", ->
           {name: "Test"}
         ]
 
-      behave template(model), ->
-        assert.equal all("li").length, 2
-        model.items.pop()
-        model.items.pop()
-        assert.equal all("li").length, 0
+      element = template(model)
+      assert.equal all("li", element).length, 2
 
-        model.items.push name: "wat"
+      model.items.pop()
+      model.items.pop()
+      assert.equal all("li", element).length, 0
 
-        assert.equal all("li").length, 1
+      model.items.push name: "wat"
+      assert.equal all("li", element).length, 1
 
   describe "with regular arrays", ->
     template = makeTemplate """
@@ -59,9 +61,10 @@ describe "Iterating", ->
           {name: "Test"}
         ]
 
-      behave template(model), ->
-        assert.equal all("li").length, 2
-        assert.equal Q("li").textContent, "Hello"
+      element = template(model)
+
+      assert.equal all("li", element).length, 2
+      assert.equal all("li", element)[0].textContent, "Hello"
 
     it "will not add items when items are added to the array", ->
       model =
@@ -70,10 +73,10 @@ describe "Iterating", ->
           {name: "Test"}
         ]
 
-      behave template(model), ->
-        assert.equal all("li").length, 2
-        model.items.push name: "yolo"
-        assert.equal all("li").length, 2
+      element = template(model)
+      assert.equal all("li", element).length, 2
+      model.items.push name: "yolo"
+      assert.equal all("li", element).length, 2
 
     it "will not remove items when they are removed", ->
       model =
@@ -82,11 +85,11 @@ describe "Iterating", ->
           {name: "Test"}
         ]
 
-      behave template(model), ->
-        assert.equal all("li").length, 2
-        model.items.pop()
-        model.items.pop()
-        assert.equal all("li").length, 2
+      element = template(model)
+      assert.equal all("li", element).length, 2
+      model.items.pop()
+      model.items.pop()
+      assert.equal all("li", element).length, 2
 
   it "should render inline maps", ->
     template = makeTemplate """
@@ -104,5 +107,5 @@ describe "Iterating", ->
         li= this
       """
 
-    behave template(model), ->
-      assert.equal all("li").length, 3
+    element = template(model)
+    assert.equal all("li", element).length, 3

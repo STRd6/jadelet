@@ -14,5 +14,5 @@ describe "Primitives", ->
       number: 5
       array: [1, true, "e"]
 
-    behave template(model), ->
-      assert.equal Q("div").textContent, "heytrue51truee"
+    element = template(model)
+    assert.equal element.textContent, "heytrue51truee"

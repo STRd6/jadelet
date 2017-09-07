@@ -85,7 +85,7 @@ browserify main.js > build.js
 Road to 1.0
 -----------
 
-- [x] Still under 3kb
+- [x] Still under 2.5kb
 - [x] Don't Leak Resources
 - [x] Style Attributes
 - [x] Filters
@@ -97,8 +97,6 @@ Road to 1.0
 - [ ] jadelet.com
 - [ ] Documentation
 - [ ] Getting Started Guide
-- [ ] Browserify Transform
-- [ ] Require Registration
 
 FAQ
 ---

@@ -8,17 +8,17 @@ describe "subrender", ->
       model =
         count: 5
 
-      behave template(model), ->
-        assert.equal Q(".count").textContent, "5"
+      element = template(model)
+      assert.equal element.textContent, "5"
 
     it "should update when observable changes", ->
       model =
         count: Observable 5
 
-      behave template(model), ->
-        assert.equal Q(".count").textContent, "5"
-        model.count 2
-        assert.equal Q(".count").textContent, "2"
+      element = template(model)
+      assert.equal element.textContent, "5"
+      model.count 2
+      assert.equal element.textContent, "2"
 
   describe "with root node", ->
     template = makeTemplate """
@@ -31,8 +31,8 @@ describe "subrender", ->
         generateItem: ->
           document.createElement("li")
 
-      behave template(model), ->
-        assert Q("li")
+      element = template(model)
+      assert element.querySelector("li")
 
     it "should render lists of nodes", ->
       model =
@@ -43,9 +43,9 @@ describe "subrender", ->
             document.createElement("p")
           ]
 
-      behave template(model), ->
-        assert all("li").length, 2
-        assert all("p").length, 1
+      element = template(model)
+      assert all("li", element).length, 2
+      assert all("p", element).length, 1
 
     it "should work with a node with children", ->
       model =
@@ -56,10 +56,11 @@ describe "subrender", ->
 
           div
 
-      behave template(model), ->
-        assert all("li").length, 2
-        assert all("p").length, 1
-        assert all("ol").length, 1
+      element = template(model)
+
+      assert all("li", element).length, 2
+      assert all("p", element).length, 1
+      assert all("ol", element).length, 1
 
     it "should work with observables", ->
       model =
@@ -71,14 +72,12 @@ describe "subrender", ->
 
           item
 
-      behave template(model), ->
-        assert.equal all("li").length, 1
+      element = template(model)
 
-        assert.equal Q("li").textContent, "wat"
-
-        model.name "yo"
-
-        assert.equal Q("li").textContent, "yo"
+      assert.equal all("li", element).length, 1
+      assert.equal element.querySelector("li").textContent, "wat"
+      model.name "yo"
+      assert.equal element.querySelector("li").textContent, "yo"
 
   describe "rendering subtemplates", ->
     describe "mixing and matching", ->
@@ -99,10 +98,10 @@ describe "subrender", ->
           subtemplate: subtemplate
           nullable: null
 
-        behave template(model), ->
-          assert.equal Q("div").textContent, "Radical\nHello\nwat"
-          model.observable "duder"
-          assert.equal Q("div").textContent, "Radical\nHello\nduder"
+        element = template(model)
+        assert.equal element.textContent, "Radical\nHello\nwat"
+        model.observable "duder"
+        assert.equal element.textContent, "Radical\nHello\nduder"
 
     describe "mapping array to subtemplates", ->
       template = makeTemplate """
@@ -124,8 +123,8 @@ describe "subrender", ->
               td= this
           """
 
-        behave template(model), ->
-          assert.equal all("tr").length, 3
+        element = template(model)
+        assert.equal all("tr", element).length, 3
 
       it "should maintain observables in subtemplates", ->
         model =
@@ -139,21 +138,21 @@ describe "subrender", ->
               td= this
           """
 
-        behave template(model), ->
-          assert.equal all("tr").length, 3
-          assert.equal Q("td").textContent, "Wat"
+        element = template(model)
+        assert.equal all("tr", element).length, 3
+        assert.equal element.querySelector("td").textContent, "Wat"
 
-          model.rows()[0] "yo"
+        model.rows()[0] "yo"
 
-          assert.equal Q("td").textContent, "yo"
+        assert.equal element.querySelector("td").textContent, "yo"
 
-          model.rows.push Observable("dude")
+        model.rows.push Observable("dude")
 
-          assert.equal all("tr").length, 4
-          assert.equal Q("td").textContent, "yo"
+        assert.equal all("tr", element).length, 4
+        assert.equal element.querySelector("td").textContent, "yo"
 
-          model.rows()[0] "holla"
-          assert.equal Q("td").textContent, "holla"
+        model.rows()[0] "holla"
+        assert.equal element.querySelector("td").textContent, "holla"
 
     describe "without root node", ->
       template = makeTemplate """
@@ -167,6 +166,7 @@ describe "subrender", ->
           sub1: makeTemplate ".yolo Hi"
           sub2: makeTemplate "h2 There"
 
-        behave template(model), ->
-          assert.equal all("h2").length, 1
-          assert.equal all(".yolo").length, 1
+        element = template(model)
+
+        assert.equal all("h2", element).length, 1
+        assert.equal all(".yolo", element).length, 1

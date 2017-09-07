@@ -23,10 +23,11 @@ describe "real world cases", ->
         ])}
       ]
 
-    behave template(model), ->
-      assert.equal Q(".key").value, "wat"
-      assert.equal all(".node").length, 2
-      assert.equal all(".key").length, 3
+    element = template(model)
+
+    assert.equal element.querySelector(".key").value, "wat"
+    assert.equal all(".node", element).length, 1
+    assert.equal all(".key", element).length, 3
 
   it "should respond to changes in the observable array", ->
     model =
@@ -39,16 +40,16 @@ describe "real world cases", ->
         ])}
       ]
 
-    behave template(model), ->
-      model.items.push {key: Observable("newbie"), value: Observable("guh")}
+    element = template(model)
+    model.items.push {key: Observable("newbie"), value: Observable("guh")}
 
-      assert.equal Q(".key").value, "wat"
-      assert.equal all(".node").length, 2
-      assert.equal all(".key").length, 4
+    assert.equal element.querySelector(".key").value, "wat"
+    assert.equal all(".node", element).length, 1
+    assert.equal all(".key", element).length, 4
 
-      model.items.push
-        items: Observable [
-          key: Observable("yolo"), value: Observable("heyo")
-        ]
+    model.items.push
+      items: Observable [
+        key: Observable("yolo"), value: Observable("heyo")
+      ]
 
-      assert.equal all(".node").length, 3
+    assert.equal all(".node", element).length, 2

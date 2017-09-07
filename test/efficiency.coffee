@@ -12,11 +12,11 @@ describe "efficiency", ->
       subrender: ->
         count += 1
 
-    behave template(model), ->
-      assert.equal count, 1
-      model.class "somethingElse"
-      assert.equal count, 1
-      assert Q(".somethingElse")
+    element = template(model)
+    assert.equal count, 1
+    model.class "somethingElse"
+    assert.equal count, 1
+    assert element.classList.contains("somethingElse")
 
   it "should recompute siblings an appropriate amount of times", ->
     template = makeTemplate """
@@ -63,11 +63,11 @@ describe "efficiency", ->
       subrender: ->
         count += 1
 
-    behave template(model), ->
-      assert.equal count, 1
-      model.name "somethingElse"
-      assert.equal count, 1
-      assert Q("[name=somethingElse]")
+    element = template(model)
+    assert.equal count, 1
+    model.name "somethingElse"
+    assert.equal count, 1
+    assert.equal element.getAttribute("name"), "somethingElse"
 
   it "should not re-render sub elements when ids change", ->
     template = makeTemplate """
@@ -82,11 +82,11 @@ describe "efficiency", ->
       subrender: ->
         count += 1
 
-    behave template(model), ->
-      assert.equal count, 1
-      model.id "somethingElse"
-      assert.equal count, 1
-      assert Q("#somethingElse")
+    element = template(model)
+    assert.equal count, 1
+    model.id "somethingElse"
+    assert.equal count, 1
+    assert.equal element.id, "somethingElse"
 
   it "should render the template once when the observable changes", ->
     template = makeTemplate """
@@ -117,20 +117,21 @@ describe "efficiency", ->
       renderedItem: ->
         iCount += 1
 
-    behave template(model), ->
-      assert.equal oCount, 1
-      assert.equal tCount, 1
-      assert.equal iCount, 3
+    element = template(model)
 
-      model.items.push "D"
-      assert.equal oCount, 1
-      assert.equal tCount, 2
-      assert.equal iCount, 7
+    assert.equal oCount, 1
+    assert.equal tCount, 1
+    assert.equal iCount, 3
 
-      model.items.push "E"
-      assert.equal oCount, 1
-      assert.equal tCount, 3
-      assert.equal iCount, 12
+    model.items.push "D"
+    assert.equal oCount, 1
+    assert.equal tCount, 2
+    assert.equal iCount, 7
+
+    model.items.push "E"
+    assert.equal oCount, 1
+    assert.equal tCount, 3
+    assert.equal iCount, 12
 
   it "shouldn't leak all over the place", ->
     template = makeTemplate """
@@ -157,15 +158,16 @@ describe "efficiency", ->
     model =
       items: items
 
-    behave template(model), ->
-      assert.equal items.listeners.length, 1
-      assert.equal activeItem.listeners.length, 3
-      items.push Item()
-      assert.equal items.listeners.length, 1
-      assert.equal activeItem.listeners.length, 4
-      items.push Item()
-      assert.equal items.listeners.length, 1
-      assert.equal activeItem.listeners.length, 5
-      items.pop()
-      assert.equal items.listeners.length, 1
-      assert.equal activeItem.listeners.length, 4
+    element = template(model)
+
+    assert.equal items.listeners.length, 1
+    assert.equal activeItem.listeners.length, 3
+    items.push Item()
+    assert.equal items.listeners.length, 1
+    assert.equal activeItem.listeners.length, 4
+    items.push Item()
+    assert.equal items.listeners.length, 1
+    assert.equal activeItem.listeners.length, 5
+    items.pop()
+    assert.equal items.listeners.length, 1
+    assert.equal activeItem.listeners.length, 4
