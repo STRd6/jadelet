@@ -3,6 +3,7 @@ stdin = require "stdin"
 compile = require '../dist/compiler'
 wrench = require "wrench"
 CoffeeScript = require "coffee-script"
+md5 = require 'md5'
 
 cli = require("commander")
   .version(require('../package.json').version)
@@ -34,22 +35,30 @@ if (dir = cli.directory)
       if inPath.match(extension)
         basePath = inPath.replace extension, ""
         outPath = "#{basePath}.js"
+        md5Path = "#{basePath}.md5"
 
-        console.log "Compiling #{inPath} to #{outPath}"
+        if fs.existsSync md5Path
+          prevMD5 = fs.readFileSync md5Path, encoding: encoding
 
         input = fs.readFileSync inPath,
           encoding: encoding
 
-        # Replace $file in exports with path
-        if cli.exports
-          exports = cli.exports.replace("$file", basePath)
+        currMD5 = md5 input
+        if currMD5 != prevMD5
+          console.log "Compiling #{inPath} to #{outPath}"
+          # Replace $file in exports with path
+          if cli.exports
+            exports = cli.exports.replace("$file", basePath)
 
-        program = compile input,
-          runtime: cli.runtime
-          exports: exports
-          compiler: CoffeeScript
+          program = compile input,
+            runtime: cli.runtime
+            exports: exports
+            compiler: CoffeeScript
 
-        fs.writeFileSync(outPath, program)
+          fs.writeFileSync(outPath, program)
+          fs.writeFileSync(md5Path, currMD5)
+        else
+          console.log "Skipping #{inPath} (no changes)"
 
 else
   stdin (input) ->
