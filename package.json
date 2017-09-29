@@ -26,7 +26,7 @@
     "url": "https://github.com/STRd6/jadelet.git"
   },
   "scripts": {
-    "prepublish": "script/prepublish",
+    "postinstall": "script/prepublish",
     "test": "script/test"
   },
   "bin": {
