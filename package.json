@@ -1,6 +1,6 @@
 {
   "name": "jadelet",
-  "version": "0.8.0-pre.7",
+  "version": "0.8.0-pre.8",
   "description": "Lightweight, elegant HTML templates",
   "devDependencies": {
     "browserify": "^14.3.0",
@@ -26,8 +26,6 @@
     "url": "https://github.com/STRd6/jadelet.git"
   },
   "scripts": {
-    "build": "script/prepublish",
-    "postinstall": "script/prepublish",
     "prepublish": "script/prepublish",
     "test": "script/test"
   },
