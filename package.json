@@ -1,5 +1,5 @@
 {
-  "name": "jadelet-et",
+  "name": "jadelet",
   "version": "0.8.0-pre.10",
   "description": "Lightweight, elegant HTML templates",
   "devDependencies": {
