@@ -16,7 +16,7 @@ cli = require("commander")
   .parse(process.argv)
 
 encoding = cli.encoding or "utf-8"
-cliJSON = JSON.stringify cliJSON
+cliJSON = JSON.stringify cli
 
 if cli.extension
   extension = new RegExp "\\.#{cli.extension}$"
