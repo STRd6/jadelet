@@ -16,6 +16,7 @@ cli = require("commander")
   .parse(process.argv)
 
 encoding = cli.encoding or "utf-8"
+cliJSON = JSON.stringify cliJSON
 
 if cli.extension
   extension = new RegExp "\\.#{cli.extension}$"
@@ -43,7 +44,8 @@ if (dir = cli.directory)
         input = fs.readFileSync inPath,
           encoding: encoding
 
-        currMD5 = md5 input
+        # if the options change, the prevMD5 is invalid
+        currMD5 = md5(input + cliJSON)
         if currMD5 != prevMD5
           console.log "Compiling #{inPath} to #{outPath}"
           # Replace $file in exports with path
