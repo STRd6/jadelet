@@ -27,6 +27,7 @@
   },
   "scripts": {
     "build": "script/prepublish",
+    "postinstall": "script/prepublish",
     "prepublish": "script/prepublish",
     "test": "script/test"
   },
