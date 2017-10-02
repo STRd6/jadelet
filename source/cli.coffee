@@ -38,7 +38,8 @@ if (dir = cli.directory)
         outPath = "#{basePath}.js"
         md5Path = "#{basePath}.md5"
 
-        if fs.existsSync md5Path
+        # ignore md5 if the output does not exist
+        if fs.existsSync(outPath) and fs.existsSync(md5Path)
           prevMD5 = fs.readFileSync md5Path, encoding: encoding
 
         input = fs.readFileSync inPath,
