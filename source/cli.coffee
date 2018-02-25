@@ -2,7 +2,7 @@ fs = require "fs"
 stdin = require "stdin"
 compile = require '../dist/compiler'
 wrench = require "wrench"
-CoffeeScript = require "coffee-script"
+CoffeeScript = require "coffeescript"
 md5 = require 'md5'
 
 cli = require("commander")

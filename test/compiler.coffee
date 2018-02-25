@@ -1,6 +1,6 @@
 assert = require('assert')
 fs = require('fs')
-CoffeeScript = require "coffee-script"
+CoffeeScript = require "coffeescript"
 
 jadeletCompiler = require('../dist/compiler')
 

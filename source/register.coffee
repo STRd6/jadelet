@@ -1,4 +1,4 @@
-CoffeeScript = require "coffee-script"
+CoffeeScript = require "coffeescript"
 {compile} = require "jadelet/dist/main"
 
 fs = require "fs"
