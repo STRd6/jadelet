@@ -5,8 +5,8 @@ script/prepublish
 
 node_modules/.bin/mocha \
   --expose-gc \
-  --compilers coffee:coffee-script \
+  --compilers coffee:coffeescript \
   --reporter spec \
-  --require 'coffee-script/register' \
+  --require 'coffeescript/register' \
   --require test/helper.coffee \
   "$@"

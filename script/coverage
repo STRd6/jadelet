@@ -3,7 +3,7 @@ set -e
 
 node_modules/.bin/istanbul cover \
   node_modules/.bin/_mocha -- \
-    --compilers coffee:coffee-script \
-    --require coffee-script/register \
+    --compilers coffee:coffeescript \
+    --require coffeescript/register \
     --reporter spec \
     --require test/helper.coffee

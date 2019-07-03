@@ -10,7 +10,7 @@
     "uglify-js": "^3.0.9"
   },
   "dependencies": {
-    "coffee-script": "~1.7.1",
+    "coffeescript": "^2",
     "commander": "^2.9.0",
     "jison": "^0.4.17",
     "jison-lex": "^0.3.4",

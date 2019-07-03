@@ -1,6 +1,6 @@
 extend = Object.assign
 
-CoffeeScript = require "coffee-script"
+CoffeeScript = require "coffeescript"
 
 compile = require "../dist/compiler"
 Runtime = require "../dist/runtime"
