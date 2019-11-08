@@ -20,7 +20,7 @@
     "through2": "^2.0.3",
     "wrench": "^1.5.8"
   },
-  "homepage": "jadelet.com",
+  "homepage": "https://jadelet.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/STRd6/jadelet.git"
