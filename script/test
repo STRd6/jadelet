@@ -3,10 +3,15 @@ set -e
 
 script/prepublish
 
+if [ $# -eq 0 ]; then
+  ARGS="test/*.coffee"
+else
+  ARGS="$@"
+fi
+
 node_modules/.bin/mocha \
   --expose-gc \
-  --compilers coffee:coffeescript \
   --reporter spec \
   --require 'coffeescript/register' \
   --require test/helper.coffee \
-  "$@"
+  $ARGS
