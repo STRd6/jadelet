@@ -4,16 +4,15 @@
   "description": "Lightweight, elegant HTML templates",
   "devDependencies": {
     "browserify": "^14.3.0",
+    "coffeescript": "^2",
     "istanbul": "^0.4.5",
     "jsdom": "^9.11.0",
     "mocha": "^3.4.1",
     "uglify-js": "^3.0.9"
   },
   "dependencies": {
-    "coffeescript": "^2",
     "commander": "^2.9.0",
-    "jison": "^0.4.17",
-    "jison-lex": "^0.3.4",
+    "hera": "STRd6/hera",
     "md5": "^2.2.1",
     "o_0": "^0.4.0-pre.0",
     "stdin": "0.0.1",
@@ -26,8 +25,8 @@
     "url": "https://github.com/STRd6/jadelet.git"
   },
   "scripts": {
-    "prepublish": "script/prepublish",
-    "test": "script/test"
+    "prepublish": "bash script/prepublish",
+    "test": "bash script/test"
   },
   "bin": {
     "jadelet": "bin/jadelet"

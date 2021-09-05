@@ -1,7 +1,7 @@
 div
-  input(type="text" value=@value)
-  select(value=@value options=[1..@max])
+  input(type="text" @value)
+  select(@value @options)
   hr
-  input(type="range" value=@value min="1" max=@max)
+  input(type="range" value=@value min="1" @max)
   hr
-  progress(value=@value max=@max)
+  progress(@value @max)

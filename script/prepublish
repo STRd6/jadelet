@@ -1,15 +1,15 @@
 #!/bin/bash
 set -e
 
-# normal files
-./node_modules/.bin/coffee -co dist/ source/
-
-# build lexer
-node_modules/.bin/jison-lex -o dist/parser/lexer.js source/parser/jadelet.jisonlex
-echo 'module.exports = lexer;' >> dist/parser/lexer.js
-
 # parser
 script/generate-parser
+
+# normal files
+./node_modules/.bin/coffee \
+  --bare \
+  --compile \
+  --output dist/ \
+  source/
 
 # cli
 mkdir -p bin

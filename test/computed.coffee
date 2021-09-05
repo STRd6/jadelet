@@ -1,7 +1,7 @@
 describe "Computed", ->
   template = makeTemplate """
     div
-      h2= @name
+      h2 @name
       input(value=@first)
       input(value=@last)
   """

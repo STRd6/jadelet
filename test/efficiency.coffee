@@ -2,7 +2,7 @@ describe "efficiency", ->
   it "should not re-render sub elements when classes change", ->
     template = makeTemplate """
       .duder(@class)
-        - @subrender()
+        @subrender
     """
 
     count = 0
@@ -21,10 +21,10 @@ describe "efficiency", ->
   it "should recompute siblings an appropriate amount of times", ->
     template = makeTemplate """
       div
-        = @item1
-        = @item2
-        = @item3
-        = @counter
+        @item1
+        @item2
+        @item3
+        @counter
     """
 
     count = 0
@@ -39,11 +39,11 @@ describe "efficiency", ->
 
     assert.equal count, 1
     model.item1 "B"
-    assert.equal count, 2
+    assert.equal count, 1
     model.item2.decrement()
-    assert.equal count, 3
+    assert.equal count, 1
     model.item3 document.createElement "div"
-    assert.equal count, 4
+    assert.equal count, 1
 
     assert.equal model.item1.listeners.length, 1
     assert.equal model.item2.listeners.length, 1
@@ -53,7 +53,7 @@ describe "efficiency", ->
   it "should not re-render sub elements when attributes change", ->
     template = makeTemplate """
       .duder(@name)
-        - @subrender()
+        @subrender
     """
 
     count = 0
@@ -72,7 +72,7 @@ describe "efficiency", ->
   it "should not re-render sub elements when ids change", ->
     template = makeTemplate """
       .duder(@id)
-        - @subrender()
+        @subrender
     """
 
     count = 0
@@ -91,13 +91,16 @@ describe "efficiency", ->
   it "should render the template once when the observable changes", ->
     template = makeTemplate """
       .awesome
-        - @renderedOuter()
+        @renderedOuter
         ul
-          - renderedItem = @renderedItem
-          - @renderedTemplate()
-          - @items.forEach (item) ->
-            .item
-            - renderedItem()
+          @renderedTemplate
+          @itemElements
+    """
+
+    itemTemplate = makeTemplate """
+      .item
+        @n
+        @renderedItem
     """
 
     oCount = 0
@@ -110,6 +113,13 @@ describe "efficiency", ->
         "B"
         "C"
       ]
+      itemElements: ->
+        renderedItem = @renderedItem
+
+        @items.map (n) ->
+          itemTemplate
+            n: n
+            renderedItem: renderedItem
       renderedOuter: ->
         oCount += 1
       renderedTemplate: ->
@@ -125,19 +135,23 @@ describe "efficiency", ->
 
     model.items.push "D"
     assert.equal oCount, 1
-    assert.equal tCount, 2
+    assert.equal tCount, 1
     assert.equal iCount, 7
 
     model.items.push "E"
     assert.equal oCount, 1
-    assert.equal tCount, 3
+    assert.equal tCount, 1
     assert.equal iCount, 12
 
   it "shouldn't leak all over the place", ->
     template = makeTemplate """
       items
-        - @items.forEach (item) ->
-          button(click=item.click class=item.active)= item.text
+        @itemElements
+          
+    """
+
+    buttonTemplate = makeTemplate """
+      button(@click class=@active) @text
     """
 
     activeItem = Observable null
@@ -157,6 +171,9 @@ describe "efficiency", ->
 
     model =
       items: items
+      itemElements: ->
+        @items.map (item) ->
+          buttonTemplate item
 
     element = template(model)
 
@@ -171,3 +188,9 @@ describe "efficiency", ->
     items.pop()
     assert.equal items.listeners.length, 1
     assert.equal activeItem.listeners.length, 4
+    items.pop()
+    items.pop()
+    items.pop()
+    assert.equal activeItem.listeners.length, 1
+    items.pop()
+    assert.equal activeItem.listeners.length, 0

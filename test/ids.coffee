@@ -7,13 +7,11 @@ describe "ids", ->
 
     assert.equal element.id, "rad"
 
-  it "should be ok if undefined", ->
-    template = makeTemplate """
-      h1(id=undefined)
-    """
-    element = template()
-
-    assert.equal element.id, ""
+  it "should throw on arbitrary text", ->
+    assert.throws ->
+      makeTemplate """
+        h1(id=noquotes)
+      """
 
   it "should use the last valid id when multiple exist", ->
     template = makeTemplate """

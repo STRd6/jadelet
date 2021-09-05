@@ -1,8 +1,7 @@
 fs = require "fs"
 stdin = require "stdin"
-compile = require '../dist/compiler'
+{compile} = require '../dist/jadelet'
 wrench = require "wrench"
-CoffeeScript = require "coffeescript"
 md5 = require 'md5'
 
 cli = require("commander")
@@ -56,7 +55,6 @@ if (dir = cli.directory)
           program = compile input,
             runtime: cli.runtime
             exports: exports
-            compiler: CoffeeScript
 
           fs.writeFileSync(outPath, program)
           fs.writeFileSync(md5Path, currMD5)
@@ -76,4 +74,3 @@ else
         mode: cli.mode
         runtime: cli.runtime
         exports: cli.exports
-        compiler: CoffeeScript
