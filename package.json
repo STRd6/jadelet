@@ -7,7 +7,7 @@
     "coffeescript": "^2",
     "istanbul": "^0.4.5",
     "jsdom": "^9.11.0",
-    "mocha": "^3.4.1",
+    "mocha": "^9.1.1",
     "uglify-js": "^3.0.9"
   },
   "dependencies": {
