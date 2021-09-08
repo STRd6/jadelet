@@ -13,7 +13,7 @@
   "dependencies": {
     "commander": "^8.1.0",
     "hera": "STRd6/hera",
-    "md5": "^2.2.1",
+    "md5": "^2.3.0",
     "o_0": "^0.4.0-pre.0"
   },
   "homepage": "https://jadelet.com",
