@@ -1,6 +1,6 @@
 {
   "name": "jadelet",
-  "version": "0.8.0-pre.11",
+  "version": "2.0.0-pre.0",
   "description": "Lightweight, elegant HTML templates",
   "devDependencies": {
     "browserify": "^14.3.0",
