@@ -11,7 +11,7 @@
     "uglify-js": "^3.14.2"
   },
   "dependencies": {
-    "commander": "^2.9.0",
+    "commander": "^8.1.0",
     "hera": "STRd6/hera",
     "md5": "^2.2.1",
     "o_0": "^0.4.0-pre.0"

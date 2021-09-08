@@ -186,13 +186,23 @@ jadelet -d templates
 
 `--exports, -e [name]` Export compiled template as (default `"module.exports"`)
 
+When used with `-d` you can use $file to take on the stringified name of the
+current file. For example:
+
+```bash
+jadelet -d templates/ -e 'T[$file]'
+```
+
+The files will export as:
+```javascript
+T["folder/subfolder/file"] = require('jadelet').exec(...)
+```
+
 `--runtime, -r [runtime_name]` Specifies the name of the globally available Jadelet runtime (default is `"require('jadelet')"`).
+
+If you are using `jadelet-brower.js` you'll want to replace this with 'Jadelet' so
+it can use the global in the browser.
 
 ```bash
 jadelet -r "Jadelet" < template.jadelet > output.js
 ```
-
-`--ast, -a` Output a JSON AST instead of the JavaScript template function.
-Useful for debugging or for using the Jadelet DSL as a frontend for other
-renderer backends like Mithril or React. This isn't yet guaranteed to be a
-stable format.
