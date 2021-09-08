@@ -1,11 +1,9 @@
-CoffeeScript = require "coffeescript"
-{compile} = require "jadelet/dist/main"
+{compile} = require "jadelet/dist/jadelet"
 
 fs = require "fs"
 
 compileRaw = (raw) ->
   compile raw,
-    compiler: CoffeeScript
     exports: "module.exports"
     runtime: "require('jadelet')"
 
@@ -18,29 +16,28 @@ require.extensions[".jadelet"] = (module, filename) ->
   module._compile src, filename
 
 # Browserify transform
-through = require "through2"
+{ Transform } = require('readable-stream')
 
 isJadelet = (filename) ->
   filename.match(/\.jadelet$/) or filename.match(/\.jade$/)
 
 module.exports = (filename, options={}) ->
-  return through() unless isJadelet(filename)
+  return new Transform() unless isJadelet(filename)
 
   chunks = []
-  transform = (chunk, encoding, callback) ->
-    chunks.push(chunk)
-    callback()
+  return new Transform
+    transform: (chunk, encoding, callback) ->
+      chunks.push(chunk)
+      callback()
 
-  flush = (callback) ->
-    stream = this
-    raw = Buffer.concat(chunks).toString()
+    flush: (callback) ->
+      stream = this
+      raw = Buffer.concat(chunks).toString()
 
-    try
-      source = compileRaw raw
+      try
+        source = compileRaw raw
 
-      stream.push(source)
-      callback(null)
-    catch error
-      callback(error)
-
-  return through(transform, flush)
+        stream.push(source)
+        callback(null)
+      catch error
+        callback(error)
