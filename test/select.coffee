@@ -151,7 +151,7 @@ describe "SELECT", ->
         options: options
         optionElements: ->
           @options.map Option
-        value: options.get(0)
+        value: options()[0].value()
 
       select = template(model)
 

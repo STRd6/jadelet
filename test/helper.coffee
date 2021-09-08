@@ -1,21 +1,20 @@
-extend = Object.assign
+{JSDOM} = require("jsdom")
+{window} = new JSDOM("")
+{Event, Node, document} = window
+
+Object.assign global,
+  document: document
+  window: window
+  Node: Node
 
 Jadelet = require "../dist/jadelet"
 {exec, Observable} = Jadelet
 
-{jsdom} = require("jsdom")
-
-document = jsdom()
-
-{Event} = window = document.defaultView
-
-extend global,
+Object.assign global,
   assert: require "assert"
-  extend: extend
   Jadelet: Jadelet
-  Node: window.Node
   Observable: Observable
-  document: document
+
   dispatchEvent: (element, eventName, options={}) ->
     element.dispatchEvent new Event eventName, options
 

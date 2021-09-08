@@ -6,7 +6,7 @@
     "browserify": "^14.3.0",
     "coffeescript": "^2",
     "istanbul": "^0.4.5",
-    "jsdom": "^9.11.0",
+    "jsdom": "^17.0.0",
     "mocha": "^9.1.1",
     "uglify-js": "^3.0.9"
   },
