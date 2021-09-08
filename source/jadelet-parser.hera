@@ -5,8 +5,14 @@ Template
     function reduceLines(lines) {
       var depth = 0;
       var stack = [[]];
+      var firstIndent = 0;
 
       lines.forEach( ([indent, line]) => {
+        if (firstIndent === 0 && indent > depth + 1) {
+          firstIndent = indent - 1;
+        }
+        indent = indent > firstIndent ? indent - firstIndent : indent;
+
         if (Array.isArray(line)) {
           line[1] = collectAttributes(line[1])
         }
