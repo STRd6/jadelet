@@ -5,7 +5,7 @@ fs = require('fs')
 
 compileDirectory = (directory, mode) ->
   fs.readdirSync(directory).forEach (file) ->
-    if file.match /\.jade(let)?$/
+    if file.match /\.jadelet$/
       data = fs.readFileSync "#{directory}/#{file}", "utf8"
 
       it "compiles #{file}", ->
@@ -20,5 +20,8 @@ describe 'Compiler', ->
   describe "exports", ->
     it "defaults to module.exports", ->
       compiled = compile "h1"
-
       assert compiled.match(/^module\.exports/)
+
+    it "defaults to require('jadelet')", ->
+      compiled = compile "h1"
+      assert compiled.match(/require\('jadelet'\)/)
