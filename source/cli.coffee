@@ -1,8 +1,20 @@
 fs = require "fs"
-stdin = require "stdin"
 {compile} = require '../dist/jadelet'
-wrench = require "wrench"
 md5 = require 'md5'
+
+{ readdir } = fs.promises
+{ resolve } = require "path"
+
+getFiles = (dir, ext) ->
+  entities = await readdir dir,
+    withFileTypes: true
+
+  for entity from entities
+    res = resolve dir, entity.name
+    if entity.isDirectory()
+      yield from getFiles(res)
+    else if res.match ext
+      yield res
 
 cli = require("commander")
   .version(require('../package.json').version)
@@ -26,51 +38,46 @@ if (dir = cli.directory)
   # Ensure exactly one trailing slash
   dir = dir.replace /\/*$/, "/"
 
-  files = wrench.readdirSyncRecursive(dir)
+  do ->
+    for await path from getFiles(dir, extension)
+      basePath = path.replace extension, ""
+      outPath = "#{basePath}.js"
+      md5Path = "#{basePath}.md5"
 
-  files.forEach (path) ->
-    inPath = "#{dir}#{path}"
+      # ignore md5 if the output does not exist
+      if fs.existsSync(outPath) and fs.existsSync(md5Path)
+        prevMD5 = fs.readFileSync md5Path, encoding: encoding
 
-    if fs.lstatSync(inPath).isFile()
-      if inPath.match(extension)
-        basePath = inPath.replace extension, ""
-        outPath = "#{basePath}.js"
-        md5Path = "#{basePath}.md5"
+      input = fs.readFileSync path,
+        encoding: encoding
 
-        # ignore md5 if the output does not exist
-        if fs.existsSync(outPath) and fs.existsSync(md5Path)
-          prevMD5 = fs.readFileSync md5Path, encoding: encoding
+      # if the options change, the prevMD5 is invalid
+      currMD5 = md5(input + cliJSON)
+      if currMD5 != prevMD5
+        console.log "Compiling #{path} to #{outPath}"
+        # Replace $file in exports with path
+        if cli.exports
+          exports = cli.exports.replace("$file", basePath)
 
-        input = fs.readFileSync inPath,
-          encoding: encoding
+        program = compile input,
+          runtime: cli.runtime
+          exports: exports
 
-        # if the options change, the prevMD5 is invalid
-        currMD5 = md5(input + cliJSON)
-        if currMD5 != prevMD5
-          console.log "Compiling #{inPath} to #{outPath}"
-          # Replace $file in exports with path
-          if cli.exports
-            exports = cli.exports.replace("$file", basePath)
-
-          program = compile input,
-            runtime: cli.runtime
-            exports: exports
-
-          fs.writeFileSync(outPath, program)
-          fs.writeFileSync(md5Path, currMD5)
-        else
-          console.log "Skipping #{inPath} (no changes)"
+        fs.writeFileSync(outPath, program)
+        fs.writeFileSync(md5Path, currMD5)
+      else
+        console.log "Skipping #{path} (no changes)"
 
 else
-  stdin (input) ->
+  input = fs.readFileSync(process.stdin.fd, encoding)
 
-    if cli.ast
-      process.stdout.write JSON.stringify(ast)
+  if cli.ast
+    process.stdout.write JSON.stringify(ast)
 
-      return
+    return
 
-    else
-      process.stdout.write compile input,
-        mode: cli.mode
-        runtime: cli.runtime
-        exports: cli.exports
+  else
+    process.stdout.write compile input,
+      mode: cli.mode
+      runtime: cli.runtime
+      exports: cli.exports

@@ -15,9 +15,7 @@
     "hera": "STRd6/hera",
     "md5": "^2.2.1",
     "o_0": "^0.4.0-pre.0",
-    "stdin": "0.0.1",
-    "through2": "^2.0.3",
-    "wrench": "^1.5.8"
+    "through2": "^2.0.3"
   },
   "homepage": "https://jadelet.com",
   "repository": {
