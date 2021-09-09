@@ -8,7 +8,7 @@ compileRaw = (raw) ->
     runtime: "require('jadelet')"
 
 # Hook require to .jadelet extension
-require.extensions[".jadelet"] = (module, filename) ->
+Module._extensions[".jadelet"] = (module, filename) ->
   raw = fs.readFileSync filename, 'utf8'
 
   src = compileRaw raw
