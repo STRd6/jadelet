@@ -1,7 +1,7 @@
 Template
   __? Line* ->
     var top = a => a[a.length-1];
- 
+
     function reduceLines(lines) {
       var depth = 0;
       var stack = [[]];
@@ -9,7 +9,8 @@ Template
 
       lines.forEach( ([indent, line]) => {
         if (firstIndent === 0 && indent > depth + 1) {
-          firstIndent = indent - 1;
+          firstIndent = indent;
+          indent = 1;
         }
         indent = indent > firstIndent ? indent - firstIndent : indent;
 
@@ -29,7 +30,7 @@ Template
         depth = indent
         top(stack).push(line)
       })
-  
+
       return stack[0]
     }
 
@@ -115,7 +116,7 @@ Classes
   Class+
 
 Class
-  "." Identifier -> 
+  "." Identifier ->
     return ["class", $2]
   "." !Identifier ->
     throw "Expected a class name"
@@ -144,7 +145,8 @@ ClassError
     throw "Classes cannot appear after attributes."
 
 TagName
-  Identifier
+  Identifier -> 1
+  " " Identifier -> 2
 
 OptionalAttributes
   "(" __? Attribute+ ")" IdError? ClassError? ->
@@ -162,7 +164,7 @@ Attribute
     return [$1, ""]
 
 AtIdentifier
-  "@" Identifier -> 
+  "@" Identifier ->
     return {
       bind: $2
     }
