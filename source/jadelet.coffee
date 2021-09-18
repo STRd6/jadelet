@@ -106,7 +106,7 @@ observeAttribute = (element, context, name, value) ->
       if isEvent("on#{name}", element)
         # It doesn't make sense for events to not be bound
         bindEvent(element, name, value.bind, context)
-      else 
+      else
         bindObservable element, value, context, (newValue) ->
           if newValue? and newValue != false
             element.setAttribute name, newValue
@@ -305,6 +305,8 @@ render = (astNode, context={}, namespace) ->
 
   if namespace
     element = document.createElementNS namespace, tag
+  else if tag is "Fragment" or tag is "<>"
+    element = document.createDocumentFragment()
   else
     element = document.createElement tag
   # We populate the content first so that value binding for `select` tags
