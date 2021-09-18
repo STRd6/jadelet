@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-mkdir --parents dist
+mkdir -p dist
 
 # parser
 script/generate-parser
