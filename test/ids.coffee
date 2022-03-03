@@ -21,6 +21,24 @@ describe "ids", ->
     element = template()
     assert.equal element.id, "cool"
 
+  it "should use the last id when given an array", ->
+    template = makeTemplate """
+      h1(@id)
+    """
+
+    element = template
+      id: ["one", "two"]
+    assert.equal element.id, "two"
+
+  it "should not have an id when given an empty array", ->
+    template = makeTemplate """
+      h1(@id)
+    """
+
+    element = template
+      id: []
+    assert.equal element.getAttribute('id'), null
+
   it "should update the id if it's observable", ->
     template = makeTemplate """
       h1(@id)

@@ -1,29 +1,27 @@
-{compile} = require "jadelet/dist/jadelet"
-
+{compile} = require "../"
 fs = require "fs"
 
-compileRaw = (raw) ->
+getRootModule = (module) ->
+  return module unless module.parent
+  getRootModule module.parent
+
+compileRaw = (raw, opts={}) ->
   compile raw,
-    exports: "module.exports"
-    runtime: "require('jadelet')"
+    exports: opts.exports ? "module.exports"
+    runtime: opts.runtime ? "require('jadelet')"
 
 # Hook require to .jadelet extension
-Module._extensions[".jadelet"] = (module, filename) ->
+require.extensions[".jadelet"] = (module, filename) ->
+  options = module.options or getRootModule(module).options
+
   raw = fs.readFileSync filename, 'utf8'
-
-  src = compileRaw raw
-
+  src = compileRaw raw, options
   module._compile src, filename
 
 # Browserify transform
 { Transform } = require('readable-stream')
 
-isJadelet = (filename) ->
-  filename.match(/\.jadelet$/) or filename.match(/\.jade$/)
-
 module.exports = (filename, options={}) ->
-  return new Transform() unless isJadelet(filename)
-
   chunks = []
   return new Transform
     transform: (chunk, encoding, callback) ->
@@ -31,13 +29,10 @@ module.exports = (filename, options={}) ->
       callback()
 
     flush: (callback) ->
-      stream = this
       raw = Buffer.concat(chunks).toString()
 
       try
-        source = compileRaw raw
-
-        stream.push(source)
+        @push compileRaw raw, options
         callback(null)
       catch error
         callback(error)

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/STRd6/jadelet.svg)](https://travis-ci.org/STRd6/jadelet)
+[![Coverage Status](https://coveralls.io/repos/github/STRd6/jadelet/badge.svg?branch=master)](https://coveralls.io/github/STRd6/jadelet?branch=master)
 
 Jadelet
 =======
@@ -12,7 +12,7 @@ If you know HTML then you already know Jadelet.
 Other libraries and frameworks put up barriers between you and the DOM. Like a
 dutiful servant, Jadelet brings the power of the DOM into _your_ hands.
 
-Jadelet is the smallest of all clientside templating libraries (< 2.5kb). But
+Jadelet is the smallest of all clientside templating libraries (< 5.8kb). But
 don't let its size fool you: it contains tremendous power.
 
 Jadelet is free, MIT licensed, open source, non-GMO, and production ready.
@@ -122,7 +122,8 @@ Template({
 
 #### Is it production ready?
 
-Yes, Jadelet's been used by glitch.com, whimsy.space, and danielx.net.
+Yes, Jadelet's been used for years in production by glitch.com, whimsy.space,
+and danielx.net.
 
 #### Is it performant?
 

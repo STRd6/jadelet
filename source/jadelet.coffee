@@ -41,9 +41,6 @@ dispose = (element) ->
   return
 
 attachCleaner = (element, cleaner) ->
-  if typeof cleaner != 'function'
-    throw new Error "whoops"
-
   cleaners = elementCleaners.get(element)
   if cleaners
     cleaners.push cleaner
@@ -99,14 +96,14 @@ observeAttribute = (element, context, name, value) ->
           return
 
       bindObservable element, value, context, (newValue) ->
-        element.checked = newValue
+        element.checked = newValue != false
         return
     else
       # Handle click=@method
       if isEvent("on#{name}", element)
         # It doesn't make sense for events to not be bound
         bindEvent(element, name, value.bind, context)
-      else 
+      else
         bindObservable element, value, context, (newValue) ->
           if newValue? and newValue != false
             element.setAttribute name, newValue
@@ -266,10 +263,6 @@ append = (element, item, beforeTarget) ->
 
   return 1
 
-remove = (element, child) ->
-  element.removeChild(child)
-  release(child)
-
 isObject = (x) ->
   typeof x is "object"
 
@@ -330,9 +323,6 @@ module.exports = Jadelet =
   parse: parser.parse
   parser: parser
   exec: (ast) ->
-    if typeof ast is "function"
-      return ast
-
     if typeof ast is "string"
       ast = Jadelet.parse ast
 

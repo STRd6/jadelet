@@ -7,7 +7,7 @@ Object.assign global,
   window: window
   Node: Node
 
-Jadelet = require "../dist/jadelet"
+Jadelet = require "../source/jadelet"
 {exec, Observable} = Jadelet
 
 Object.assign global,
@@ -25,4 +25,3 @@ Object.assign global,
     base.querySelectorAll(selectors)
 
   makeTemplate: exec
- 

@@ -10,6 +10,7 @@ script/generate-parser
 ./node_modules/.bin/coffee \
   --bare \
   --compile \
+  --no-header \
   --output dist/ \
   source/
 

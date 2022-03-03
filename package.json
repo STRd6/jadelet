@@ -1,13 +1,15 @@
 {
   "name": "jadelet",
-  "version": "2.0.0-pre.0",
+  "version": "2.0.0-pre.1",
   "description": "Lightweight, elegant HTML templates",
+  "license": "MIT",
   "devDependencies": {
+    "@danielx/coffeecoverage": "4.0.0-pre.1",
     "browserify": "^17.0.0",
     "coffeescript": "^2",
-    "istanbul": "^0.4.5",
-    "jsdom": "^17.0.0",
-    "mocha": "^9.1.1",
+    "jsdom": "^19.0.0",
+    "mocha": "^9.2.0",
+    "nyc": "^15.1.0",
     "uglify-js": "^3.14.2"
   },
   "dependencies": {
@@ -21,10 +23,45 @@
     "type": "git",
     "url": "https://github.com/STRd6/jadelet.git"
   },
+  "mocha": {
+    "extension": [
+      "coffee"
+    ],
+    "require": [
+      "coffeescript/register",
+      "@danielx/coffeecoverage/register-istanbul",
+      "hera/register",
+      "./test/helper.coffee"
+    ],
+    "reporter": "spec",
+    "recursive": true,
+    "spec": [
+      "test"
+    ]
+  },
+  "nyc": {
+    "check-coverage": true,
+    "branches": 98,
+    "lines": 99,
+    "functions": 100,
+    "statements": 99,
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "extension": [
+      ".coffee"
+    ],
+    "exclude": [
+      "source/cli.coffee"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
   "scripts": {
     "browser": "bash script/browser",
     "prepublish": "bash script/prepublish",
-    "test": "bash script/test"
+    "test": "nyc mocha"
   },
   "bin": {
     "jadelet": "bin/jadelet"
@@ -33,5 +70,5 @@
     "bin/",
     "dist/"
   ],
-  "main": "dist/runtime.js"
+  "main": "dist/jadelet.js"
 }

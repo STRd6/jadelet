@@ -1,0 +1,7 @@
+describe "ast", ->
+  it "should fail on a corrupted ast", ->
+    assert.throws ->
+      ast = ["h1", {}, [5]]
+      T = Jadelet.exec(ast)
+      T()
+    , /oof/
