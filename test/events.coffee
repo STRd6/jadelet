@@ -16,7 +16,7 @@ describe "Events", ->
     button.click()
     assert.equal result, "Foobert"
 
-  it "should bind on- events the same way", ->
+  it "shouldn't bind on- events", ->
     template = makeTemplate """
       button(onclick=@click)
     """
@@ -29,9 +29,9 @@ describe "Events", ->
         result = @name()
 
     button = template(model)
-    assert.equal result, null
-    button.click()
+    # Function was called to seet the "onclick" attribute
     assert.equal result, "Foobert"
+    assert.equal button.getAttribute("onclick"), "Foobert"
 
   it "should skip non-functions when binding events", ->
     template = makeTemplate """

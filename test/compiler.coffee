@@ -1,19 +1,12 @@
 assert = require('assert')
 fs = require('fs')
-CoffeeScript = require "coffeescript"
 
-jadeletCompiler = require('../dist/compiler')
-
-compile = (source, opts={}) ->
-  opts.compiler ?= CoffeeScript
-  opts.mode ?= "jade"
-
-  jadeletCompiler source, opts
+{compile} = require('../dist/jadelet')
 
 compileDirectory = (directory, mode) ->
   fs.readdirSync(directory).forEach (file) ->
-    if file.match /\.jade(let)?$/
-      data = fs.readFileSync "#{directory}/#{file}", "UTF-8"
+    if file.match /\.jadelet$/
+      data = fs.readFileSync "#{directory}/#{file}", "utf8"
 
       it "compiles #{file}", ->
         data = compile data
@@ -27,10 +20,8 @@ describe 'Compiler', ->
   describe "exports", ->
     it "defaults to module.exports", ->
       compiled = compile "h1"
-
       assert compiled.match(/^module\.exports/)
 
-    it "is removable by passing false", ->
-      compiled = compile "h1", exports: false
-
-      assert compiled.match(/^\(function\(data\) \{/)
+    it "defaults to require('jadelet')", ->
+      compiled = compile "h1"
+      assert compiled.match(/require\('jadelet'\)/)

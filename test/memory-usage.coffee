@@ -23,7 +23,7 @@ describe "Memory usage", ->
       i = 0
       while i < 1000
         button = create()
-        Runtime._dispose(button)
+        Jadelet.dispose(button)
         i += 1
 
       global.gc()
@@ -33,6 +33,8 @@ describe "Memory usage", ->
       # There's a surprising amount of variability in this memory usage number, but this seems
       # to trigger it every time when the call to _dispose is removed, so it may be decent at
       # detecting leaks
-      assert finalMemoryUsage - initialMemoryUsage < 10000
+      delta = finalMemoryUsage - initialMemoryUsage
+      target = 20000
+      assert delta < target, "Memory used #{delta} not < #{target}"
 
   it "should remain stable even after many iterations", usageTest

@@ -17,6 +17,9 @@ This simplifies the templates much further but is not necessarily a strict upgra
 - Deprecated `h1= @content` in favor of `h1 @content` syntax
 - Faster
 - Parser and runtime combined in less than 10kb
+- No more implicit `options=` in `<select>` element. Options must be added explicitly as children.
+- No longer allowing unquoted text in attribute values, numbers are still ok. `button(radical=true)` -> `button(radical="true")`
+- SVG support
 
 1.0.0
 -----

@@ -1,11 +1,25 @@
 describe "SELECT", ->
+  OptionTemplate = makeTemplate """
+    option(@value) @name
+  """
+
+  Option = (n) ->
+    if typeof n is "object"
+      OptionTemplate n
+    else
+      OptionTemplate
+        name: n
+        value: n
+
   describe "with an array of basic types for options", ->
     template = makeTemplate """
-      select(@value @options)
+      select(@value)
+        @options
     """
+
     it "should generate options", ->
       model =
-        options: [1, 2, 3]
+        options: [1, 2, 3].map(Option)
         value: 2
       select = template(model)
 
@@ -13,7 +27,7 @@ describe "SELECT", ->
 
     it "should have it's value set", ->
       model =
-        options: [1, 2, 3]
+        options: [1, 2, 3].map(Option)
         value: 2
       select = template(model)
 
@@ -21,13 +35,12 @@ describe "SELECT", ->
 
     it "should pass the option to the value binding on a change event", (done) ->
       model =
-        options: [1, 2, 3]
+        options: [1, 2, 3].map(Option)
         value: Observable(1)
 
       model.value.observe (value) ->
-        # NOTE: The value is a memebr of the options array
-        assert typeof value is "number"
-        assert.equal value, 3
+        assert typeof value is "string"
+        assert.equal value, "3"
         done()
 
       select = template(model)
@@ -40,11 +53,12 @@ describe "SELECT", ->
   it "should get the correct value when another bound input changes", ->
     template = makeTemplate """
       div
-        select(@value @options)
+        select(@value)
+          @options
         input(@value)
     """
     model =
-      options: [1, 2, 3]
+      options: [1, 2, 3].map(Option)
       value: Observable 2
 
     element = template(model)
@@ -63,15 +77,18 @@ describe "SELECT", ->
 
   describe "with an array of objects for options", ->
     template = makeTemplate """
-      select(@value @options)
+      select(@value)
+        @optionElements
     """
     options = [
-        {name: "yolo", value: "badical"}
-        {name: "wat", value: "noice"}
-      ]
+      {name: "yolo", value: "badical"}
+      {name: "wat", value: "noice"}
+    ]
     model =
       options: options
-      value: options[0]
+      optionElements: ->
+        @options.map Option
+      value: options[0].value
 
     it "should generate options", ->
       select = template(model)
@@ -93,48 +110,13 @@ describe "SELECT", ->
 
     it "should have it's value set", ->
       select = template(model)
-      # TODO: This isn't a great check
-      assert.equal select._value, model.value
-
-    it "should trigger a call to value binding when changing", (done) ->
-      model =
-        options: options
-
-      model.value = Observable options[0], model
-      model.value.observe (v) ->
-        assert v.name is "wat"
-        done()
-
-      select = template(model)
-      # Simulate a selection
-      select.value = "noice"
-      select.onchange()
-
-  describe "An observable array of objects without value properties", ->
-    template = makeTemplate """
-      select(@value @options)
-    """
-
-    options = Observable [
-      {name: "foo"}
-      {name: "bar"}
-      {name: "baz"}
-    ]
-
-    model =
-      options: Observable options
-      value: Observable options[0]
-
-    it "should update the selected item when the model changes and the options don't have value properties", ->
-      select = template(model)
-      assert.equal select.selectedIndex, 0
-      model.value model.options.get(1)
-      assert.equal select.selectedIndex, 1
+      assert.equal select.value, model.value
 
 
   describe "with objects that have an observable name property", ->
     template = makeTemplate """
-      select(@value @options)
+      select(@value)
+        @optionElements
     """
 
     it "should observe the name as the text of the value options", ->
@@ -144,18 +126,21 @@ describe "SELECT", ->
       ]
       model =
         options: options
+        optionElements: ->
+          options.map Option
         value: options.get(0)
 
       select = template(model)
       optionElements = select.querySelectorAll("option")
 
       assert.equal optionElements[0].textContent, "Napoleon"
-      options.get(0).name("Yolo")
+      options()[0].name("Yolo")
       assert.equal optionElements[0].textContent, "Yolo"
 
   describe "with objects that have an observable value property", ->
     template = makeTemplate """
-      select(@value @options)
+      select(@value)
+        @optionElements
     """
     it "should observe the value as the value of the value options", ->
       options = Observable [
@@ -164,7 +149,9 @@ describe "SELECT", ->
       ]
       model =
         options: options
-        value: options.get(0)
+        optionElements: ->
+          @options.map Option
+        value: options()[0].value()
 
       select = template(model)
 
@@ -174,7 +161,8 @@ describe "SELECT", ->
 
   describe "with an observable array for options", ->
     template = makeTemplate """
-      select(@value @options)
+      select(@value)
+        @optionElements
     """
     it "should add options added to the observable array", ->
       options = Observable [
@@ -183,6 +171,8 @@ describe "SELECT", ->
       ]
       model =
         options: options
+        optionElements: ->
+          @options.map Option
         value: options.get(0)
 
       select = template(model)
@@ -198,7 +188,8 @@ describe "SELECT", ->
       ]
       model =
         options: options
-        value: options.get(0)
+        optionElements: ->
+          @options.map Option
 
       select = template(model)
 
@@ -208,20 +199,22 @@ describe "SELECT", ->
 
     it "should have it's value set", ->
       options = Observable [
-        {name: "Napoleon", date: "1850 AD"}
-        {name: "Barrack", date: "1995 AD"}
+        {name: "Napoleon", value: "1850 AD"}
+        {name: "Barrack", value: "1995 AD"}
       ]
       model =
         options: options
-        value: options.get(0)
+        optionElements: ->
+          @options.map Option
+        value: options()[0].value
 
       select = template(model)
-      # TODO: This isn't a great check
-      assert.equal select._value, model.value
+      assert.equal select.value, model.value
 
   describe "with an object for options", ->
     template = makeTemplate """
-      select(@value @options)
+      select(@value)
+        @optionElements
     """
 
     it "should have an option for each key", ->
@@ -231,6 +224,12 @@ describe "SELECT", ->
 
       model =
         options: options
+        optionElements: ->
+          Object.entries(@options()).map ([value, name]) ->
+            Option
+              name: name
+              value: value
+
         value: "bar"
 
       select = template model
@@ -243,6 +242,11 @@ describe "SELECT", ->
 
       model =
         options: options
+        optionElements: ->
+          Object.entries(@options()).map ([value, name]) ->
+            Option
+              name: name
+              value: value
         value: "bar"
 
       select = template(model)
@@ -258,6 +262,11 @@ describe "SELECT", ->
 
       model =
         options: options
+        optionElements: ->
+          Object.entries(@options()).map ([value, name]) ->
+            Option
+              name: name
+              value: value
         value: "bar"
 
       select = template(model)
@@ -274,6 +283,11 @@ describe "SELECT", ->
 
       model =
         options: options
+        optionElements: ->
+          Object.entries(@options()).map ([value, name]) ->
+            Option
+              name: name
+              value: value
         value: "bar"
 
       select = template model

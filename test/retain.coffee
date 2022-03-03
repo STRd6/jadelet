@@ -6,8 +6,8 @@ describe "retain", ->
 
     EditorTemplate = makeTemplate """
       editor
-        = @title
-        = @canvas
+        @title
+        @canvas
     """
 
     canvasModel =

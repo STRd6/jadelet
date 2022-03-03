@@ -14,4 +14,4 @@ node_modules/.bin/mocha \
   --reporter spec \
   --require 'coffeescript/register' \
   --require test/helper.coffee \
-  $ARGS
+  "$ARGS"

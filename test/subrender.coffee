@@ -1,7 +1,7 @@
 describe "subrender", ->
   describe "rendering simple text", ->
     template = makeTemplate """
-      span.count= @count
+      span.count @count
     """
 
     it "should render numbers as strings", ->
@@ -23,7 +23,7 @@ describe "subrender", ->
   describe "with root node", ->
     template = makeTemplate """
       div
-        = @generateItem
+        @generateItem
     """
 
     it "should render elements in-line", ->
@@ -80,6 +80,11 @@ describe "subrender", ->
       assert.equal element.querySelector("li").textContent, "yo"
 
   describe "rendering subtemplates", ->
+    RowTemplate = makeTemplate """
+      tr
+        td @text
+    """
+
     describe "mixing and matching", ->
       subtemplate = makeTemplate """
         span Hello
@@ -87,9 +92,11 @@ describe "subrender", ->
       template = makeTemplate """
         div
           a Radical
-          = @subtemplate()
-          = @observable
-          = @nullable
+          |
+          @subtemplate
+          |
+          @observable
+          @nullable
       """
 
       it "shouldn't lose any nodes", ->
@@ -105,10 +112,8 @@ describe "subrender", ->
 
     describe "mapping array to subtemplates", ->
       template = makeTemplate """
-        - subtemplate = @subtemplate
-
         table
-          = @rows.map subtemplate
+          @rowElements
       """
 
       it "should render subtemplates", ->
@@ -118,10 +123,10 @@ describe "subrender", ->
             "is"
             "up"
           ]
-          subtemplate: makeTemplate """
-            tr
-              td= this
-          """
+          rowElements: ->
+            @rows.map @rowPresenter
+          rowPresenter: (text) ->
+            RowTemplate text: text
 
         element = template(model)
         assert.equal all("tr", element).length, 3
@@ -133,10 +138,10 @@ describe "subrender", ->
             Observable "is"
             Observable "up"
           ]
-          subtemplate: makeTemplate """
-            tr
-              td= this
-          """
+          rowElements: ->
+            @rows.map @rowPresenter
+          rowPresenter: (text) ->
+            RowTemplate text: text()
 
         element = template(model)
         assert.equal all("tr", element).length, 3
@@ -153,20 +158,3 @@ describe "subrender", ->
 
         model.rows()[0] "holla"
         assert.equal element.querySelector("td").textContent, "holla"
-
-    describe "without root node", ->
-      template = makeTemplate """
-        div
-          = @sub1()
-          = @sub2()
-      """
-
-      it "should render both subtemplates", ->
-        model =
-          sub1: makeTemplate ".yolo Hi"
-          sub2: makeTemplate "h2 There"
-
-        element = template(model)
-
-        assert.equal all("h2", element).length, 1
-        assert.equal all(".yolo", element).length, 1

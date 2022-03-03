@@ -36,3 +36,11 @@ describe "Checkbox", ->
     input.checked = false
     input.onchange()
     assert.equal model.checked(), false, "Value of observable should be unchecked when input changes"
+
+  it "should start out checked", ->
+    T = Jadelet.exec """
+      input(type='checkbox' checked)
+    """
+
+    input = T()
+    assert input.checked

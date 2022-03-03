@@ -1,10 +1,10 @@
 describe "Primitives", ->
   template = makeTemplate """
     div
-      = @string
-      = @boolean
-      = @number
-      = @array
+      @string
+      @boolean
+      @number
+      @array
   """
 
   it "should render correctly", ->

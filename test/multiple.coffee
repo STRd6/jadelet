@@ -1,19 +1,27 @@
 describe "multiple bindings", ->
-  template = makeTemplate """
+  Template = makeTemplate """
     div
-      input(type="text" value=@value)
-      select(value=@value options=[1..@max])
+      input(type="text" @value)
+      select(@value)
+        @optionElements
       hr
-      input(type="range" value=@value min="1" max=@max)
+      input(type="range" @value min="1" @max)
       hr
-      progress(value=@value max=@max)
+      progress(@value @max)
   """
+
+  OptionTemplate = makeTemplate """
+    option(@value)
+  """
+
   model =
     max: 10
     value: Observable 5
+    optionElements: [1..10].map (n) ->
+      OptionTemplate(value: n)
 
   it "should be initialized to the right values", ->
-    element = template(model)
+    element = Template(model)
 
     select = element.querySelector("select")
 

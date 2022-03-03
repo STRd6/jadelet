@@ -24,3 +24,11 @@ describe "input", ->
     input.onchange()
 
     assert.equal input.selectionStart, 3
+
+  it "should start with given vaule", ->
+    T = Jadelet.exec """
+      input(type="text" value="hello")
+    """
+
+    el = T()
+    assert.equal el.value, "hello"

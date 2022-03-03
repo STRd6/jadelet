@@ -2,8 +2,10 @@
 
 fs = require('fs')
 path = require('path')
+Hera = require('hera')
 
-parserSource = require('../source/parser/parser').parser.generate()
+parserGrammar = fs.readFileSync(path.join(__dirname, "..", "source", "jadelet-parser.hera"), "utf8")
+parserJS = Hera.generate Hera.parse parserGrammar
 
 # Note: This overwrites the parser in dist/parser/parser.js, it is intended to do so
-fs.writeFile path.join(__dirname, "..", "dist", "parser", "parser.js"), parserSource, ->
+fs.writeFileSync path.join(__dirname, "..", "dist", "jadelet-parser.js"), parserJS

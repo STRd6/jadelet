@@ -1,25 +1,20 @@
-extend = Object.assign
+{JSDOM} = require("jsdom")
+{window} = new JSDOM("")
+{Event, Node, document} = window
 
-CoffeeScript = require "coffeescript"
-
-compile = require "../dist/compiler"
-Runtime = require "../dist/runtime"
-Observable = Runtime.Observable
-
-{jsdom} = require("jsdom")
-
-document = jsdom()
-
-{Event} = window = document.defaultView
-
-extend global,
-  assert: require "assert"
-  extend: extend
-  Jadelet: Runtime
-  Node: window.Node
-  Observable: Observable
-  Runtime: Runtime
+Object.assign global,
   document: document
+  window: window
+  Node: Node
+
+Jadelet = require "../source/jadelet"
+{exec, Observable} = Jadelet
+
+Object.assign global,
+  assert: require "assert"
+  Jadelet: Jadelet
+  Observable: Observable
+
   dispatchEvent: (element, eventName, options={}) ->
     element.dispatchEvent new Event eventName, options
 
@@ -29,11 +24,4 @@ extend global,
   all: (selectors, base=document) ->
     base.querySelectorAll(selectors)
 
-  makeTemplate: (code) ->
-    compiled = compile code,
-      runtime: "Runtime"
-      compiler: CoffeeScript
-      exports: false
-      mode: "jade" # TODO: Jadelet will be the only mode
-
-    Function("Runtime", "return " + compiled)(Runtime)
+  makeTemplate: exec

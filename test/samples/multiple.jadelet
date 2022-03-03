@@ -1,0 +1,7 @@
+div
+  input(type="text" @value)
+  select(@value @options)
+  hr
+  input(type="range" value=@value min="1" @max)
+  hr
+  progress(@value @max)

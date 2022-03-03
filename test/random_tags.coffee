@@ -2,8 +2,8 @@ describe "Random tags", ->
   template = makeTemplate """
     div
       duder
-      yolo(radical=true)
-      sandwiches(type=@type)
+      yolo(radical="true")
+      sandwiches(@type)
   """
   model =
     type: Observable "ham"

@@ -26,6 +26,10 @@ describe "Classes", ->
     assert element.classList.contains "a"
     assert element.classList.contains "b"
 
+    model.classes []
+
+    assert.equal element.getAttribute("class"), null
+
   it "should merge with literal classes", ->
     template = makeTemplate """
       .duder(class=@classes)

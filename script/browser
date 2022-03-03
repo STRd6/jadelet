@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./node_modules/.bin/browserify dist/jadelet.js --standalone Jadelet > dist/jadelet-browser.js
+./node_modules/.bin/uglifyjs --compress --mangle -- < dist/jadelet-browser.js > dist/jadelet-browser.min.js
