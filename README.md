@@ -1,3 +1,4 @@
+[![Build](https://github.com/STRd6/jadelet/actions/workflows/build.yml/badge.svg)](https://github.com/STRd6/jadelet/actions/workflows/build.yml)
 [![Coverage Status](https://coveralls.io/repos/github/STRd6/jadelet/badge.svg?branch=master)](https://coveralls.io/github/STRd6/jadelet?branch=master)
 
 Jadelet
