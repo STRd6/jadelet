@@ -58,6 +58,9 @@ isEvent = (name, element) ->
 # bind: stringKey
 # exceptions for id, class, and style. They are arrays of such strings
 # literals and binding objects
+###*
+@type {(element:Element, context:Context, name:string, value:JadeletAttribute)=> void}
+###
 observeAttribute = (element, context, name, value) ->
   switch name
     when "id"
@@ -89,7 +92,7 @@ observeAttribute = (element, context, name, value) ->
     when "value"
       bindValue(element, value, context)
     when "checked"
-      if value and isObject(value)
+      if value and !isString(value)
         {bind} = value
         element.onchange = ->
           context[bind]? element.checked
@@ -100,7 +103,7 @@ observeAttribute = (element, context, name, value) ->
         return
     else
       # Handle click=@method
-      if isEvent("on#{name}", element)
+      if isEvent("on#{name}", element) and !isString(value)
         # It doesn't make sense for events to not be bound
         bindEvent(element, name, value.bind, context)
       else
@@ -120,6 +123,8 @@ observeAttribute = (element, context, name, value) ->
 # with the new value. To clean up we release the dependencies of
 # our computed observable. We store the observables to clean up
 # on a map keyed by the element.
+###* @type {(element:Element, value, context:Context, update:function) => void}
+###
 bindObservable = (element, value, context, update) ->
   # If the value is a simple string then simply set it and exit
   # No point in creating an observable if it isn't a binding
@@ -144,6 +149,8 @@ bindObservable = (element, value, context, update) ->
 
   return
 
+#
+###* @type {(element:Element, value, context:Context) => void} ###
 bindValue = (element, value, context) ->
   # Because firing twice with the same value is idempotent just binding both
   # oninput and onchange handles the widest range of inputs and browser
@@ -173,6 +180,8 @@ bindSplat = (element, context, sources, update) ->
 
   return
 
+#
+###* @type {(element:Element, context:Context, contentArray:JadeletAST[], namespace:string) => void} ###
 observeContent = (element, context, contentArray, namespace) ->
   # Map the content array into into an elements array (can be more or less,
   # essentially a flatmap) Keep track of observables, only update the proper
@@ -185,6 +194,7 @@ observeContent = (element, context, contentArray, namespace) ->
     # Track the child index this content starts on
     tracker[index] = count
 
+    # array is [tag, attributes, children]
     if Array.isArray(astNode)
       element.appendChild render astNode, context, namespace
       count++
@@ -205,7 +215,7 @@ observeContent = (element, context, contentArray, namespace) ->
         previousLength = length
         pos = tracker[index]
         beforeTarget = element.childNodes[pos+length]
-        toRelease = new Array(length)
+        toRelease = Array(length)
 
         # Remove previously added nodes
         i = 0
@@ -237,12 +247,15 @@ observeContent = (element, context, contentArray, namespace) ->
 
       count += length
     else
-      throw new Error "oof"
+      throw Error "oof"
     return
 
   return
 
 # Append nodes to an element, return the total number appended
+###*
+# @type { (element:Element, item:any, beforeTarget:Node?) => number }
+###
 append = (element, item, beforeTarget) ->
   if !item? # Skip nulls
     return 0
@@ -263,12 +276,18 @@ append = (element, item, beforeTarget) ->
 
   return 1
 
+#
+###* @type {isObject} ###
 isObject = (x) ->
   typeof x is "object"
 
+#
+###* @type {isString} ###
 isString = (x) ->
   typeof x is "string"
 
+#
+###* @type {(sources: JadeletAttribute[], context: Context) => unknown[]}###
 splat = (sources, context) ->
   sources.map (source) ->
     if isString source
@@ -280,14 +299,69 @@ splat = (sources, context) ->
   , []
   .filter (x) -> x?
 
+#
+###* @type {(x:unknown, context:Context) => any} ###
 get = (x, context) ->
   if typeof x is 'function'
     x.call(context)
   else
     x
 
+#
+###* @type {last} ###
+last = (array) ->
+  if l = array.length
+    return array[l-1]
+  return
+
+mappers =
+  id: (source, context) ->
+    ->
+      last splat source, context
+  class: (source, context) ->
+    ->
+      splat source, context
+  style: (source, context) ->
+    ->
+      result = {}
+      stringResult = null
+      splat(source, context).forEach (style) ->
+        if isObject style
+          Object.assign result, style
+          stringResult = null
+        else
+          stringResult = style
+
+      return stringResult or result
+
+#
+###*
+# @type {(attributes:JadeletAttributes, context:Context) => Context}
+###
+mapAttributes = (attributes, context) ->
+  Object.fromEntries Object.keys(attributes).map (key) ->
+    source = attributes[key]
+    f =
+    if m = mappers[key]
+      m(source, context)
+    else if isString(source)
+      r = source
+      -> r
+    else
+      r = source
+      -> get context[r.bind], context
+
+    [key, f]
+
+#
+###*
+# @type  { (ast: JadeletASTNode, context:Context, namespace?: string) => Element }
+###
 render = (astNode, context={}, namespace) ->
   [tag, attributes, children] = astNode
+
+  if Presenter = customElements[tag]
+    return Presenter(mapAttributes(attributes, context), children)
 
   # This namespace is only for svg support though it may be expanded in the
   # future. The idea is to set the namespace if the tag name is 'svg' and to
@@ -309,9 +383,17 @@ render = (astNode, context={}, namespace) ->
 
   return element
 
+#
+###* @type {JadeletParser} ###
 parser = require "./jadelet-parser"
 
-module.exports = Jadelet =
+#
+###* @type { {[Key:string]: (mappedAttributes:any, children:JadeletAST[]) => Element }}###
+customElements = {}
+
+#
+###* @type {JadeletAPI} ###
+Jadelet =
   compile: (source, opts={}) ->
     ast = Jadelet.parse(source)
     runtime = opts.runtime or "require('jadelet')"
@@ -323,13 +405,17 @@ module.exports = Jadelet =
   parse: parser.parse
   parser: parser
   exec: (ast) ->
-    if typeof ast is "string"
+    if isString ast
       ast = Jadelet.parse ast
 
     return (context) ->
       render ast, context
   Observable: Observable
   _elementCleaners: elementCleaners
+  define: (definitions) ->
+    Object.assign customElements, definitions
   dispose: dispose
   retain: retain
   release: release
+
+module.exports = Jadelet

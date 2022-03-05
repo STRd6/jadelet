@@ -27,7 +27,7 @@ program
   .parse(process.argv)
 options = program.opts()
 
-encoding = options.encoding or "utf-8"
+encoding = options.encoding or "utf8"
 optionsJSON = JSON.stringify options
 
 if options.extension
