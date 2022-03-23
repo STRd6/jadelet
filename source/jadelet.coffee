@@ -298,6 +298,8 @@ render = (astNode, context={}, namespace) ->
 
   if namespace
     element = document.createElementNS namespace, tag
+  else if tag is "Fragment" or tag is "<>"
+    element = document.createDocumentFragment()
   else
     element = document.createElement tag
   # We populate the content first so that value binding for `select` tags
