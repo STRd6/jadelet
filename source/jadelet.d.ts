@@ -1,1 +1,1 @@
-export = JadeletAPI
+export = Jadelet

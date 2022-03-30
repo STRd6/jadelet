@@ -1,5 +1,5 @@
 fs = require "fs"
-{compile} = require '../dist/jadelet'
+{compile} = require '../'
 md5 = require 'md5'
 
 { readdir } = fs.promises

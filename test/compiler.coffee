@@ -1,7 +1,7 @@
 assert = require('assert')
 fs = require('fs')
 
-{compile} = require('../dist/jadelet')
+{compile} = require('../')
 
 compileDirectory = (directory, mode) ->
   fs.readdirSync(directory).forEach (file) ->

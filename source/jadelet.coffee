@@ -385,7 +385,7 @@ render = (astNode, context={}, namespace) ->
 
 #
 ###* @type {JadeletParser} ###
-parser = require "./parser"
+parser = require "./parser.hera"
 
 #
 ###* @type { {[Key:string]: (mappedAttributes:any, children:JadeletAST[]) => Element }}###
