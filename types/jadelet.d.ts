@@ -1,3 +1,7 @@
+interface JadeletParser {
+  parse(string): JadeletASTNode;
+}
+
 interface JadeletAPI {
   parser: JadeletParser;
   Observable: any;

@@ -5,7 +5,7 @@
   "license": "MIT",
   "devDependencies": {
     "@danielx/coffeecoverage": "4.0.0-pre.1",
-    "@danielx/hera": "^0.7.3-pre.2",
+    "@danielx/hera": "^0.7.3-pre.3",
     "@types/jsdom": "^16.2.14",
     "@types/mocha": "^9.1.0",
     "@types/node": "^17.0.21",
@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "commander": "^8.1.0",
-    "hera": "STRd6/hera",
     "md5": "^2.3.0",
     "o_0": "^0.4.0-pre.0"
   },
@@ -65,15 +64,15 @@
   },
   "scripts": {
     "browser": "bash script/browser",
-    "prepublish": "bash script/prepublish",
+    "compile": "bash script/compile",
     "test": "nyc mocha"
   },
   "bin": {
-    "jadelet": "bin/jadelet"
+    "jadelet": "dist/jadelet"
   },
   "files": [
-    "bin/",
-    "dist/"
+    "dist/",
+    "register.js"
   ],
   "main": "dist/jadelet.js"
 }

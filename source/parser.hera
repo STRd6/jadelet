@@ -1,7 +1,7 @@
 Template
   __? Line* ->
     var top = a => a[a.length-1];
- 
+
     function reduceLines(lines) {
       var depth = 0;
       var stack = [[]];
@@ -29,7 +29,7 @@ Template
         depth = indent
         top(stack).push(line)
       })
-  
+
       return stack[0]
     }
 
@@ -60,16 +60,16 @@ Template
     return reduced[0];
 
 Line
-  Indent LineBody EOS -> [1, 2]
+  Indent LineBody EOS -> [$1, $2]
 
 LineBody
   Tag DeprecatedEquals? _ RestOfLine ->
     $1[2].push($4)
     return $1
-  Tag _? -> 1
+  Tag _? -> $1
   "|" " "? RestOfLine ->
     return $3 + "\n";
-  (DeprecatedEquals _)? RestOfLine -> 2
+  (DeprecatedEquals _)? RestOfLine -> $2
 
 RestOfLine
   /[^\n\r]*/ ->
@@ -115,7 +115,7 @@ Classes
   Class+
 
 Class
-  "." Identifier -> 
+  "." Identifier ->
     return ["class", $2]
   "." !Identifier ->
     throw "Expected a class name"
@@ -157,18 +157,18 @@ OptionalAttributes
 Attribute
   AtIdentifier __? ->
     return [$1.bind, $1]
-  EqBinding __? -> 1
+  EqBinding __? -> $1
   Identifier __? ->
     return [$1, ""]
 
 AtIdentifier
-  "@" Identifier -> 
+  "@" Identifier ->
     return {
       bind: $2
     }
 
 EqBinding
-  Identifier "=" ( AtIdentifier / Value ) -> [1, 3]
+  Identifier "=" ( AtIdentifier / Value ) -> [$1, $3]
 
 Identifier
   /[a-zA-Z][a-zA-Z0-9-]*/
@@ -191,12 +191,12 @@ Value
   Number
 
 DoubleStringCharacter
-  !("\"" / "\\") /./ -> 2
-  "\\" EscapeSequence -> 2
+  !("\"" / "\\") /./ -> $2
+  "\\" EscapeSequence -> $2
 
 SingleStringCharacter
-  !("'" / "\\") /./ -> 2
-  "\\" EscapeSequence -> 2
+  !("'" / "\\") /./ -> $2
+  "\\" EscapeSequence -> $2
 
 EscapeSequence
   "'"

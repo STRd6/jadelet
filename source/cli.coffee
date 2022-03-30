@@ -27,6 +27,8 @@ program
   .parse(process.argv)
 options = program.opts()
 
+#
+###* @type {BufferEncoding} ###
 encoding = options.encoding or "utf8"
 optionsJSON = JSON.stringify options
 

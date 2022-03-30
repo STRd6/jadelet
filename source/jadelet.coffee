@@ -385,7 +385,7 @@ render = (astNode, context={}, namespace) ->
 
 #
 ###* @type {JadeletParser} ###
-parser = require "./jadelet-parser"
+parser = require "./parser"
 
 #
 ###* @type { {[Key:string]: (mappedAttributes:any, children:JadeletAST[]) => Element }}###
@@ -409,6 +409,7 @@ Jadelet =
       ast = Jadelet.parse ast
 
     return (context) ->
+      # @ts-ignore
       render ast, context
   Observable: Observable
   _elementCleaners: elementCleaners
