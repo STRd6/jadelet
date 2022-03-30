@@ -77,5 +77,6 @@
     "register.js",
     "types/"
   ],
-  "main": "dist/main.js"
+  "main": "dist/main.js",
+  "types": "types/main.d.ts"
 }
