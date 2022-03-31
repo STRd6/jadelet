@@ -10,11 +10,10 @@ esbuild.build({
   entryPoints: ['source/jadelet.coffee']
   tsconfig: "./tsconfig.json"
   bundle: true
-  format: "cjs"
   sourcemap
   minify
   watch
-  platform: 'browser'
+  platform: 'node'
   outfile: 'dist/main.js'
   plugins: [
     coffeeScriptPlugin
@@ -26,13 +25,45 @@ esbuild.build({
 
 esbuild.build({
   entryPoints: ['source/cli.coffee']
-  format: "cjs"
   watch
-  platform: 'browser'
+  platform: 'node'
   outfile: 'dist/cli.js'
   plugins: [
     coffeeScriptPlugin
       bare: true
       inlineMap: sourcemap
+  ]
+}).catch -> process.exit 1
+
+esbuild.build({
+  entryPoints: ['source/jadelet.coffee']
+  globalName: "Jadelet"
+  bundle: true
+  sourcemap
+  watch
+  platform: 'browser'
+  outfile: 'dist/browser.js'
+  plugins: [
+    coffeeScriptPlugin
+      bare: true
+      inlineMap: sourcemap
+    heraPlugin
+  ]
+}).catch -> process.exit 1
+
+esbuild.build({
+  entryPoints: ['source/jadelet.coffee']
+  globalName: "Jadelet"
+  bundle: true
+  sourcemap
+  watch
+  platform: 'browser'
+  minify: true
+  outfile: 'dist/browser.min.js'
+  plugins: [
+    coffeeScriptPlugin
+      bare: true
+      inlineMap: sourcemap
+    heraPlugin
   ]
 }).catch -> process.exit 1

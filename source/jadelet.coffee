@@ -1,6 +1,6 @@
 "use strict"
 
-Observable = require "o_0"
+Observable = require "@danielx/observable"
 forEach = Array::forEach
 
 # To clean up listeners we keep a map of DOM elements and what listeners are bound to them
