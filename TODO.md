@@ -4,6 +4,7 @@ TODO
 - [ ] Explore Custom elements
 - [ ] Explore adding TypeScript typings
   - [ ] Publishing types
+- [ ] Optionally pass `document` when rendering?
 - [x] esbuild plugin
 - [x] Use esbuild for publishing
   - [x] main
