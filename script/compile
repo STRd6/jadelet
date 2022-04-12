@@ -7,8 +7,6 @@ mkdir --parents dist
 # normal files
 coffee build/main.coffee
 
-## TODO: types
-
 # cli
 mkdir -p bin
 BIN="dist/jadelet"
