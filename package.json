@@ -1,6 +1,6 @@
 {
   "name": "jadelet",
-  "version": "2.0.0-pre.1",
+  "version": "2.0.0-pre.3",
   "description": "Lightweight, elegant HTML templates",
   "license": "MIT",
   "devDependencies": {
@@ -74,8 +74,9 @@
   },
   "files": [
     "dist/",
-    "register.js",
-    "types/"
+    "types/",
+    "esbuild-plugin.js",
+    "register.js"
   ],
   "main": "dist/main.js",
   "types": "types/main.d.ts"
