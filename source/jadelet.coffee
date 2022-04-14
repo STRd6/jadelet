@@ -312,7 +312,6 @@ get = (x, context) ->
 last = (array) ->
   if l = array.length
     return array[l-1]
-  return
 
 mappers =
   id: (source, context) ->
