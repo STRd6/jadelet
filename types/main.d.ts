@@ -1,4 +1,6 @@
 declare module "jadelet" {
+  import Observable from "@danielx/observable"
+
   type isString = <T extends unknown>(x: string | T) => x is string;
   type isObject = <T extends unknown>(x: Object | T) => x is Object;
   type last = <T extends unknown[]>(array: T) => T[number];
@@ -15,9 +17,9 @@ declare module "jadelet" {
     parse(string): JadeletASTNode;
   }
 
-  export interface JadeletAPI {
+  export default interface JadeletAPI {
     parser: JadeletParser;
-    Observable: any;
+    Observable: Observable;
     _elementCleaners: any;
     dispose: any;
     retain: any;
@@ -53,6 +55,4 @@ declare module "jadelet" {
 
   type JadeletASTNode = [string, JadeletAttributes, JadeletAST[]]
   type JadeletAST = JadeletASTNode | JadeletAttribute;
-
-  type Observable = (x: any) => (x: any) => any
 }
