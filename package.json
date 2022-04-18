@@ -66,7 +66,6 @@
     "instrument": false
   },
   "scripts": {
-    "browser": "bash script/browser",
     "compile": "bash script/compile",
     "test": "nyc mocha"
   },
