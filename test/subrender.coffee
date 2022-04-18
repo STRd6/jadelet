@@ -44,8 +44,8 @@ describe "subrender", ->
           ]
 
       element = template(model)
-      assert all("li", element).length, 2
-      assert all("p", element).length, 1
+      assert.equal element.querySelectorAll("li").length, 2
+      assert.equal element.querySelectorAll("p").length, 1
 
     it "should work with a node with children", ->
       model =
@@ -58,9 +58,9 @@ describe "subrender", ->
 
       element = template(model)
 
-      assert all("li", element).length, 2
-      assert all("p", element).length, 1
-      assert all("ol", element).length, 1
+      assert.equal element.querySelectorAll("li").length, 2
+      assert.equal element.querySelectorAll("p").length, 1
+      assert.equal element.querySelectorAll("ol").length, 1
 
     it "should work with observables", ->
       model =
@@ -74,10 +74,10 @@ describe "subrender", ->
 
       element = template(model)
 
-      assert.equal all("li", element).length, 1
-      assert.equal element.querySelector("li").textContent, "wat"
+      assert.equal element.querySelectorAll("li").length, 1
+      assert.equal element.querySelector("li")?.textContent, "wat"
       model.name "yo"
-      assert.equal element.querySelector("li").textContent, "yo"
+      assert.equal element.querySelector("li")?.textContent, "yo"
 
   describe "rendering subtemplates", ->
     RowTemplate = makeTemplate """
@@ -129,7 +129,7 @@ describe "subrender", ->
             RowTemplate text: text
 
         element = template(model)
-        assert.equal all("tr", element).length, 3
+        assert.equal element.querySelectorAll("tr").length, 3
 
       it "should maintain observables in subtemplates", ->
         model =
@@ -144,17 +144,17 @@ describe "subrender", ->
             RowTemplate text: text()
 
         element = template(model)
-        assert.equal all("tr", element).length, 3
-        assert.equal element.querySelector("td").textContent, "Wat"
+        assert.equal element.querySelectorAll("tr").length, 3
+        assert.equal element.querySelector("td")?.textContent, "Wat"
 
         model.rows()[0] "yo"
 
-        assert.equal element.querySelector("td").textContent, "yo"
+        assert.equal element.querySelector("td")?.textContent, "yo"
 
         model.rows.push Observable("dude")
 
-        assert.equal all("tr", element).length, 4
-        assert.equal element.querySelector("td").textContent, "yo"
+        assert.equal element.querySelectorAll("tr").length, 4
+        assert.equal element.querySelector("td")?.textContent, "yo"
 
         model.rows()[0] "holla"
-        assert.equal element.querySelector("td").textContent, "holla"
+        assert.equal element.querySelector("td")?.textContent, "holla"

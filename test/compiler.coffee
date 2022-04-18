@@ -1,17 +1,18 @@
 assert = require('assert')
 fs = require('fs')
 
-{compile} = require('../')
+# TODO: prefer destructuring when CoffeeSense improves
+pkg = require('../')
+compile = pkg.compile
 
-compileDirectory = (directory, mode) ->
+#
+###* @param directory {string} ###
+compileDirectory = (directory) ->
   fs.readdirSync(directory).forEach (file) ->
     if file.match /\.jadelet$/
-      data = fs.readFileSync "#{directory}/#{file}", "utf8"
-
       it "compiles #{file}", ->
-        data = compile data
-
-        assert data
+        data = fs.readFileSync "#{directory}/#{file}", "utf8"
+        assert compile data
 
 describe 'Compiler', ->
   describe 'samples', ->

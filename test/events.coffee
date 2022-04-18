@@ -44,8 +44,8 @@ describe "Events", ->
 
     button = template(model)
 
-    dispatchEvent button, "mouseenter"
-    dispatchEvent button, "mouseleave"
+    dispatch button, "mouseenter"
+    dispatch button, "mouseleave"
 
   it "should bind mouseenter and mouseleave events", ->
     template = makeTemplate """
@@ -63,9 +63,9 @@ describe "Events", ->
     button = template(model)
 
     assert.equal result, null
-    dispatchEvent button, "mouseenter"
+    dispatch button, "mouseenter"
     assert.equal result, 1
-    dispatchEvent button, "mouseleave"
+    dispatch button, "mouseleave"
     assert.equal result, 2
 
   it "shoud handle all touch events", ->
@@ -86,16 +86,16 @@ describe "Events", ->
     canvas = template(model)
     assert.equal called, 0
 
-    dispatchEvent canvas, "touchstart"
+    dispatch canvas, "touchstart"
     assert.equal called, 1
 
-    dispatchEvent canvas, "touchmove"
+    dispatch canvas, "touchmove"
     assert.equal called, 2
 
-    dispatchEvent canvas, "touchend"
+    dispatch canvas, "touchend"
     assert.equal called, 3
 
-    dispatchEvent canvas, "touchcancel"
+    dispatch canvas, "touchcancel"
     assert.equal called, 4
 
   it "shoud handle all animation events", ->
@@ -116,14 +116,14 @@ describe "Events", ->
     canvas = template(model)
     assert.equal called, 0
 
-    dispatchEvent canvas, "animationstart"
+    dispatch canvas, "animationstart"
     assert.equal called, 1
 
-    dispatchEvent canvas, "animationiteration"
+    dispatch canvas, "animationiteration"
     assert.equal called, 2
 
-    dispatchEvent canvas, "animationend"
+    dispatch canvas, "animationend"
     assert.equal called, 3
 
-    dispatchEvent canvas, "transitionend"
+    dispatch canvas, "transitionend"
     assert.equal called, 4

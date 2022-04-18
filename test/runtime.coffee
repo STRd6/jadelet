@@ -1,5 +1,3 @@
-assert = require "assert"
-
 describe "Jadelet Runtime", ->
   it "should provide Observable", ->
     assert Jadelet.Observable

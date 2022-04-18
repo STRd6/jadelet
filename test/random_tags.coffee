@@ -12,12 +12,12 @@ describe "Random tags", ->
     element = template(model)
 
     assert element.querySelector "duder"
-    assert element.querySelector("yolo").getAttribute("radical")
-    assert.equal element.querySelector("sandwiches").getAttribute("type"), "ham"
+    assert element.querySelector("yolo")?.getAttribute("radical")
+    assert.equal element.querySelector("sandwiches")?.getAttribute("type"), "ham"
 
   it "should reflect changes in observables", ->
     element = template(model)
 
-    assert.equal element.querySelector("sandwiches").getAttribute("type"), "ham"
+    assert.equal element.querySelector("sandwiches")?.getAttribute("type"), "ham"
     model.type "pastrami"
-    assert.equal element.querySelector("sandwiches").getAttribute("type"), "pastrami"
+    assert.equal element.querySelector("sandwiches")?.getAttribute("type"), "pastrami"

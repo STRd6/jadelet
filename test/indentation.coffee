@@ -12,7 +12,7 @@ describe "indentation", ->
       T2 = makeTemplate indentedTemplate2
 
       el = T1()
-      assert.equal el.querySelector('a').textContent, "Cool"
+      assert.equal el.querySelector('a')?.textContent, "Cool"
 
       el = T2()
-      assert.equal el.querySelector('a').textContent, "Cool"
+      assert.equal el.querySelector('a')?.textContent, "Cool"

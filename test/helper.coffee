@@ -1,6 +1,8 @@
 {JSDOM} = require("jsdom")
 {window} = new JSDOM("")
-{Event, Node, document} = window
+{Node, document} = window
+# TODO: CoffeeSense destructuring doesn't like when a var is used in a function below
+Event = window.Event
 
 Object.assign global,
   document: document
@@ -15,13 +17,8 @@ Object.assign global,
   Jadelet: Jadelet
   Observable: Observable
 
-  dispatchEvent: (element, eventName, options={}) ->
+  ###* @type {dispatch} ###
+  dispatch: (element, eventName, options={}) ->
     element.dispatchEvent new Event eventName, options
-
-  Q: (args...) ->
-    document.querySelector(args...)
-
-  all: (selectors, base=document) ->
-    base.querySelectorAll(selectors)
 
   makeTemplate: exec

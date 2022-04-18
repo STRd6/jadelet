@@ -15,7 +15,7 @@ describe "Computed", ->
 
     element = template(model)
 
-    assert.equal element.querySelector("h2").textContent, "Mr. Doberman"
+    assert.equal element.querySelector("h2")?.textContent, "Mr. Doberman"
 
   it "should work on special bindings", ->
     template = makeTemplate """

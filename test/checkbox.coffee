@@ -29,12 +29,13 @@ describe "Checkbox", ->
     model.checked false
     assert.equal input.checked, false, "Should not be checked again"
 
+    changeEvent = new Event "change"
     input.checked = true
-    input.onchange()
+    input.onchange?(changeEvent)
     assert.equal model.checked(), true, "Value of observable should be checked when input changes"
 
     input.checked = false
-    input.onchange()
+    input.onchange?(changeEvent)
     assert.equal model.checked(), false, "Value of observable should be unchecked when input changes"
 
   it "should start out checked", ->

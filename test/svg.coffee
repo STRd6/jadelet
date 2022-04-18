@@ -11,4 +11,4 @@ describe "svg", ->
     template = makeTemplate src
     element = template()
 
-    assert.equal element.querySelector('svg').namespaceURI, "http://www.w3.org/2000/svg"
+    assert.equal element.querySelector('svg')?.namespaceURI, "http://www.w3.org/2000/svg"
