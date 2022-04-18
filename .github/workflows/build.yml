@@ -18,6 +18,7 @@ jobs:
     - name: Install and Test
       run: |
         yarn
+        yarn compile
         yarn test
 
     - name: Coveralls

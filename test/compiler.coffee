@@ -2,8 +2,7 @@ assert = require('assert')
 fs = require('fs')
 
 # TODO: prefer destructuring when CoffeeSense improves
-pkg = require('../')
-compile = pkg.compile
+compile = Jadelet.compile
 
 #
 ###* @param directory {string} ###

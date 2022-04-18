@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-rm -r dist/
+rm -r dist/ || true
 mkdir --parents dist
 
 # normal files
