@@ -2,9 +2,20 @@ fs = require "fs"
 {compile} = require '../'
 md5 = require 'md5'
 
-{ readdir } = fs.promises
-{ resolve, sep:fileSeparator } = require "path"
+# TODO: Use destructuring here once CoffeeSense has better support for it
+readdir = fs.promises.readdir
+{sep:fileSeparator} = require "path"
+resolve = require("path").resolve
 
+#
+###*
+Traverse a directory recursively yielding each path that matches the given
+extension RegExp.
+
+@param dir {string}
+@param ext {RegExp}
+@return {AsyncGenerator<string>}
+###
 getFiles = (dir, ext) ->
   entities = await readdir dir,
     withFileTypes: true
@@ -78,6 +89,5 @@ else
   input = fs.readFileSync(process.stdin.fd, encoding)
 
   process.stdout.write compile input,
-    mode: options.mode
     runtime: options.runtime
     exports: options.exports

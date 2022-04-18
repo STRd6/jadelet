@@ -147,7 +147,7 @@ describe "efficiency", ->
     template = makeTemplate """
       items
         @itemElements
-          
+
     """
 
     buttonTemplate = makeTemplate """

@@ -1,20 +1,35 @@
 "use strict"
 
+###*
+@typedef {import("../types/types").Context} Context
+@typedef {import("../types/types").JadeletAttribute} JadeletAttribute
+@typedef {import("../types/types").JadeletAttributes} JadeletAttributes
+@typedef {import("../types/types").JadeletAST} JadeletAST
+@typedef {import("../types/types").JadeletElement} JadeletElement
+@typedef {typeof import("../types/main")} Jadelet
+###
+
 Observable = require "@danielx/observable"
 forEach = Array::forEach
 
-# To clean up listeners we keep a map of DOM elements and what listeners are bound to them
-# when we dispose an element we must traverse its children and clean them up too
-# After we remove the listeners we must then remove the element from the map
+#
+###*
+A map of DOM elements and what listeners are bound to them.
+To dispose of an element traverse its children and clean them up too.
+After we remove the listeners we remove the element from the map
+@type {WeakMap<Element, Function[]>}
+###
 elementCleaners = new WeakMap
+#
+###* @type {WeakMap<Element, number>} ###
 elementRefCounts = new WeakMap
 
-retain = (element) ->
+retain = (###* @type {Element}### element) ->
   count = elementRefCounts.get(element) || 0
   elementRefCounts.set(element, count + 1)
   return
 
-release = (element) ->
+release = (###* @type {Element}### element) ->
   count = elementRefCounts.get(element) || 0
   count--
 
@@ -28,7 +43,7 @@ release = (element) ->
 # Disposing an element executes the cleanup for all it's children. If a child
 # element should be retained you must mark it explicitly to prevent its
 # observables from unbinding.
-dispose = (element) ->
+dispose = (###* @type {Element}### element) ->
   # Recurse into children
   children = element.children
   if children?
@@ -40,6 +55,12 @@ dispose = (element) ->
     return
   return
 
+#
+###*
+Attach a cleaner function to run when the element is disposed of.
+@param element {Element}
+@param cleaner {Function}
+###
 attachCleaner = (element, cleaner) ->
   cleaners = elementCleaners.get(element)
   if cleaners
@@ -51,20 +72,23 @@ attachCleaner = (element, cleaner) ->
 # Combined touch and animation events here even though it's sloppy it saves a few bytes
 # later we should put all the smarts about what is an event or not in the compiler
 eventNames = /^on(touch|animation|transition)(start|iteration|move|end|cancel)$/
-isEvent = (name, element) ->
+isEvent = (###* @type {string}### name, ###* @type {Node}### element) ->
   name.match(eventNames) or name of element
 
-# value is either a literal string or an object shaped
-# bind: stringKey
-# exceptions for id, class, and style. They are arrays of such strings
-# literals and binding objects
+#
 ###*
-@type {(element:Element, context:Context, name:string, value:JadeletAttribute)=> void}
+value is either a literal string or an object shaped
+bind: stringKey
+exceptions for id, class, and style. They are arrays of such strings
+literals and binding objects
+@type {
+  (element: JadeletElement, context: Context, name: string, value: JadeletAttribute) => void
+}
 ###
 observeAttribute = (element, context, name, value) ->
   switch name
     when "id"
-      bindSplat element, context, value, (ids) ->
+      bindSplat element, context, value, (###* @type {string[]}### ids) ->
         length = ids.length
         if length
           element.id = ids[length-1]
@@ -116,14 +140,16 @@ observeAttribute = (element, context, name, value) ->
 
   return
 
-# To bind an observable precisely to the site where it is
-# and to be able to clean up we need to create a fresh
-# Observable stack. Since the observable re-computes
-# when any of its dependencies change it will refresh the update
-# with the new value. To clean up we release the dependencies of
-# our computed observable. We store the observables to clean up
-# on a map keyed by the element.
-###* @type {(element:Element, value, context:Context, update:function) => void}
+#
+###*
+To bind an observable precisely to the site where it is
+and to be able to clean up we need to create a fresh
+Observable stack. Since the observable re-computes
+when any of its dependencies change it will refresh the update
+with the new value. To clean up we release the dependencies of
+our computed observable. We store the observables to clean up
+on a map keyed by the element.
+@type {(element:Element, value, context:Context, update:function) => void}
 ###
 bindObservable = (element, value, context, update) ->
   # If the value is a simple string then simply set it and exit
@@ -150,7 +176,7 @@ bindObservable = (element, value, context, update) ->
   return
 
 #
-###* @type {(element:Element, value, context:Context) => void} ###
+###* @type {(element: JadeletElement, value: JadeletAttribute, context: Context) => void} ###
 bindValue = (element, value, context) ->
   # Because firing twice with the same value is idempotent just binding both
   # oninput and onchange handles the widest range of inputs and browser
@@ -168,6 +194,8 @@ bindValue = (element, value, context) ->
 
   return
 
+#
+###* @type {(element: JadeletElement, name: string, binding: string, context: Context) => void} ###
 bindEvent = (element, name, binding, context) ->
   handler = context[binding]
   if typeof handler is 'function'
@@ -175,24 +203,29 @@ bindEvent = (element, name, binding, context) ->
 
   return
 
+#
+###* @type {(element: JadeletElement, context: Context, sources: JadeletAttribute[], update: Function) => void} ###
 bindSplat = (element, context, sources, update) ->
   bindObservable element, (-> splat sources, context), context, update
 
   return
 
 #
-###* @type {(element:Element, context:Context, contentArray:JadeletAST[], namespace:string) => void} ###
+###* @type {(element: JadeletElement, context: Context, contentArray: JadeletAST[], namespace?: string) => void} ###
 observeContent = (element, context, contentArray, namespace) ->
   # Map the content array into into an elements array (can be more or less,
   # essentially a flatmap) Keep track of observables, only update the proper
   # places when observables change.
-
+  "" # TODO: Empty statement to get CoffeeSense type comment to attach properly
+  #
+  ###* @type {number[]}###
   tracker = []
   count = 0
 
   contentArray.forEach (astNode, index) ->
     # Track the child index this content starts on
     tracker[index] = count
+    length = 0
 
     # array is [tag, attributes, children]
     if Array.isArray(astNode)
@@ -254,7 +287,7 @@ observeContent = (element, context, contentArray, namespace) ->
 
 # Append nodes to an element, return the total number appended
 ###*
-# @type { (element:Element, item:any, beforeTarget:Node?) => number }
+# @type { (element: JadeletElement, item: any, beforeTarget: Node | null) => number }
 ###
 append = (element, item, beforeTarget) ->
   if !item? # Skip nulls
@@ -277,12 +310,12 @@ append = (element, item, beforeTarget) ->
   return 1
 
 #
-###* @type {isObject} ###
+###* @type {import("../types/types").isObject} ###
 isObject = (x) ->
   typeof x is "object"
 
 #
-###* @type {isString} ###
+###* @type {import("../types/types").isString} ###
 isString = (x) ->
   typeof x is "string"
 
@@ -297,7 +330,7 @@ splat = (sources, context) ->
   .reduce (a, b) ->
     a.concat b
   , []
-  .filter (x) -> x?
+  .filter (###* @type {unknown}### x) -> x?
 
 #
 ###* @type {(x:unknown, context:Context) => any} ###
@@ -308,13 +341,19 @@ get = (x, context) ->
     x
 
 #
-###* @type {last} ###
+###* @type {import("../types/types").last} ###
 last = (array) ->
   if l = array.length
     return array[l-1]
 
+#
+###* @type {{
+  id: (source: JadeletAttribute[], context: Context) => () => unknown
+  class: (source: JadeletAttribute[], context: Context) => () => unknown[]
+  style: (source: JadeletAttribute[], context: Context) => () => string | Object
+}} ###
 mappers =
-  id: (source, context) ->
+  id:  (source, context) ->
     ->
       last splat source, context
   class: (source, context) ->
@@ -335,13 +374,15 @@ mappers =
 
 #
 ###*
-# @type {(attributes:JadeletAttributes, context:Context) => Context}
+# @type {(attributes: JadeletAttributes, context: Context) => Context}
 ###
 mapAttributes = (attributes, context) ->
   Object.fromEntries Object.keys(attributes).map (key) ->
     source = attributes[key]
     f =
-    if m = mappers[key]
+    if key is "id" or key is "class" or key is "style"
+      m =  mappers[key]
+      #@ts-ignore We know that source is a JadeletAttribute[] because key is "id" | "class" | "style", why doesn't typescript know?
       m(source, context)
     else if isString(source)
       r = source
@@ -354,7 +395,7 @@ mapAttributes = (attributes, context) ->
 
 #
 ###*
-# @type  { (ast: JadeletASTNode, context:Context, namespace?: string) => Element }
+# @type  { (ast: import("../types/types").JadeletASTNode, context: Context, namespace?: string) => JadeletElement }
 ###
 render = (astNode, context={}, namespace) ->
   [tag, attributes, children] = astNode
@@ -369,10 +410,13 @@ render = (astNode, context={}, namespace) ->
   if tag is "svg" and !namespace
     namespace = "http://www.w3.org/2000/svg"
 
-  if namespace
-    element = document.createElementNS namespace, tag
+  #
+  ###* @type {JadeletElement} ###
+  #@ts-ignore expand Element to JadeletElement
+  element = if namespace
+    document.createElementNS namespace, tag
   else
-    element = document.createElement tag
+    document.createElement tag
   # We populate the content first so that value binding for `select` tags
   # works properly.
   observeContent element, context, children, namespace
@@ -383,15 +427,15 @@ render = (astNode, context={}, namespace) ->
   return element
 
 #
-###* @type {JadeletParser} ###
+###* @type {typeof import("../types/main").parser} ###
 parser = require "./parser.hera"
 
 #
-###* @type { {[Key:string]: (mappedAttributes:any, children:JadeletAST[]) => Element }}###
+###* @type { {[Key:string]: (mappedAttributes: any, children: JadeletAST[]) => JadeletElement }}###
 customElements = {}
 
 #
-###* @type {JadeletAPI} ###
+###* @type {Jadelet} ###
 Jadelet =
   compile: (source, opts={}) ->
     ast = Jadelet.parse(source)

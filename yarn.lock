@@ -207,10 +207,10 @@
   resolved "https://registry.yarnpkg.com/@danielx/hera/-/hera-0.7.3-pre.3.tgz#d2114baf531f3428870d525389e9b003458eb9ab"
   integrity sha512-2qVHg7e6smelBqWn0KGvLJ8M+8Km64Yq3dzjXNAJez8qj0XnuHVIWl1VkHAnlDSKdUiPUwPO8cNDZA1HUe70qQ==
 
-"@danielx/observable@^0.5.0-pre.2":
-  version "0.5.0-pre.3"
-  resolved "https://registry.yarnpkg.com/@danielx/observable/-/observable-0.5.0-pre.3.tgz#bf31689c1663210d34171261681b5d999d38a7ff"
-  integrity sha512-UG6NslzoZlZCj+5g6+WyXwZNX5fqAhBXFk3sbPy3ZiLpqpEoNWSguHoRPg2kYJOTNY9fFALMhZDC46pMgRWyCA==
+"@danielx/observable@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@danielx/observable/-/observable-0.5.1.tgz#fc26bc3abf12db7a27e4862e3446c0dea7d5b096"
+  integrity sha512-nlf+rC0dGu1BTzAqCXfTHq4v2O8SpnsHjASzextIOErJIRNvRol/aBS+ZV710ZuXVwjQq51rblkiPe//qbc2TQ==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -259,6 +259,11 @@
     "@types/node" "*"
     "@types/parse5" "*"
     "@types/tough-cookie" "*"
+
+"@types/md5@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@types/md5/-/md5-2.3.2.tgz#529bb3f8a7e9e9f621094eb76a443f585d882528"
+  integrity sha512-v+JFDu96+UYJ3/UWzB0mEglIS//MZXgRaJ4ubUPwOM0gvLc/kcQ3TWNYwENEK7/EcXGQVrW8h/XqednSjBd/Og==
 
 "@types/mocha@^9.1.0":
   version "9.1.0"
