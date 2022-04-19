@@ -12,14 +12,40 @@ export interface JadeletParser {
   parse(source: string): JadeletASTNode;
 }
 
+/*
+  TODO: Can bindObservable do this magic?
+  <T extends string>(
+    element: JadeletElement,
+    value: JadeletAttribute | Function,
+    context: Context,
+    update: (v: T) => void
+  ): void
+  <S extends string, T extends Binding<S>, C extends Context>(
+    element: JadeletElement,
+    value: T,
+    context: C,
+    update: (v: C[S]) => void
+  ): void
+*/
+
+export interface bindObservable {
+
+  (
+    element: Element,
+    value: JadeletAttribute | Function,
+    context: Context,
+    update: (value: any) => void
+  ): void
+}
+
 export type exec = (ast: JadeletASTNode | string) => (context?: Context) => JadeletElement;
 
 export interface Context {
   [Key: string]: any
 }
 
-export interface Binding {
-  bind: string
+export interface Binding<T extends string> {
+  bind: T
 }
 
 export type JadeletAttribute = string | { bind: string };

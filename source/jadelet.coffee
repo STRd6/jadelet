@@ -17,19 +17,19 @@ forEach = Array::forEach
 A map of DOM elements and what listeners are bound to them.
 To dispose of an element traverse its children and clean them up too.
 After we remove the listeners we remove the element from the map
-@type {WeakMap<Element, Function[]>}
+@type {WeakMap<Node, Function[]>}
 ###
 elementCleaners = new WeakMap
 #
-###* @type {WeakMap<Element, number>} ###
+###* @type {WeakMap<Node, number>} ###
 elementRefCounts = new WeakMap
 
-retain = (###* @type {Element}### element) ->
+retain = (###* @type {Node}### element) ->
   count = elementRefCounts.get(element) || 0
   elementRefCounts.set(element, count + 1)
   return
 
-release = (###* @type {Element}### element) ->
+release = (###* @type {Node}### element) ->
   count = elementRefCounts.get(element) || 0
   count--
 
@@ -40,11 +40,16 @@ release = (###* @type {Element}### element) ->
     dispose element
   return
 
-# Disposing an element executes the cleanup for all it's children. If a child
-# element should be retained you must mark it explicitly to prevent its
-# observables from unbinding.
-dispose = (###* @type {Element}### element) ->
+#
+###*
+Disposing an element executes the cleanup for all it's children. If a child
+element should be retained you must mark it explicitly to prevent its
+observables from unbinding.
+@param element {Node}
+###
+dispose = (element) ->
   # Recurse into children
+  #@ts-ignore
   children = element.children
   if children?
     forEach.call children, dispose
@@ -58,7 +63,7 @@ dispose = (###* @type {Element}### element) ->
 #
 ###*
 Attach a cleaner function to run when the element is disposed of.
-@param element {Element}
+@param element {Node}
 @param cleaner {Function}
 ###
 attachCleaner = (element, cleaner) ->
@@ -77,17 +82,18 @@ isEvent = (###* @type {string}### name, ###* @type {Node}### element) ->
 
 #
 ###*
-value is either a literal string or an object shaped
-bind: stringKey
-exceptions for id, class, and style. They are arrays of such strings
-literals and binding objects
-@type {
-  (element: JadeletElement, context: Context, name: string, value: JadeletAttribute) => void
-}
+Bind an attribute to an element such that when its value changes the value of
+the element is updated.
+
+@param element {JadeletElement} The element to bind to.
+@param context {Context} The binding context.
+@param name {string} The name of the property being bound.
+@param value {JadeletAttribute} A JadeletAttribute or in the case of class, id, style, an array of attributes to bind.
 ###
 observeAttribute = (element, context, name, value) ->
   switch name
     when "id"
+      #@ts-ignore
       bindSplat element, context, value, (###* @type {string[]}### ids) ->
         length = ids.length
         if length
@@ -96,7 +102,8 @@ observeAttribute = (element, context, name, value) ->
           element.removeAttribute "id"
         return
     when "class"
-      bindSplat element, context, value, (classes) ->
+      #@ts-ignore
+      bindSplat element, context, value, (###* @type {string[]}### classes) ->
         className = classes.join(" ")
         if className
           element.className = className
@@ -104,7 +111,8 @@ observeAttribute = (element, context, name, value) ->
           element.removeAttribute "class"
         return
     when "style"
-      bindSplat element, context, value, (styles) ->
+      #@ts-ignore
+      bindSplat element, context, value, (###* @type {Array<string|Object>}### styles) ->
         # Remove any leftover styles
         element.removeAttribute "style"
         styles.forEach (style) ->
@@ -117,9 +125,8 @@ observeAttribute = (element, context, name, value) ->
       bindValue(element, value, context)
     when "checked"
       if value and !isString(value)
-        {bind} = value
         element.onchange = ->
-          context[bind]? element.checked
+          context[value.bind]? element.checked
           return
 
       bindObservable element, value, context, (newValue) ->
@@ -149,7 +156,8 @@ when any of its dependencies change it will refresh the update
 with the new value. To clean up we release the dependencies of
 our computed observable. We store the observables to clean up
 on a map keyed by the element.
-@type {(element:Element, value, context:Context, update:function) => void}
+
+@type {import("../types/types").bindObservable}
 ###
 bindObservable = (element, value, context, update) ->
   # If the value is a simple string then simply set it and exit
@@ -161,9 +169,8 @@ bindObservable = (element, value, context, update) ->
       update value.call context
       return
   else
-    {bind} = value
     observable = Observable ->
-      update get context[bind], context
+      update get context[value.bind], context
       return
 
   # return if no dependencies, no need to attach cleaners
@@ -182,9 +189,8 @@ bindValue = (element, value, context) ->
   # oninput and onchange handles the widest range of inputs and browser
   # inconsistencies.
   if value and typeof value is "object"
-    {bind} = value
     element.oninput = element.onchange = ->
-      context[bind]? element.value
+      context[value.bind]? element.value
       return
 
   bindObservable element, value, context, (newValue) ->
@@ -204,7 +210,7 @@ bindEvent = (element, name, binding, context) ->
   return
 
 #
-###* @type {(element: JadeletElement, context: Context, sources: JadeletAttribute[], update: Function) => void} ###
+###* @type {(element: JadeletElement, context: Context, sources: JadeletAttribute[], update: (value: any) => void) => void} ###
 bindSplat = (element, context, sources, update) ->
   bindObservable element, (-> splat sources, context), context, update
 
@@ -333,7 +339,10 @@ splat = (sources, context) ->
   .filter (###* @type {unknown}### x) -> x?
 
 #
-###* @type {(x:unknown, context:Context) => any} ###
+###*
+@param x {unknown}
+@param context {Context}
+###
 get = (x, context) ->
   if typeof x is 'function'
     x.call(context)
@@ -385,11 +394,14 @@ mapAttributes = (attributes, context) ->
       #@ts-ignore We know that source is a JadeletAttribute[] because key is "id" | "class" | "style", why doesn't typescript know?
       m(source, context)
     else if isString(source)
-      r = source
-      -> r
+      do -> # TODO: this closure is unnecessary but CoffeeSense has some trouble figuring out variable types when hoisting right now
+        r = source
+        -> r
     else
-      r = source
-      -> get context[r.bind], context
+      do ->
+        r = source
+        #@ts-ignore attribute should never be undefined
+        -> get context[r.bind], context
 
     [key, f]
 
@@ -398,6 +410,7 @@ mapAttributes = (attributes, context) ->
 # @type  { (ast: import("../types/types").JadeletASTNode, context: Context, namespace?: string) => JadeletElement }
 ###
 render = (astNode, context={}, namespace) ->
+  ###* @ts-ignore TODO: CoffeeSense variable update ###
   [tag, attributes, children] = astNode
 
   if Presenter = customElements[tag]
@@ -421,6 +434,7 @@ render = (astNode, context={}, namespace) ->
   # works properly.
   observeContent element, context, children, namespace
   Object.keys(attributes).forEach (name) ->
+    #@ts-ignore TODO: CoffeeSense variable update
     observeAttribute element, context, name, attributes[name]
     return
 
