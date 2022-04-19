@@ -63,8 +63,10 @@ describe "ids", ->
 
     element = template(model)
     assert.equal element.id, "other"
+    #@ts-expect-error TODO: Update observable library to allow nullable
     model.other null
     assert.equal element.id, "cool"
+    #@ts-expect-error TODO: Update observable library to allow nullable
     model.id null
     assert.equal element.id, "wat"
 

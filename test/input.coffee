@@ -21,7 +21,7 @@ describe "input", ->
 
     assert.equal input.selectionStart, 3
 
-    input.onchange()
+    input.onchange?(new Event("change"))
 
     assert.equal input.selectionStart, 3
 

@@ -3,7 +3,7 @@ describe "SELECT", ->
     option(@value) @name
   """
 
-  Option = (n) ->
+  Option = (###* @type {any} ###n) ->
     if typeof n is "object"
       OptionTemplate n
     else
@@ -48,7 +48,7 @@ describe "SELECT", ->
       # NOTE: To simulate a selection by choosing value you must pass a string
       select.value = "3"
       assert.equal select.value, "3"
-      select.onchange()
+      select.onchange? new Event "change"
 
   it "should get the correct value when another bound input changes", ->
     template = makeTemplate """
@@ -66,14 +66,14 @@ describe "SELECT", ->
     input = element.querySelector("input")
     select = element.querySelector("select")
 
-    input.value = "3"
-    input.oninput()
+    input?.value = "3"
+    input?.oninput? new Event "input"
 
     assert.equal model.value(), 3
 
-    assert.equal select.value, 3
+    assert.equal select?.value, 3
     model.value 1
-    assert.equal select.value, 1
+    assert.equal select?.value, 1
 
   describe "with an array of objects for options", ->
     template = makeTemplate """
@@ -84,6 +84,8 @@ describe "SELECT", ->
       {name: "yolo", value: "badical"}
       {name: "wat", value: "noice"}
     ]
+
+    ###@ts-ignore CoffeeSense###
     model =
       options: options
       optionElements: ->
@@ -91,25 +93,33 @@ describe "SELECT", ->
       value: options[0].value
 
     it "should generate options", ->
+      #@ts-ignore CoffeeSense
       select = template(model)
+      #@ts-ignore CoffeeSense
       assert.equal select.querySelectorAll("option").length, model.options.length
 
     it "option names should be the name property of the object", ->
+      #@ts-ignore CoffeeSense
       select = template(model)
 
       names = Array::map.call select.querySelectorAll("option"), (o) -> o.text
       names.forEach (name, i) ->
+        #@ts-ignore CoffeeSense
         assert.equal name, model.options[i].name
 
     it "option values should be the value property of the object", ->
+      #@ts-ignore CoffeeSense
       select = template(model)
 
       values = Array::map.call select.querySelectorAll("option"), (o) -> o.value
       values.forEach (value, i) ->
+        #@ts-ignore CoffeeSense
         assert.equal value, model.options[i].value
 
     it "should have it's value set", ->
+      #@ts-ignore CoffeeSense
       select = template(model)
+      #@ts-ignore CoffeeSense
       assert.equal select.value, model.value
 
 
@@ -272,6 +282,7 @@ describe "SELECT", ->
       select = template(model)
 
       assert.equal select.querySelectorAll("option").length, 2
+      #@ts-ignore
       delete options().bar
       options Object.assign {}, options()
       assert.equal select.querySelectorAll("option").length, 1

@@ -472,6 +472,7 @@ Jadelet =
   _elementCleaners: elementCleaners
   define: (definitions) ->
     Object.assign customElements, definitions
+    return Jadelet
   dispose: dispose
   retain: retain
   release: release

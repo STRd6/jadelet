@@ -3,6 +3,7 @@ describe "Memory usage", ->
   if global.gc
     usageTest = ->
 
+      #@ts-ignore
       global.gc()
       initialMemoryUsage = process.memoryUsage().heapUsed
 
@@ -26,6 +27,7 @@ describe "Memory usage", ->
         Jadelet.dispose(button)
         i += 1
 
+      #@ts-ignore
       global.gc()
       finalMemoryUsage = process.memoryUsage().heapUsed
 

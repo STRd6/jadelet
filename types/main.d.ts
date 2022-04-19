@@ -1,5 +1,5 @@
 import Observable from "@danielx/observable";
-import { exec, JadeletParser } from "./types";
+import { Definitions, exec, JadeletParser } from "./types";
 
 declare const Jadelet: {
   Observable: typeof Observable;
@@ -14,7 +14,7 @@ declare const Jadelet: {
   }): string;
   parse: JadeletParser["parse"];
   exec: exec;
-  define(definitions: any): any;
+  define(definitions: Definitions): typeof Jadelet;
 }
 
 export = Jadelet

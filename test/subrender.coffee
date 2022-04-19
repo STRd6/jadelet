@@ -125,7 +125,7 @@ describe "subrender", ->
           ]
           rowElements: ->
             @rows.map @rowPresenter
-          rowPresenter: (text) ->
+          rowPresenter: (###* @type {string} ###text) ->
             RowTemplate text: text
 
         element = template(model)
@@ -140,7 +140,7 @@ describe "subrender", ->
           ]
           rowElements: ->
             @rows.map @rowPresenter
-          rowPresenter: (text) ->
+          rowPresenter: (###* @type {() => string} ###text) ->
             RowTemplate text: text()
 
         element = template(model)

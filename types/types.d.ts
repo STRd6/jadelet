@@ -5,6 +5,7 @@ export type last = <T extends unknown[]>(array: T) => T[number];
 export interface JadeletElement extends HTMLElement {
   checked: boolean
   value: string
+  selectionStart: number
   style: any
 }
 
@@ -70,3 +71,7 @@ export type JadeletAttributeValue<T extends string> =
 
 export type JadeletASTNode = [string, JadeletAttributes, JadeletAST[]]
 export type JadeletAST = JadeletASTNode | JadeletAttribute;
+
+export type Definitions = {
+  [Key: string]: (attributes: any, children: any) => HTMLElement
+}

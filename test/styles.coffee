@@ -26,6 +26,7 @@ describe "Styles", ->
     assert.equal element.style.backgroundColor, "red"
 
     model.style
+      #@ts-ignore
       color: "green"
     assert.equal element.style.backgroundColor, ""
     assert.equal element.style.color, "green"

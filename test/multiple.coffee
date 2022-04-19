@@ -26,6 +26,7 @@ describe "multiple bindings", ->
     select = element.querySelector("select")
 
     ["text", "range"].forEach (type) ->
+      #@ts-expect-error
       assert.equal element.querySelector("input[type='#{type}']")?.value, 5
 
     assert.equal element.querySelector("progress")?.value, 5
@@ -33,12 +34,16 @@ describe "multiple bindings", ->
 
     [2, 7, 3, 8].forEach (value) ->
       # NOTE: This is how we're simulating an onchange event
+      #@ts-expect-error
       select.selectedIndex = value - 1
+      #@ts-expect-error
       select.onchange()
 
+      #@ts-expect-error
       assert.equal select.value, value
 
       ["text", "range"].forEach (type) ->
+        #@ts-expect-error
         assert.equal element.querySelector("input[type='#{type}']")?.value, value
 
       assert.equal element.querySelector("progress")?.value, value

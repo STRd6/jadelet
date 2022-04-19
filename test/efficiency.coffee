@@ -1,11 +1,11 @@
 describe "efficiency", ->
   it "should not re-render sub elements when classes change", ->
+    count = 0
+
     template = makeTemplate """
       .duder(@class)
         @subrender
     """
-
-    count = 0
 
     model =
       class: Observable "something"
@@ -19,6 +19,8 @@ describe "efficiency", ->
     assert element.classList.contains("somethingElse")
 
   it "should recompute siblings an appropriate amount of times", ->
+    count = 0
+
     template = makeTemplate """
       div
         @item1
@@ -27,7 +29,6 @@ describe "efficiency", ->
         @counter
     """
 
-    count = 0
     model =
       item1: Observable "A"
       item2: Observable 5
@@ -51,12 +52,12 @@ describe "efficiency", ->
 
 
   it "should not re-render sub elements when attributes change", ->
+    count = 0
+
     template = makeTemplate """
       .duder(@name)
         @subrender
     """
-
-    count = 0
 
     model =
       name: Observable "something"
@@ -70,12 +71,12 @@ describe "efficiency", ->
     assert.equal element.getAttribute("name"), "somethingElse"
 
   it "should not re-render sub elements when ids change", ->
+    count = 0
+
     template = makeTemplate """
       .duder(@id)
         @subrender
     """
-
-    count = 0
 
     model =
       id: Observable "something"
@@ -89,6 +90,10 @@ describe "efficiency", ->
     assert.equal element.id, "somethingElse"
 
   it "should render the template once when the observable changes", ->
+    oCount = 0
+    tCount = 0
+    iCount = 0
+
     template = makeTemplate """
       .awesome
         @renderedOuter
@@ -97,15 +102,12 @@ describe "efficiency", ->
           @itemElements
     """
 
+    ### @ts-ignore CoffeeSense ###
     itemTemplate = makeTemplate """
       .item
         @n
         @renderedItem
     """
-
-    oCount = 0
-    tCount = 0
-    iCount = 0
 
     model =
       items: Observable [
@@ -116,7 +118,9 @@ describe "efficiency", ->
       itemElements: ->
         renderedItem = @renderedItem
 
+        #@ts-ignore CoffeeSense
         @items.map (n) ->
+          #@ts-ignore CoffeeSense
           itemTemplate
             n: n
             renderedItem: renderedItem
@@ -127,7 +131,7 @@ describe "efficiency", ->
       renderedItem: ->
         iCount += 1
 
-    element = template(model)
+    template(model)
 
     assert.equal oCount, 1
     assert.equal tCount, 1
@@ -144,23 +148,26 @@ describe "efficiency", ->
     assert.equal iCount, 12
 
   it "shouldn't leak all over the place", ->
+    activeItem = Observable null
+
     template = makeTemplate """
       items
         @itemElements
 
     """
 
+    ### @ts-ignore CoffeeSense ###
     buttonTemplate = makeTemplate """
       button(@click class=@active) @text
     """
 
-    activeItem = Observable null
-
     Item = (value="yo") ->
+      ### @ts-ignore CoffeeSense ###
       self =
         text: Observable value
         click: ->
         active: ->
+          #@ts-ignore CoffeeSense
           self is activeItem()
 
     items = Observable [
@@ -172,10 +179,12 @@ describe "efficiency", ->
     model =
       items: items
       itemElements: ->
+        #@ts-ignore CoffeeSense
         @items.map (item) ->
+          #@ts-ignore CoffeeSense
           buttonTemplate item
 
-    element = template(model)
+    template(model)
 
     assert.equal items.listeners.length, 1
     assert.equal activeItem.listeners.length, 3
