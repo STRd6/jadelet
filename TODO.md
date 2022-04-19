@@ -2,9 +2,10 @@ TODO
 ====
 
 - [ ] Explore Custom elements
-- [ ] Explore adding TypeScript typings
-  - [ ] Publishing types
 - [ ] Optionally pass `document` when rendering?
+- [x] Explore adding TypeScript typings
+  - [x] Figure out secrets of CoffeeSense and workspace setup
+  - [x] Publishing types
 - [x] esbuild plugin
 - [x] Use esbuild for publishing
   - [x] main

@@ -1,6 +1,6 @@
 {
   "name": "jadelet",
-  "version": "2.0.0-pre.4",
+  "version": "2.0.0-pre.5",
   "description": "Lightweight, elegant HTML templates",
   "license": "MIT",
   "devDependencies": {
