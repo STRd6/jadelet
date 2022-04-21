@@ -18,3 +18,11 @@ declare const Jadelet: {
 }
 
 export = Jadelet
+
+declare module "jadelet/esbuild-plugin" {
+  function _exports(options?: {}): {
+    name: "jadelet";
+    setup: (build: any) => any;
+  };
+  export = _exports;
+}

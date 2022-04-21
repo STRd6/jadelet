@@ -4,6 +4,7 @@ TODO
 - [ ] Explore Custom elements
 - [ ] Optionally pass `document` when rendering?
 - [x] Explore adding TypeScript typings
+  - [x] declare "jadelet/esbuild-plugin" module
   - [x] Figure out secrets of CoffeeSense and workspace setup
   - [x] Publishing types
 - [x] esbuild plugin
