@@ -3,7 +3,7 @@ const { compile } = require('./');
 
 module.exports = (options = {}) => ({
   name: 'jadelet',
-  setup: function (build) {
+  setup: function (/** @type {import("esbuild").PluginBuild} */build) {
     return build.onLoad({
       filter: /.\.jadelet$/
     }, function (args) {

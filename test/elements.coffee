@@ -11,7 +11,7 @@ describe "elements", ->
     section = T
       el: div
 
-    assert.equal section.children[0].innerText, "hello"
+    assert.equal section.children[0]?.innerText, "hello"
     assert section.children[0] instanceof window.HTMLDivElement
 
   it "should render 'view-like' elements", ->
@@ -27,5 +27,5 @@ describe "elements", ->
       view:
         element: div
 
-    assert.equal section.children[0].innerText, "hello"
+    assert.equal section.children[0]?.innerText, "hello"
     assert section.children[0] instanceof window.HTMLDivElement

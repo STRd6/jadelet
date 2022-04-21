@@ -90,7 +90,7 @@ describe "SELECT", ->
       options: options
       optionElements: ->
         @options.map Option
-      value: options[0].value
+      value: options[0]?.value
 
     it "should generate options", ->
       #@ts-ignore CoffeeSense
@@ -143,9 +143,9 @@ describe "SELECT", ->
       select = template(model)
       optionElements = select.querySelectorAll("option")
 
-      assert.equal optionElements[0].textContent, "Napoleon"
-      options()[0].name("Yolo")
-      assert.equal optionElements[0].textContent, "Yolo"
+      assert.equal optionElements[0]?.textContent, "Napoleon"
+      options()[0]?.name("Yolo")
+      assert.equal optionElements[0]?.textContent, "Yolo"
 
   describe "with objects that have an observable value property", ->
     template = makeTemplate """
@@ -161,7 +161,7 @@ describe "SELECT", ->
         options: options
         optionElements: ->
           @options.map Option
-        value: options()[0].value()
+        value: options()[0]?.value()
 
       select = template(model)
 
@@ -216,7 +216,7 @@ describe "SELECT", ->
         options: options
         optionElements: ->
           @options.map Option
-        value: options()[0].value
+        value: options()[0]?.value
 
       select = template(model)
       assert.equal select.value, model.value
@@ -304,6 +304,6 @@ describe "SELECT", ->
       select = template model
       optionElements = select.querySelectorAll("option")
 
-      assert.equal optionElements[1].textContent, "Barrack"
+      assert.equal optionElements[1]?.textContent, "Barrack"
       options().bar "YOLO"
-      assert.equal optionElements[1].textContent, "YOLO"
+      assert.equal optionElements[1]?.textContent, "YOLO"

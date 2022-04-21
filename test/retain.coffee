@@ -21,7 +21,7 @@ describe "retain", ->
       title: Observable "yo"
       canvas: canvasElement
 
-    editorElement = EditorTemplate editorModel
+    EditorTemplate editorModel
 
     assert.equal canvasElement.getAttribute('height'), 64
 

@@ -12,6 +12,7 @@ compileDirectory = (directory) ->
       it "compiles #{file}", ->
         data = fs.readFileSync "#{directory}/#{file}", "utf8"
         assert compile data
+    return
 
 describe 'Compiler', ->
   describe 'samples', ->

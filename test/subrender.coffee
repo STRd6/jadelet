@@ -147,7 +147,7 @@ describe "subrender", ->
         assert.equal element.querySelectorAll("tr").length, 3
         assert.equal element.querySelector("td")?.textContent, "Wat"
 
-        model.rows()[0] "yo"
+        model.rows()[0]? "yo"
 
         assert.equal element.querySelector("td")?.textContent, "yo"
 
@@ -156,5 +156,5 @@ describe "subrender", ->
         assert.equal element.querySelectorAll("tr").length, 4
         assert.equal element.querySelector("td")?.textContent, "yo"
 
-        model.rows()[0] "holla"
+        model.rows()[0]? "holla"
         assert.equal element.querySelector("td")?.textContent, "holla"

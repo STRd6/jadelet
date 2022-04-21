@@ -97,6 +97,7 @@ observeAttribute = (element, context, name, value) ->
       bindSplat element, context, value, (###* @type {string[]}### ids) ->
         length = ids.length
         if length
+          #@ts-ignore
           element.id = ids[length-1]
         else
           element.removeAttribute "id"
@@ -253,18 +254,21 @@ observeContent = (element, context, contentArray, namespace) ->
       bindObservable element, astNode, context, (value) ->
         previousLength = length
         pos = tracker[index]
+        #@ts-ignore
         beforeTarget = element.childNodes[pos+length]
         toRelease = Array(length)
 
         # Remove previously added nodes
         i = 0
         while i < length
+          #@ts-ignore
           child = element.childNodes[pos]
           element.removeChild child
           toRelease[i] = child
           i++
 
         # Append New
+        #@ts-ignore
         length = append element, value, beforeTarget
 
         # Relase after appending so if a node was re-added it won't hit zero
@@ -352,8 +356,7 @@ get = (x, context) ->
 #
 ###* @type {import("../types/types").last} ###
 last = (array) ->
-  if l = array.length
-    return array[l-1]
+  return array[array.length-1]
 
 #
 ###* @type {{

@@ -16,7 +16,10 @@ describe "Memory usage", ->
       create = ->
         model =
           selected: ->
-            "selected" if current() is model
+            if current() is model
+              "selected"
+            else
+              ""
           click: ->
 
         template model
