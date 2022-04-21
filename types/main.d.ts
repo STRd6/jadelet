@@ -18,8 +18,3 @@ declare const Jadelet: {
 }
 
 export = Jadelet
-
-declare module "jadelet/esbuild-plugin" {
-  var _exports: (options?: {}) => import("esbuild").Plugin
-  export = _exports;
-}
