@@ -207,10 +207,10 @@
   resolved "https://registry.yarnpkg.com/@danielx/hera/-/hera-0.7.3-pre.3.tgz#d2114baf531f3428870d525389e9b003458eb9ab"
   integrity sha512-2qVHg7e6smelBqWn0KGvLJ8M+8Km64Yq3dzjXNAJez8qj0XnuHVIWl1VkHAnlDSKdUiPUwPO8cNDZA1HUe70qQ==
 
-"@danielx/observable@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@danielx/observable/-/observable-0.5.1.tgz#fc26bc3abf12db7a27e4862e3446c0dea7d5b096"
-  integrity sha512-nlf+rC0dGu1BTzAqCXfTHq4v2O8SpnsHjASzextIOErJIRNvRol/aBS+ZV710ZuXVwjQq51rblkiPe//qbc2TQ==
+"@danielx/observable@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@danielx/observable/-/observable-0.6.0.tgz#123f5007fe55f2d17582c4c5e867def8f59262a7"
+  integrity sha512-tWAnZGrHreKq+ErecdltBh7VWxb34KjNmHd3bFE3B7Skmac0Wr9kJCz2JcymiJvIK55D1i8z7x1wX6Pv9tYYvw==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"

@@ -9,7 +9,8 @@
 @typedef {typeof import("../types/main")} Jadelet
 ###
 
-Observable = require "@danielx/observable"
+#
+{ Observable } = require "@danielx/observable"
 forEach = Array::forEach
 
 #
@@ -97,8 +98,7 @@ observeAttribute = (element, context, name, value) ->
       bindSplat element, context, value, (###* @type {string[]}### ids) ->
         length = ids.length
         if length
-          #@ts-ignore
-          element.id = ids[length-1]
+          element.id = ids[length-1] or ""
         else
           element.removeAttribute "id"
         return
@@ -223,7 +223,7 @@ observeContent = (element, context, contentArray, namespace) ->
   # Map the content array into into an elements array (can be more or less,
   # essentially a flatmap) Keep track of observables, only update the proper
   # places when observables change.
-  "" # TODO: Empty statement to get CoffeeSense type comment to attach properly
+
   #
   ###* @type {number[]}###
   tracker = []
@@ -389,22 +389,16 @@ mappers =
 # @type {(attributes: JadeletAttributes, context: Context) => Context}
 ###
 mapAttributes = (attributes, context) ->
-  Object.fromEntries Object.keys(attributes).map (key) ->
-    source = attributes[key]
+  Object.fromEntries Object.entries(attributes).map ([key, source]) ->
     f =
-    if key is "id" or key is "class" or key is "style"
-      m =  mappers[key]
-      #@ts-ignore We know that source is a JadeletAttribute[] because key is "id" | "class" | "style", why doesn't typescript know?
+    if Array.isArray(source)
+      #@ts-ignore TODO
+      m = mappers[key]
       m(source, context)
     else if isString(source)
-      do -> # TODO: this closure is unnecessary but CoffeeSense has some trouble figuring out variable types when hoisting right now
-        r = source
-        -> r
+      -> source
     else
-      do ->
-        r = source
-        #@ts-ignore attribute should never be undefined
-        -> get context[r.bind], context
+      -> get context[source.bind], context
 
     [key, f]
 
@@ -413,7 +407,6 @@ mapAttributes = (attributes, context) ->
 # @type  { (ast: import("../types/types").JadeletASTNode, context: Context, namespace?: string) => JadeletElement }
 ###
 render = (astNode, context={}, namespace) ->
-  ###* @ts-ignore TODO: CoffeeSense variable update ###
   [tag, attributes, children] = astNode
 
   if Presenter = customElements[tag]
@@ -436,9 +429,9 @@ render = (astNode, context={}, namespace) ->
   # We populate the content first so that value binding for `select` tags
   # works properly.
   observeContent element, context, children, namespace
-  Object.keys(attributes).forEach (name) ->
-    #@ts-ignore TODO: CoffeeSense variable update
-    observeAttribute element, context, name, attributes[name]
+  Object.entries(attributes).forEach ([name, value]) ->
+    #@ts-ignore TODO
+    observeAttribute element, context, name, value
     return
 
   return element

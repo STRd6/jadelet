@@ -52,7 +52,7 @@ export interface Binding<T extends string> {
 export type JadeletAttribute = string | { bind: string };
 
 export type JadeletAttributes = {
-  [Key: string]: JadeletAttribute | undefined
+  [Key: string]: JadeletAttribute
 } & {
   id?: JadeletAttribute[],
   class?: JadeletAttribute[],
