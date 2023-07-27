@@ -72,7 +72,7 @@ observeAttribute = (element, context, name, value) ->
       bindSplat element, context, value, (classes) ->
         className = classes.join(" ")
         if className
-          element.className = className
+          element.setAttribute "class", className
         else
           element.removeAttribute "class"
         return
