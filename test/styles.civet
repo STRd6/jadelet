@@ -19,7 +19,7 @@ describe "Styles", ->
     """
 
     model :=
-      style: Observable
+      style: Observable<{backgroundColor?: string, color?: string}>
         backgroundColor: "red"
 
     element := template(model)

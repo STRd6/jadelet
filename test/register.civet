@@ -2,6 +2,7 @@ describe "register", ->
   it "should register", ->
     await import "../register.js"
 
+    // @ts-ignore
     { createRequire } from 'node:module'
     const require = createRequire(import.meta.url);
 

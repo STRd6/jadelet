@@ -100,14 +100,14 @@ describe "SELECT", ->
 
       names := Array.prototype.map.call select.querySelectorAll("option"), (o) -> o.text
       names.forEach (name, i) ->
-        assert.equal name, model.options[i].name
+        assert.equal name, model.options[i]!.name
 
     it "option values should be the value property of the object", ->
       select := template(model)
 
       values := Array.prototype.map.call select.querySelectorAll("option"), (o) -> o.value
       values.forEach (value, i) ->
-        assert.equal value, model.options[i].value
+        assert.equal value, model.options[i]!.value
 
     it "should have it's value set", ->
       select := template(model)
@@ -257,7 +257,7 @@ describe "SELECT", ->
       assert.equal select.querySelectorAll("option").length, 3
 
     it "should remove options removed from the observable object", ->
-      options := Observable
+      options := Observable<{ nap?: string, bar?: string}>
         nap: "Napoleon"
         bar: "Barrack"
 
