@@ -1,27 +1,27 @@
 describe "Classes", ->
   it "should be bound in the context of the object", ->
-    template = makeTemplate """
+    template := makeTemplate """
       .duder(class=@classes)
     """
 
-    model =
+    model :=
       classes: ->
         @myClass()
       myClass: ->
         "hats"
 
-    element = template(model)
+    element := template(model)
     assert element.classList.contains "hats"
 
   it "should handle observable arrays", ->
-    template = makeTemplate """
+    template := makeTemplate """
       div(class=@classes)
     """
 
-    model =
+    model :=
       classes: Observable ["a", "b"]
 
-    element = template(model)
+    element := template(model)
 
     assert element.classList.contains "a"
     assert element.classList.contains "b"
@@ -31,27 +31,27 @@ describe "Classes", ->
     assert.equal element.getAttribute("class"), null
 
   it "should merge with literal classes", ->
-    template = makeTemplate """
+    template := makeTemplate """
       .duder(class=@classes)
     """
 
-    model =
+    model :=
       classes: Observable ["a", "b"]
 
-    element = template(model)
+    element := template(model)
 
     assert element.classList.contains "a"
     assert element.classList.contains "b"
     assert element.classList.contains "duder"
 
   it "should not write `undefined` to the class", ->
-    template = makeTemplate """
+    template := makeTemplate """
       .duder(class=@undefined)
     """
 
-    model =
+    model :=
       undefined: undefined
 
-    element = template(model)
+    element := template(model)
 
     assert !element.classList.contains("undefined")

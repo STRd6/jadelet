@@ -1,39 +1,39 @@
 describe "Attributes", ->
   describe "@", ->
     it "should bind to the property with the same name", (done) ->
-      template = makeTemplate """
+      template := makeTemplate """
         button(@click) Test
       """
 
-      model =
+      model :=
         click: ->
           done()
 
-      button = template(model)
+      button := template(model)
       button.click()
 
     it "should work with multiple attributes", ->
-      template = makeTemplate """
+      template := makeTemplate """
         button(before="low" @type middle="mid" @yolo after="hi") Test
       """
 
-      model =
+      model :=
         type: "submit"
         yolo: "Hello"
 
-      button = template(model)
+      button := template(model)
       assert.equal button.getAttribute("type"), "submit"
       assert.equal button.getAttribute("yolo"), "Hello"
 
     it "shoud not be present when false or undefined", ->
-      template = makeTemplate """
+      template := makeTemplate """
         button(@disabled) Test
       """
 
-      model =
+      model :=
         disabled: Observable false
 
-      button = template(model)
+      button := template(model)
       assert.equal button.getAttribute("disabled"), undefined
 
       model.disabled true

@@ -1,66 +1,66 @@
 describe "Events", ->
   it "should bind click to the object context", ->
-    template = makeTemplate """
+    template := makeTemplate """
       button(click=@click)
     """
 
-    result = null
+    result .= null
 
-    model =
+    model :=
       name: Observable "Foobert"
       click: ->
         result = @name()
 
-    button = template(model)
+    button := template(model)
     assert.equal result, null
     button.click()
     assert.equal result, "Foobert"
 
   it "shouldn't bind on- events", ->
-    template = makeTemplate """
+    template := makeTemplate """
       button(onclick=@click)
     """
 
-    result = null
+    result .= null
 
-    model =
+    model :=
       name: Observable "Foobert"
       click: ->
         result = @name()
 
-    button = template(model)
-    # Function was called to seet the "onclick" attribute
+    button := template(model)
+    // Function was called to seet the "onclick" attribute
     assert.equal result, "Foobert"
     assert.equal button.getAttribute("onclick"), "Foobert"
 
   it "should skip non-functions when binding events", ->
-    template = makeTemplate """
+    template := makeTemplate """
       button(@mouseenter @mouseleave)
     """
 
-    model =
+    model :=
       mouseenter: "wut"
       mouseleave: "lol"
 
-    button = template(model)
+    button := template(model)
 
     dispatch button, "mouseenter"
     dispatch button, "mouseleave"
 
   it "should bind mouseenter and mouseleave events", ->
-    template = makeTemplate """
+    template := makeTemplate """
       button(@mouseenter @mouseleave)
     """
 
-    result = null
+    result .= null
 
-    model =
+    model :=
       mouseenter: ->
         result = 1
       mouseleave: ->
         result = 2
 
-    button = template(model)
+    button := template(model)
 
     assert.equal result, null
     dispatch button, "mouseenter"
@@ -69,21 +69,21 @@ describe "Events", ->
     assert.equal result, 2
 
   it "shoud handle all touch events", ->
-    template = makeTemplate """
+    template := makeTemplate """
       canvas(@touchstart @touchmove @touchend @touchcancel)
     """
 
-    called = 0
-    eventFn = ->
+    called .= 0
+    eventFn := ->
       called += 1
 
-    model =
+    model :=
       touchcancel: eventFn
       touchstart: eventFn
       touchmove: eventFn
       touchend: eventFn
 
-    canvas = template(model)
+    canvas := template(model)
     assert.equal called, 0
 
     dispatch canvas, "touchstart"
@@ -99,21 +99,21 @@ describe "Events", ->
     assert.equal called, 4
 
   it "shoud handle all animation events", ->
-    template = makeTemplate """
+    template := makeTemplate """
       div(@animationstart @animationiteration @animationend @transitionend)
     """
 
-    called = 0
-    eventFn = ->
+    called .= 0
+    eventFn := ->
       called += 1
 
-    model =
+    model :=
       animationstart: eventFn
       animationend: eventFn
       animationiteration: eventFn
       transitionend: eventFn
 
-    canvas = template(model)
+    canvas := template(model)
     assert.equal called, 0
 
     dispatch canvas, "animationstart"

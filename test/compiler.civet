@@ -1,16 +1,12 @@
-assert = require('assert')
-fs = require('fs')
+fs from fs
 
-# TODO: prefer destructuring when CoffeeSense improves
-compile = Jadelet.compile
+{ compile } := Jadelet
 
-#
-###* @param directory {string} ###
-compileDirectory = (directory) ->
+compileDirectory := (directory: string) ->
   fs.readdirSync(directory).forEach (file) ->
     if file.match /\.jadelet$/
-      it "compiles #{file}", ->
-        data = fs.readFileSync "#{directory}/#{file}", "utf8"
+      it `compiles ${file}`, ->
+        data := fs.readFileSync `${directory}/${file}`, "utf8"
         assert compile data
     return
 
@@ -20,9 +16,9 @@ describe 'Compiler', ->
 
   describe "exports", ->
     it "defaults to module.exports", ->
-      compiled = compile "h1"
+      compiled := compile "h1"
       assert compiled.match(/^module\.exports/)
 
     it "defaults to require('jadelet')", ->
-      compiled = compile "h1"
+      compiled := compile "h1"
       assert compiled.match(/require\('jadelet'\)/)

@@ -1,9 +1,9 @@
 describe "Custom Elements", ->
   it "should render custom elements", ->
-    # TODO: Need to figure out observable bindings for attributes and children
+    // TODO: Need to figure out observable bindings for attributes and children
     Jadelet.define
       Cool: (attributes, children) ->
-        el = document.createElement 'x-cool'
+        el := document.createElement 'x-cool'
 
         console.log Object.keys(attributes).map (k) ->
           [k, attributes[k]()]
@@ -12,7 +12,7 @@ describe "Custom Elements", ->
 
         return el
 
-    T = Jadelet.exec """
+    T .= Jadelet.exec """
       Cool#myId.cl1.cl2(@rad cool wat="yo" @class @id @style)
         | he
         li Heyy

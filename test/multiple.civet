@@ -1,5 +1,5 @@
 describe "multiple bindings", ->
-  Template = makeTemplate """
+  Template := makeTemplate """
     div
       input(type="text" @value)
       select(@value)
@@ -10,40 +10,38 @@ describe "multiple bindings", ->
       progress(@value @max)
   """
 
-  OptionTemplate = makeTemplate """
+  OptionTemplate := makeTemplate """
     option(@value)
   """
 
-  model =
+  model :=
     max: 10
     value: Observable 5
     optionElements: [1..10].map (n) ->
       OptionTemplate(value: n)
 
   it "should be initialized to the right values", ->
-    element = Template(model)
+    element := Template(model)
 
-    select = element.querySelector("select")
+    select := element.querySelector("select")!
 
     ["text", "range"].forEach (type) ->
-      #@ts-expect-error
-      assert.equal element.querySelector("input[type='#{type}']")?.value, 5
+      // @ts-expect-error
+      assert.equal element.querySelector(`input[type='${type}']`)?.value, 5
 
     assert.equal element.querySelector("progress")?.value, 5
     assert.equal select?.value, 5
 
     [2, 7, 3, 8].forEach (value) ->
-      # NOTE: This is how we're simulating an onchange event
-      #@ts-expect-error
+      // NOTE: This is how we're simulating an onchange event
       select.selectedIndex = value - 1
-      #@ts-expect-error
+      // @ts-expect-error
       select.onchange()
 
-      #@ts-expect-error
       assert.equal select.value, value
 
       ["text", "range"].forEach (type) ->
-        #@ts-expect-error
-        assert.equal element.querySelector("input[type='#{type}']")?.value, value
+        // @ts-expect-error
+        assert.equal element.querySelector(`input[type='${type}']`)?.value, value
 
       assert.equal element.querySelector("progress")?.value, value

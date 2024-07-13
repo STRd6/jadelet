@@ -1,6 +1,6 @@
 describe "svg", ->
   it "should render svg", ->
-    src = """
+    src := """
       section
         h2 svg test
         svg(width=100 height=100)
@@ -8,7 +8,7 @@ describe "svg", ->
         p awesome
     """
 
-    template = makeTemplate src
-    element = template()
+    template := makeTemplate src
+    element := template()
 
     assert.equal element.querySelector('svg')?.namespaceURI, "http://www.w3.org/2000/svg"

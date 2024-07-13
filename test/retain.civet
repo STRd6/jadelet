@@ -1,23 +1,23 @@
 describe "retain", ->
   it "should keep elements bound even when reused in the DOM", ->
-    CanvasTemplate = makeTemplate """
+    CanvasTemplate := makeTemplate """
       canvas(@width @height)
     """
 
-    EditorTemplate = makeTemplate """
+    EditorTemplate := makeTemplate """
       editor
         @title
         @canvas
     """
 
-    canvasModel =
+    canvasModel :=
       width: Observable 64
       height: Observable 64
 
-    canvasElement = CanvasTemplate canvasModel
+    canvasElement := CanvasTemplate canvasModel
     Jadelet.retain canvasElement
 
-    editorModel =
+    editorModel :=
       title: Observable "yo"
       canvas: canvasElement
 

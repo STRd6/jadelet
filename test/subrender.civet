@@ -1,41 +1,41 @@
 describe "subrender", ->
   describe "rendering simple text", ->
-    template = makeTemplate """
+    template := makeTemplate """
       span.count @count
     """
 
     it "should render numbers as strings", ->
-      model =
+      model :=
         count: 5
 
-      element = template(model)
+      element := template(model)
       assert.equal element.textContent, "5"
 
     it "should update when observable changes", ->
-      model =
+      model :=
         count: Observable 5
 
-      element = template(model)
+      element := template(model)
       assert.equal element.textContent, "5"
       model.count 2
       assert.equal element.textContent, "2"
 
   describe "with root node", ->
-    template = makeTemplate """
+    template := makeTemplate """
       div
         @generateItem
     """
 
     it "should render elements in-line", ->
-      model =
+      model :=
         generateItem: ->
           document.createElement("li")
 
-      element = template(model)
+      element := template(model)
       assert element.querySelector("li")
 
     it "should render lists of nodes", ->
-      model =
+      model :=
         generateItem: ->
           [
             document.createElement("li")
@@ -43,36 +43,36 @@ describe "subrender", ->
             document.createElement("p")
           ]
 
-      element = template(model)
+      element := template(model)
       assert.equal element.querySelectorAll("li").length, 2
       assert.equal element.querySelectorAll("p").length, 1
 
     it "should work with a node with children", ->
-      model =
+      model :=
         generateItem: ->
-          div = document.createElement "div"
+          div := document.createElement "div"
 
           div.innerHTML = "<p>Yo</p><ol><li>Yolo</li><li>Broheim</li></ol>"
 
           div
 
-      element = template(model)
+      element := template(model)
 
       assert.equal element.querySelectorAll("li").length, 2
       assert.equal element.querySelectorAll("p").length, 1
       assert.equal element.querySelectorAll("ol").length, 1
 
     it "should work with observables", ->
-      model =
+      model :=
         name: Observable "wat"
         generateItem: ->
-          item = document.createElement("li")
+          item := document.createElement("li")
 
           item.textContent = @name()
 
           item
 
-      element = template(model)
+      element := template(model)
 
       assert.equal element.querySelectorAll("li").length, 1
       assert.equal element.querySelector("li")?.textContent, "wat"
@@ -80,16 +80,16 @@ describe "subrender", ->
       assert.equal element.querySelector("li")?.textContent, "yo"
 
   describe "rendering subtemplates", ->
-    RowTemplate = makeTemplate """
+    RowTemplate := makeTemplate """
       tr
         td @text
     """
 
     describe "mixing and matching", ->
-      subtemplate = makeTemplate """
+      subtemplate := makeTemplate """
         span Hello
       """
-      template = makeTemplate """
+      template := makeTemplate """
         div
           a Radical
           |
@@ -100,24 +100,24 @@ describe "subrender", ->
       """
 
       it "shouldn't lose any nodes", ->
-        model =
+        model :=
           observable: Observable "wat"
           subtemplate: subtemplate
           nullable: null
 
-        element = template(model)
+        element := template(model)
         assert.equal element.textContent, "Radical\nHello\nwat"
         model.observable "duder"
         assert.equal element.textContent, "Radical\nHello\nduder"
 
     describe "mapping array to subtemplates", ->
-      template = makeTemplate """
+      template := makeTemplate """
         table
           @rowElements
       """
 
       it "should render subtemplates", ->
-        model =
+        model :=
           rows: [
             "Wat"
             "is"
@@ -125,14 +125,14 @@ describe "subrender", ->
           ]
           rowElements: ->
             @rows.map @rowPresenter
-          rowPresenter: (###* @type {string} ###text) ->
+          rowPresenter: (text: string) ->
             RowTemplate text: text
 
-        element = template(model)
+        element := template(model)
         assert.equal element.querySelectorAll("tr").length, 3
 
       it "should maintain observables in subtemplates", ->
-        model =
+        model :=
           rows: Observable [
             Observable "Wat"
             Observable "is"
@@ -140,10 +140,10 @@ describe "subrender", ->
           ]
           rowElements: ->
             @rows.map @rowPresenter
-          rowPresenter: (###* @type {() => string} ###text) ->
+          rowPresenter: (text: string) ->
             RowTemplate text: text()
 
-        element = template(model)
+        element := template(model)
         assert.equal element.querySelectorAll("tr").length, 3
         assert.equal element.querySelector("td")?.textContent, "Wat"
 

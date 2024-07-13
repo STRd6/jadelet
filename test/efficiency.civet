@@ -1,27 +1,27 @@
 describe "efficiency", ->
   it "should not re-render sub elements when classes change", ->
-    count = 0
+    count .= 0
 
-    template = makeTemplate """
+    template := makeTemplate """
       .duder(@class)
         @subrender
     """
 
-    model =
+    model :=
       class: Observable "something"
       subrender: ->
         count += 1
 
-    element = template(model)
+    element := template(model)
     assert.equal count, 1
     model.class "somethingElse"
     assert.equal count, 1
     assert element.classList.contains("somethingElse")
 
   it "should recompute siblings an appropriate amount of times", ->
-    count = 0
+    count .= 0
 
-    template = makeTemplate """
+    template := makeTemplate """
       div
         @item1
         @item2
@@ -29,7 +29,7 @@ describe "efficiency", ->
         @counter
     """
 
-    model =
+    model :=
       item1: Observable "A"
       item2: Observable 5
       item3: Observable document.createElement "span"
@@ -52,49 +52,49 @@ describe "efficiency", ->
 
 
   it "should not re-render sub elements when attributes change", ->
-    count = 0
+    count .= 0
 
-    template = makeTemplate """
+    template := makeTemplate """
       .duder(@name)
         @subrender
     """
 
-    model =
+    model :=
       name: Observable "something"
       subrender: ->
         count += 1
 
-    element = template(model)
+    element := template(model)
     assert.equal count, 1
     model.name "somethingElse"
     assert.equal count, 1
     assert.equal element.getAttribute("name"), "somethingElse"
 
   it "should not re-render sub elements when ids change", ->
-    count = 0
+    count .= 0
 
-    template = makeTemplate """
+    template := makeTemplate """
       .duder(@id)
         @subrender
     """
 
-    model =
+    model :=
       id: Observable "something"
       subrender: ->
         count += 1
 
-    element = template(model)
+    element := template(model)
     assert.equal count, 1
     model.id "somethingElse"
     assert.equal count, 1
     assert.equal element.id, "somethingElse"
 
   it "should render the template once when the observable changes", ->
-    oCount = 0
-    tCount = 0
-    iCount = 0
+    oCount .= 0
+    tCount .= 0
+    iCount .= 0
 
-    template = makeTemplate """
+    template := makeTemplate """
       .awesome
         @renderedOuter
         ul
@@ -102,25 +102,22 @@ describe "efficiency", ->
           @itemElements
     """
 
-    ### @ts-ignore CoffeeSense ###
-    itemTemplate = makeTemplate """
+    itemTemplate := makeTemplate """
       .item
         @n
         @renderedItem
     """
 
-    model =
+    model :=
       items: Observable [
         "A"
         "B"
         "C"
       ]
       itemElements: ->
-        renderedItem = @renderedItem
+        renderedItem := @renderedItem
 
-        #@ts-ignore CoffeeSense
         @items.map (n) ->
-          #@ts-ignore CoffeeSense
           itemTemplate
             n: n
             renderedItem: renderedItem
@@ -148,40 +145,35 @@ describe "efficiency", ->
     assert.equal iCount, 12
 
   it "shouldn't leak all over the place", ->
-    activeItem = Observable null
+    activeItem := Observable null
 
-    template = makeTemplate """
+    template := makeTemplate """
       items
         @itemElements
 
     """
 
-    ### @ts-ignore CoffeeSense ###
-    buttonTemplate = makeTemplate """
+    buttonTemplate := makeTemplate """
       button(@click class=@active) @text
     """
 
-    Item = (value="yo") ->
-      ### @ts-ignore CoffeeSense ###
-      self =
+    Item := (value="yo") ->
+      self :=
         text: Observable value
         click: ->
         active: ->
-          #@ts-ignore CoffeeSense
           self is activeItem()
 
-    items = Observable [
+    items := Observable [
       Item()
       Item()
       Item()
     ]
 
-    model =
+    model :=
       items: items
       itemElements: ->
-        #@ts-ignore CoffeeSense
         @items.map (item) ->
-          #@ts-ignore CoffeeSense
           buttonTemplate item
 
     template(model)
