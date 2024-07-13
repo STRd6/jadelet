@@ -1,22 +1,28 @@
 {
   "name": "jadelet",
-  "version": "2.0.0-pre.1",
+  "version": "2.0.0-pre.9",
   "description": "Lightweight, elegant HTML templates",
   "license": "MIT",
+  "scripts": {
+    "build": "bash build/build.sh",
+    "test": "c8 mocha"
+  },
   "devDependencies": {
-    "@danielx/coffeecoverage": "4.0.0-pre.1",
-    "browserify": "^17.0.0",
-    "coffeescript": "^2",
-    "jsdom": "^19.0.0",
-    "mocha": "^9.2.0",
-    "nyc": "^15.1.0",
-    "uglify-js": "^3.14.2"
+    "@danielx/civet": "0.7.17",
+    "@danielx/hera": "^0.8.14",
+    "@types/jsdom": "^16.2.14",
+    "@types/md5": "^2.3.2",
+    "@types/mocha": "^10.0.6",
+    "c8": "10.1.2",
+    "esbuild": "0.23.0",
+    "jsdom": "24.0.0",
+    "mocha": "10.6.0",
+    "typescript": "5.5.3"
   },
   "dependencies": {
+    "@danielx/observable": "0.7.0",
     "commander": "^8.1.0",
-    "hera": "STRd6/hera",
-    "md5": "^2.3.0",
-    "o_0": "^0.4.0-pre.0"
+    "md5": "^2.3.0"
   },
   "homepage": "https://jadelet.com",
   "repository": {
@@ -25,21 +31,20 @@
   },
   "mocha": {
     "extension": [
-      "coffee"
+      "civet"
     ],
-    "require": [
-      "coffeescript/register",
-      "@danielx/coffeecoverage/register-istanbul",
-      "hera/register",
-      "./test/helper.coffee"
+    "loader": [
+      "@danielx/civet/esm",
+      "@danielx/hera/esm"
     ],
-    "reporter": "spec",
+    "reporter": "dot",
     "recursive": true,
     "spec": [
       "test"
     ]
   },
-  "nyc": {
+  "c8": {
+    "all": true,
     "check-coverage": true,
     "branches": 100,
     "lines": 100,
@@ -50,25 +55,33 @@
       "text"
     ],
     "extension": [
-      ".coffee"
+      ".civet"
+    ],
+    "include": [
+      "source/"
     ],
     "exclude": [
-      "source/cli.coffee"
-    ],
-    "sourceMap": false,
-    "instrument": false
-  },
-  "scripts": {
-    "browser": "bash script/browser",
-    "prepublish": "bash script/prepublish",
-    "test": "nyc mocha"
+      "source/cli.civet"
+    ]
   },
   "bin": {
-    "jadelet": "bin/jadelet"
+    "jadelet": "dist/jadelet"
   },
   "files": [
-    "bin/",
-    "dist/"
+    "dist/",
+    "types/",
+    "esbuild-plugin.js",
+    "esbuild-plugin.d.ts",
+    "register.js"
   ],
-  "main": "dist/jadelet.js"
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
 }

@@ -1,0 +1,10 @@
+describe "register", ->
+  it "should register", ->
+    await import "../register.js"
+
+    // @ts-ignore
+    { createRequire } from 'node:module'
+    const require = createRequire(import.meta.url);
+
+    T := require "./samples/simple_class"
+    assert T()

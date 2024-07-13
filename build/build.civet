@@ -1,0 +1,49 @@
+esbuild from esbuild
+civetPlugin from @danielx/civet/esbuild
+heraPlugin from @danielx/hera/esbuild-plugin
+
+esbuild.build
+  entryPoints: ['source/index.civet']
+  format: 'esm'
+  tsconfig: "./tsconfig.json"
+  bundle: true
+  sourcemap: true
+  outdir: 'dist/'
+  outExtension:
+    ".js": ".mjs"
+  plugins: [
+    civetPlugin
+      ts: "civet"
+      emitDeclaration: true
+    heraPlugin
+      module: true
+  ]
+.catch ->
+  process.exit 1
+
+esbuild.build
+  entryPoints: ['source/index.civet']
+  format: 'cjs'
+  tsconfig: "./tsconfig.json"
+  bundle: true
+  sourcemap: true
+  outdir: 'dist/'
+  plugins: [
+    civetPlugin
+      ts: "civet"
+    heraPlugin
+      module: true
+  ]
+.catch ->
+  process.exit 1
+
+esbuild.build({
+  entryPoints: ['source/cli.civet']
+  platform: 'node'
+  format: 'cjs'
+  outfile: 'dist/cli.js'
+  plugins: [
+    civetPlugin
+      ts: "civet"
+  ]
+}).catch -> process.exit 1

@@ -1,0 +1,26 @@
+assert from assert
+
+{ JSDOM } from jsdom
+{ window } := new JSDOM("")
+{ Node, document } := window
+{ Event } := window
+
+Object.assign global, {
+  document
+  window
+  Node
+}
+
+Jadelet from ../source/index.civet
+{ exec, Observable } := Jadelet
+
+Object.assign global, {
+  assert
+  Jadelet
+  Observable
+
+  dispatch(element: Element, eventName: string, options={})
+    element.dispatchEvent new Event eventName, options
+
+  makeTemplate: exec
+}
