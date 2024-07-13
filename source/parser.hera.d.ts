@@ -1,6 +1,6 @@
 import { JadeletASTNode } from "../types/types"
 
-interface JadeletParser {
+declare const JadeletParser: {
   parse(source: string): JadeletASTNode;
 }
 

@@ -2,7 +2,8 @@ fs from fs
 md5 from md5
 { program } from commander
 
-{ compile } from ./jadelet.civet
+{ compile } from ./index.civet
+{ version } from ../package.json
 
 { readdir } := fs.promises
 { sep:fileSeparator, resolve } from path
@@ -23,16 +24,16 @@ getFiles := (dir: string, ext: RegExp): AsyncGenerator<string> ->
       yield res
 
 program
-  .version(require('../package.json').version)
+  .version(version)
   .option("-d, --directory [directory]", "Compile all .jadelet files in the given directory")
   .option("--encoding [encoding]", "Encoding of files being read from --directory (default 'utf-8')")
   .option("-e, --exports [name]", "Export compiled template as (default 'module.exports'")
   .option("--extension [extension]", "Extension to compile")
   .option("-r, --runtime [provider]", "Runtime provider")
   .parse(process.argv)
-options = program.opts()
+options := program.opts()
 
-encoding: BufferEncoding := options.encoding or "utf8"
+encoding := options.encoding or "utf8"
 optionsJSON := JSON.stringify options
 
 let extension: RegExp
@@ -59,6 +60,7 @@ if (dir .= options.directory)
       input := fs.readFileSync path,
         encoding: encoding
 
+      let exports
       // if the options change, the prevMD5 is invalid
       currMD5 := md5(input + optionsJSON)
       if currMD5 != prevMD5
@@ -80,7 +82,7 @@ if (dir .= options.directory)
         console.log `Skipping ${path} (no changes)`
 
 else
-  input = fs.readFileSync(process.stdin.fd, encoding)
+  input := fs.readFileSync(process.stdin.fd, encoding)
 
   process.stdout.write compile input,
     runtime: options.runtime

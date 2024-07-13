@@ -7,18 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
 
-    - name: Setup Node.js 16.x
-      uses: actions/setup-node@v2
+    - name: Setup Node.js 20.x
+      uses: actions/setup-node@v4
       with:
         cache: yarn
-        node-version: 16.x
+        node-version: 20.x
 
     - name: Install and Test
       run: |
         yarn
-        yarn compile
+        yarn build
         yarn test
 
     - name: Coveralls

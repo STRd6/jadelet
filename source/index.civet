@@ -103,7 +103,7 @@ observeAttribute := (element: JadeletElement, context: Context, name: string, va
           context[value.bind]? element.checked
           return
 
-      bindObservable element, value, context, (newValue) ->
+      bindObservable element, value, context, (newValue: any) ->
         element.checked = newValue !== false
         return
     else
@@ -112,7 +112,7 @@ observeAttribute := (element: JadeletElement, context: Context, name: string, va
         // It doesn't make sense for events to not be bound
         bindEvent(element, name, value.bind, context)
       else
-        bindObservable element, value, context, (newValue) ->
+        bindObservable element, value, context, (newValue: string | false) ->
           if newValue? and newValue !== false
             element.setAttribute name, newValue
           else
@@ -130,7 +130,7 @@ with the new value. To clean up we release the dependencies of
 our computed observable. We store the observables to clean up
 on a map keyed by the element.
 */
-bindObservable := (element, value, context: Context, update) ->
+bindObservable := <T extends (v: any) => void>(element: Node, value: JadeletAttribute | Function, context: Context, update: T) ->
   let observable
   // If the value is a simple string then simply set it and exit
   // No point in creating an observable if it isn't a binding
@@ -163,7 +163,7 @@ bindValue := (element: JadeletElement, value: JadeletAttribute, context: Context
       context[value.bind]? element.value
       return
 
-  bindObservable element, value, context, (newValue) ->
+  bindObservable element, value, context, (newValue: string) ->
     unless element.value is newValue
       element.value = newValue
     return
@@ -238,7 +238,7 @@ observeContent := (element: JadeletElement, context: Context, contentArray: Jade
         delta := length - previousLength
         i = index+1
         while i < tracker.length
-          tracker[i] += delta
+          tracker[i]! += delta
           i++
 
         return
@@ -279,7 +279,7 @@ isObject := (x: ???): x is Object ->
 isString := (x: ???): x is string =>
   typeof x is "string"
 
-splat := (sources: JadeletAttribute[], context: Context): ??? ->
+splat := (sources: JadeletAttribute[], context: Context): ???[] ->
   sources.map (source) ->
     if isString source
       source
@@ -288,7 +288,7 @@ splat := (sources: JadeletAttribute[], context: Context): ??? ->
   .reduce (a, b) ->
     a.concat b
   , []
-  .filter (###* @type {unknown}### x) -> x?
+  .filter (x: ???) -> x?
 
 get := (x: ???, context: Context) ->
   if typeof x is 'function'
@@ -333,7 +333,7 @@ mapAttributes := (attributes: JadeletAttributes, context: Context): Context =>
 
     [key, f]
 
-render := (astNode, context: Context={}, namespace?: string): JadeletElement =>
+render := (astNode: JadeletASTNode, context: Context={}, namespace?: string): JadeletElement =>
   [tag, attributes, children] := astNode
 
   if Presenter := customElements[tag]
@@ -347,10 +347,11 @@ render := (astNode, context: Context={}, namespace?: string): JadeletElement =>
     namespace = "http://www.w3.org/2000/svg"
 
   //@ts-ignore expand Element to JadeletElement
-  element: Element := if namespace
+  element := (if namespace
     document.createElementNS namespace, tag
   else
     document.createElement tag
+  ) as JadeletElement
   // We populate the content first so that value binding for `select` tags
   // works properly.
   observeContent element, context, children, namespace
@@ -365,34 +366,44 @@ parser from ./parser.hera
 
 customElements: {[Key:string]: (mappedAttributes: any, children: JadeletAST[]) => JadeletElement } := {}
 
-Jadelet :=
-  compile: (source, opts={}) ->
-    ast := Jadelet.parse(source)
-    runtime := opts.runtime or "require('jadelet')"
-    exports := opts.exports or "module.exports"
+export compile := (source: string, opts: Options={}) ->
+  ast := Jadelet.parse(source)
+  runtime := opts.runtime or "require('jadelet')"
+  exports := opts.exports or "module.exports"
 
-    ```
-      ${exports} = ${runtime}.exec(${JSON.stringify(ast)});
-    ```
+  ```
+    ${exports} = ${runtime}.exec(${JSON.stringify(ast)});
+  ```
+
+Jadelet := {
+  compile
   parse: parser.parse
-  parser: parser
-  exec: (ast) ->
+  parser
+  exec(ast: JadeletAST | string)
     if isString ast
       ast = Jadelet.parse ast
 
-    return (context) ->
+    return (context: Context) ->
       // @ts-ignore
       render ast, context
-  Observable: Observable
+  Observable
   _elementCleaners: elementCleaners
-  define: (definitions) ->
+  define(definitions: Definitions)
     Object.assign customElements, definitions
     return Jadelet
-  dispose: dispose
-  retain: retain
-  release: release
+  dispose
+  retain
+  release
+}
+
+export { exec, parse } := Jadelet
 
 export default Jadelet
+
+export type Options = {
+  runtime?: string
+  exports?: string
+}
 
 export interface JadeletElement extends HTMLElement
   checked: boolean
@@ -411,4 +422,11 @@ export type JadeletAttributes = {
   id?: JadeletAttribute[],
   class?: JadeletAttribute[],
   style?: JadeletAttribute[],
+}
+
+export type JadeletASTNode = [string, JadeletAttributes, JadeletAST[]]
+export type JadeletAST = JadeletASTNode | JadeletAttribute;
+
+export type Definitions = {
+  [Key: string]: (attributes: any, children: any) => HTMLElement
 }

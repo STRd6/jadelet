@@ -11,7 +11,7 @@ Object.assign global, {
   Node
 }
 
-Jadelet from ../source/jadelet.civet
+Jadelet from ../source/index.civet
 { exec, Observable } := Jadelet
 
 Object.assign global, {
