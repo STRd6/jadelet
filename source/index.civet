@@ -366,7 +366,7 @@ parser from ./parser.hera
 
 customElements: {[Key:string]: (mappedAttributes: any, children: JadeletAST[]) => JadeletElement } := {}
 
-export compile := (source: string, opts: Options={}) ->
+compile := (source: string, opts: Options={}) ->
   ast := Jadelet.parse(source)
   runtime := opts.runtime or "require('jadelet')"
   exports := opts.exports or "module.exports"
@@ -396,6 +396,7 @@ Jadelet := {
   release
 }
 
+export { Jadelet, Observable, compile, dispose, retain, release }
 export { exec, parse } := Jadelet
 
 export default Jadelet
