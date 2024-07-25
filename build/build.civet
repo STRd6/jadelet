@@ -6,6 +6,9 @@ esbuild.build
   entryPoints: ['source/index.civet']
   format: 'esm'
   tsconfig: "./tsconfig.json"
+  external: [
+    "@danielx/observable"
+  ]
   bundle: true
   sourcemap: true
   outdir: 'dist/'
@@ -25,6 +28,9 @@ esbuild.build
   entryPoints: ['source/index.civet']
   format: 'cjs'
   tsconfig: "./tsconfig.json"
+  external: [
+    "@danielx/observable"
+  ]
   bundle: true
   sourcemap: true
   outdir: 'dist/'
