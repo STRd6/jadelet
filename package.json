@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@danielx/civet": "0.7.19",
-    "@danielx/hera": "^0.8.14",
+    "@danielx/hera": "0.8.16",
     "@types/jsdom": "^16.2.14",
     "@types/md5": "^2.3.2",
     "@types/mocha": "^10.0.6",
@@ -33,9 +33,9 @@
     "extension": [
       "civet"
     ],
-    "loader": [
-      "@danielx/civet/esm",
-      "@danielx/hera/esm"
+    "require": [
+      "@danielx/civet/register",
+      "@danielx/hera/register"
     ],
     "reporter": "dot",
     "recursive": true,

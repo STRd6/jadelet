@@ -1,0 +1,27 @@
+esbuildPlugin from ../source/esbuild.civet
+
+describe "esbuild plugin", =>
+  it "should plug in", =>
+
+    plugin := esbuildPlugin()
+    assert.equal plugin.name, 'jadelet'
+
+    promises: Promise<unknown>[] := []
+
+    build :=
+      onResolve: (_filter: unknown, cb) =>
+        path := 'test/samples/simple_class'
+
+        // A path that exists
+        promises.push cb { path, resolveDir: "" }
+        // A path that doesn't exist
+        promises.push cb { path, resolveDir: "build" }
+
+      onLoad: (_filter: unknown, cb) =>
+        path := 'test/samples/simple_class.jadelet'
+
+        promises.push cb { path }
+
+    plugin.setup build
+
+    await.all promises
