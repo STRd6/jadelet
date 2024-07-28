@@ -1,4 +1,34 @@
+type {
+  PluginBuild
+  OnLoadArgs
+  OnLoadResult
+  OnResolveArgs
+  OnResolveResult
+} from esbuild
 esbuildPlugin from ../source/esbuild.civet
+
+// Mock plugin api
+defaultResolveArgs :=
+  path: "test.jadelet"
+  resolveDir: ""
+  importer: "test/test.civet"
+  namespace: "test"
+  kind: "import-statement" as const
+  pluginData: {}
+  with: {}
+
+resolveCb := (cb: (args: OnResolveArgs) => Promise<OnResolveResult | null?> | OnResolveResult | null?, args: Partial<OnResolveArgs>) =>
+  cb Object.assign {}, defaultResolveArgs, args
+
+defaultLoadArgs :=
+  path: "test.jadelet"
+  namespace: "test"
+  suffix: ".jadelet"
+  pluginData: {}
+  with: {}
+
+loadCb := (cb: (args: OnLoadArgs) => Promise<OnLoadResult | null?> | OnLoadResult | null?, args: Partial<{ path: string }>) =>
+  cb Object.assign {}, defaultLoadArgs, args
 
 describe "esbuild plugin", =>
   it "should plug in", =>
@@ -6,21 +36,22 @@ describe "esbuild plugin", =>
     plugin := esbuildPlugin()
     assert.equal plugin.name, 'jadelet'
 
-    promises: Promise<unknown>[] := []
+    promises: (Promise<OnResolveResult | null?> | OnResolveResult | null?)[] := []
 
-    build :=
-      onResolve: (_filter: unknown, cb) =>
+    //@ts-expect-error
+    build: PluginBuild :=
+      onResolve: (_filter, cb ) =>
         path := 'test/samples/simple_class'
 
         // A path that exists
-        promises.push cb { path, resolveDir: "" }
+        promises.push resolveCb cb, { path, resolveDir: "" }
         // A path that doesn't exist
-        promises.push cb { path, resolveDir: "build" }
+        promises.push resolveCb cb, { path, resolveDir: "build" }
 
-      onLoad: (_filter: unknown, cb) =>
+      onLoad: (_filter, cb) =>
         path := 'test/samples/simple_class.jadelet'
 
-        promises.push cb { path }
+        promises.push loadCb cb, { path }
 
     plugin.setup build
 
