@@ -15,6 +15,8 @@ for f in dist/**/*.civet.d.ts; do
   mv "$f" "${f%.civet.d.ts}.d.ts"
 done
 
+sed -i 's/\.civet"/.js"/g' dist/esbuild.mjs
+
 # cli
 sed -i 's/\.civet"/.js"/g' dist/cli.js
 BIN="dist/jadelet"

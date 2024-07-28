@@ -1,5 +1,6 @@
 esbuild from esbuild
 civetPlugin from @danielx/civet/esbuild
+//@ts-expect-error
 heraPlugin from @danielx/hera/esbuild-plugin
 
 esbuild.build
@@ -39,6 +40,22 @@ esbuild.build
       ts: "civet"
     heraPlugin
       module: true
+  ]
+.catch ->
+  process.exit 1
+
+esbuild.build
+  entryPoints: ['source/esbuild.civet']
+  format: 'esm'
+  tsconfig: "./tsconfig.json"
+  sourcemap: true
+  outdir: 'dist/'
+  outExtension:
+    ".js": ".mjs"
+  plugins: [
+    civetPlugin
+      ts: "civet"
+      emitDeclaration: true
   ]
 .catch ->
   process.exit 1

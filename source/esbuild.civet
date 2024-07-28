@@ -1,0 +1,35 @@
+type { Plugin } from esbuild
+Jadelet from ./index.civet
+{ readFileSync } from fs
+
+type { PathLike } from fs
+{ access } from fs/promises
+path from path
+
+exists := (p: PathLike) ->
+  try
+    await access(p)
+    true
+  catch
+    false
+
+export default esbuildPlugin := (_options: unknown): Plugin ->
+  name: 'jadelet',
+  setup: (build) ->
+    build.onResolve { filter: /\/[^.]*$/ }, (r) ->
+      {path: resolvePath, resolveDir} := r
+      p := path.join(resolveDir, resolvePath + `.jadelet`)
+
+      // see if a .coffee file exists
+      found := await exists(p)
+      if found
+        return path: p
+
+      return undefined
+
+    build.onLoad { filter: /\.jadelet$/ }, async (args) =>
+      source := readFileSync(args.path, 'utf8')
+      contents := Jadelet.compile source,
+        runtime: 'require("jadelet")'
+
+      return { contents, loader: 'js' }
