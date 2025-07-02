@@ -8,7 +8,7 @@
     "test": "c8 mocha"
   },
   "devDependencies": {
-    "@danielx/civet": "0.10.4",
+    "@danielx/civet": "0.10.5",
     "@danielx/hera": "0.8.17",
     "@types/jsdom": "^16.2.14",
     "@types/md5": "^2.3.2",
