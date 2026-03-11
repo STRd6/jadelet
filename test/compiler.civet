@@ -22,3 +22,8 @@ describe 'Compiler', ->
     it "defaults to require('jadelet')", ->
       compiled := compile "h1"
       assert compiled.match(/require\('jadelet'\)/)
+
+  describe "esm", ->
+    it "compiles as ESM", ->
+      compiled := compile "h1", esm: true
+      assert compiled.match(/export default/)

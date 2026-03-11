@@ -15,11 +15,11 @@ for f in dist/**/*.civet.d.ts; do
   mv "$f" "${f%.civet.d.ts}.d.ts"
 done
 
-sed -i 's/\.civet"/.js"/g' dist/esbuild.mjs
+sed -i 's/\.civet"/.mjs"/g' dist/esbuild.mjs
 
 # cli
-sed -i 's/\.civet"/.js"/g' dist/cli.js
+sed -i 's/\.civet"/.mjs"/g' dist/cli.mjs
 BIN="dist/jadelet"
-echo "#!/usr/bin/env node" | cat - dist/cli.js > "$BIN"
+echo "#!/usr/bin/env node" | cat - dist/cli.mjs > "$BIN"
 chmod +x "$BIN"
-rm dist/cli.js
+rm dist/cli.mjs

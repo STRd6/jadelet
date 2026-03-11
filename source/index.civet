@@ -368,6 +368,13 @@ customElements: {[Key:string]: (mappedAttributes: any, children: JadeletAST[]) =
 
 compile := (source: string, opts: Options={}) ->
   ast := Jadelet.parse(source)
+
+  if opts.esm
+    return ```
+      import { exec } from "jadelet"
+      export default exec(${JSON.stringify(ast)})
+    ```
+
   runtime := opts.runtime or "require('jadelet')"
   exports := opts.exports or "module.exports"
 
@@ -402,6 +409,7 @@ export { exec, parse } := Jadelet
 export default Jadelet
 
 export type Options = {
+  esm?: boolean
   runtime?: string
   exports?: string
 }

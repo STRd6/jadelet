@@ -1,5 +1,5 @@
 type { Plugin } from esbuild
-Jadelet from ./index.civet
+Jadelet, { type Options } from ./index.civet
 
 type { PathLike } from fs
 { access, readFile } from fs/promises
@@ -12,7 +12,7 @@ exists := (p: PathLike) ->
   catch
     false
 
-export default esbuildPlugin := (_options?: unknown): Plugin ->
+export default esbuildPlugin := (options: Options): Plugin ->
   name: 'jadelet',
   setup: (build) ->
     build.onResolve { filter: /\/[^.]*$/ }, (r) ->
@@ -28,7 +28,6 @@ export default esbuildPlugin := (_options?: unknown): Plugin ->
 
     build.onLoad { filter: /\.jadelet$/ }, (args) =>
       source := await readFile(args.path, 'utf8')
-      contents := Jadelet.compile source,
-        runtime: 'require("jadelet")'
+      contents := Jadelet.compile source, options
 
       return { contents, loader: 'js' }

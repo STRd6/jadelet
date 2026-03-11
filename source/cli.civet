@@ -3,7 +3,8 @@ md5 from md5
 { program } from commander
 
 { compile } from ./index.civet
-{ version } from ../package.json
+packageJson from ../package.json with type: "json"
+version := packageJson.version
 
 { readdir } := fs.promises
 { sep:fileSeparator, resolve } from path
@@ -28,6 +29,7 @@ program
   .option("-d, --directory [directory]", "Compile all .jadelet files in the given directory")
   .option("--encoding [encoding]", "Encoding of files being read from --directory (default 'utf-8')")
   .option("-e, --exports [name]", "Export compiled template as (default 'module.exports'")
+  .option("--esm", "Compile as ESM")
   .option("--extension [extension]", "Extension to compile")
   .option("-r, --runtime [provider]", "Runtime provider")
   .parse(process.argv)
@@ -73,6 +75,7 @@ if (dir .= options.directory)
           exports = options.exports.replace("$file", JSON.stringify(key))
 
         program := compile input,
+          esm: options.esm
           runtime: options.runtime
           exports: exports
 
@@ -85,5 +88,6 @@ else
   input := fs.readFileSync(process.stdin.fd, encoding)
 
   process.stdout.write compile input,
+    esm: options.esm
     runtime: options.runtime
     exports: options.exports

@@ -3,46 +3,28 @@ civetPlugin from @danielx/civet/esbuild
 //@ts-expect-error
 heraPlugin from @danielx/hera/esbuild-plugin
 
-esbuild.build
-  entryPoints: ['source/index.civet']
-  format: 'esm'
-  tsconfig: "./tsconfig.json"
-  external: [
-    "@danielx/observable"
-  ]
-  bundle: true
-  sourcemap: true
-  outdir: 'dist/'
-  outExtension:
-    ".js": ".mjs"
-  plugins: [
-    civetPlugin
-      ts: "civet"
-      emitDeclaration: true
-    heraPlugin
-      module: true
-  ]
-.catch ->
-  process.exit 1
-
-esbuild.build
-  entryPoints: ['source/index.civet']
-  format: 'cjs'
-  tsconfig: "./tsconfig.json"
-  external: [
-    "@danielx/observable"
-  ]
-  bundle: true
-  sourcemap: true
-  outdir: 'dist/'
-  plugins: [
-    civetPlugin
-      ts: "civet"
-    heraPlugin
-      module: true
-  ]
-.catch ->
-  process.exit 1
+(['esm', 'cjs'] as const).forEach (format) ->
+  esbuild.build
+    entryPoints: ['source/index.civet']
+    format: format
+    tsconfig: "./tsconfig.json"
+    external: [
+      "@danielx/observable"
+    ]
+    bundle: true
+    sourcemap: true
+    outdir: 'dist/'
+    outExtension:
+      ".js": format is "esm" ? ".mjs" : ".js"
+    plugins: [
+      civetPlugin
+        ts: "civet"
+        emitDeclaration: format is "esm" ? true : false
+      heraPlugin
+        module: true
+    ]
+  .catch ->
+    process.exit 1
 
 esbuild.build
   entryPoints: ['source/esbuild.civet']
@@ -63,8 +45,8 @@ esbuild.build
 esbuild.build({
   entryPoints: ['source/cli.civet']
   platform: 'node'
-  format: 'cjs'
-  outfile: 'dist/cli.js'
+  format: 'esm'
+  outfile: 'dist/cli.mjs'
   plugins: [
     civetPlugin
       ts: "civet"
