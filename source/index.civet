@@ -350,7 +350,8 @@ render := (astNode: JadeletASTNode, context: Context={}, namespace?: string): Ja
   element := (if namespace
     document.createElementNS namespace, tag
   else
-    document.createElement tag
+    createOptions := if isString attributes["is"] then { is: attributes["is"] }
+    document.createElement tag, createOptions
   ) as JadeletElement
   // We populate the content first so that value binding for `select` tags
   // works properly.

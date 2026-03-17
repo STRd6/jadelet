@@ -1,0 +1,12 @@
+import "./helper.civet"
+
+describe "customElement createElement is", ->
+  it "should pass static is option to createElement", ->
+    template := makeTemplate """
+      div(is="my-custom-element")
+        | content
+    """
+    el := template()
+    assert.equal el.tagName, "DIV"
+    assert.equal el.getAttribute("is"), "my-custom-element"
+    assert.equal el.textContent.trim(), "content"
