@@ -160,7 +160,9 @@ bindValue := (element: JadeletElement, value: JadeletAttribute, context: Context
   // inconsistencies.
   if value and typeof value is "object"
     element.oninput = element.onchange = ->
-      context[value.bind]? element.value
+      setter := context[value.bind]
+      if typeof setter is 'function'
+        setter.call context, element.value
       return
 
   bindObservable element, value, context, (newValue: string) ->

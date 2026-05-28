@@ -30,3 +30,18 @@ describe "input", ->
 
     el := T()
     assert.equal el.value, "hello"
+
+  it "should accept a non-function (plain value) binding without throwing on input", ->
+    model :=
+      value: 5
+
+    input := template(model)
+
+    // initial value reflects the plain number
+    assert.equal input.value, "5"
+
+    // editing must not attempt to call the non-function binding
+    input.value = "7"
+    input.oninput()
+
+    assert.equal input.value, "7"
